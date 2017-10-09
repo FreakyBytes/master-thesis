@@ -1,0 +1,168 @@
+% !TeX spellcheck = en_US
+\documentclass[12pt, a4paper, titlepage]{book}
+%\usepackage[a4paper, margin=3cm]{geometry}
+
+%
+\usepackage[utf8]{inputenc}			% utf-8, bitches
+\usepackage[T1]{fontenc}			% das Trennen der Umlaute
+\usepackage[english]{babel}			% word wrapping
+
+\usepackage{parskip}				% makes paragraph spacing nicer
+\usepackage{setspace}				% more spacing control
+\setstretch{1.25}
+
+\usepackage[breaklinks,hidelinks]{hyperref}		% links
+
+%\usepackage{lmodern}
+%\usepackage{textcomp}
+
+\usepackage{xspace}					% intelligent spacing after words, usefull for shortcut coammnds
+\usepackage{graphicx}				% better graphics support
+\usepackage{color}					% enables support for using different colors
+\usepackage{csquotes}				% show quotes
+
+\usepackage{comment}
+\usepackage{caption}
+\usepackage{float}					% better positioning for graphics, tables, etc.
+\usepackage{tabu}					% better tables
+\usepackage{wrapfig}				% figures on the side
+\usepackage{pdfpages}				% include whole pdfs as pages
+
+\usepackage[title,toc,page]{appendix}		% appendix environment
+%\usepackage{listings}
+%usepackage{longtable}				% multipage tables
+%usepackage{array}					% enables the user of m{} and b{} in tables
+%usepackage{multirow}				% allow multiple rows
+
+%usepackage{pdflscape}				% produces landscape pages (landscape env)
+
+\usepackage{amssymb}				% math
+\usepackage{amsmath}				% more math
+\usepackage{textgreek}				% allows for greek chars
+\usepackage[style=iso]{datetime2}	% date format, that makes sense to everybody
+
+\usepackage[backend=bibtex, style=authoryear,
+	sortcites=true, block=none,
+	indexing=false, citereset=none, isbn=true,
+	url=true, doi=true,natbib=true,
+	hyperref=true]{biblatex}					% even better citation support
+\addbibresource{bas-sec.bib}
+
+%
+\usepackage{ccicons}				% icons for the creative commons licenses
+
+%
+\usepackage{hyperxmp}				% pdf meta information
+\hypersetup{
+	pdfauthor={Martin Peters},
+	pdfauthortitle={Master Student},
+	pdfcreator={},
+	pdflang={en},
+	pdfkeywords={KNX, netflow},
+	pdftype={Text},
+	pdfcopyright={Copyright (C) 2017/2018, Martin Peters.},
+	pdflicenseurl={}
+}
+
+
+
+% ------------------------------------------------------------------------------
+% Shortcuts
+% 
+\definecolor{pink}{rgb}{1,0,1}
+\definecolor{red}{rgb}{1,0,0}
+
+\newcommand{\hint}[1]{{\color{pink}#1}}
+%\newcommand{\hint}[1]{}
+
+\newcommand{\alert}[1]{{\color{red}#1}}
+%\newcommand{\alert}[1]{}
+
+\newcommand{\thedate}{\today}
+\newcommand{\theauthor}{Martin Peters}
+\newcommand{\thetitle}{Analysis of Distributed in-band Monitoring Messages for Field Bus Networks in Build Automation Systems}
+%
+% ------------------------------------------------------------------------------
+
+\title{\thetitle\\[24pt]
+	\small Department of \alert{Informations- and Kommunikationsdienste}\\[-3pt]
+	\small University of Rostock}
+\author{\theauthor}
+\date{\thedate}
+%
+% ------------------------------------------------------------------------------
+
+\begin{document}
+	% title
+	%\maketitle
+	\begin{titlepage}
+		\centering
+		%\vspace*{2cm}
+		\includegraphics[width=0.9\textwidth]{style/UNI-Logo_Siegel_4c_115mm.pdf}
+		\\[1.3cm]
+		{\Huge Master Thesis}\\[0.5cm]
+		{\large\alert{ Institut für Informatik,\\Lehrstuhl für Informations- und Kommunikationsdienste}}
+		\\[3.5cm]
+		{\Huge \thetitle}
+		\\[2cm]
+		{\large\theauthor\\[0.5cm]\thedate}
+	\end{titlepage}
+	% begin with roman page numbering
+	\pagenumbering{roman}
+	% compiling info
+	~ \vfill
+	{
+		\tiny \noindent
+		{\normalsize \href{http://creativecommons.org/licenses/by-sa/4.0/}{\ccbysa}} \\*[-0.5em]
+		This work is licensed under a \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons\\*[-1em] Attribution-ShareAlike 4.0 International License}. \\
+		The license of the supplementary material especially source code\\*[-1em]
+		may differ. Please refer to the respective LICENSE files.\\
+		\LaTeX ~compiled at \DTMnow
+	}
+	\newpage
+	% the toc
+	\tableofcontents
+	% the lof
+	\listoffigures
+	
+	% --------------------------------------------------------------------------
+	% begin of actual document
+	%
+	% begin new page numbering
+	\newpage
+	\pagenumbering{arabic}
+	
+	\chapter{Introduction}
+	
+	% --------------------------------------------------------------------------
+	% statement of own work
+	\newpage
+	\pagenumbering{gobble}  % turn off page numbering for this page
+	
+	\chapter*{Selbstständigkeitserklärung}
+	Hiermit erkläre ich Martin Peters, dass ich die vorliegende Bachelorarbeit selbständig angefertigt habe. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut habe ich als solches kenntlich gemacht.
+	\\[64pt]
+	\noindent Rostock, \thedate
+	\begin{flushright}
+		$\overline{~~~~~~~~~\mbox{(Unterschrift)}~~~~~~~~~}$
+	\end{flushright}
+	
+	% restart page numbering
+	\newpage
+	\pagenumbering{Roman}
+	
+	% --------------------------------------------------------------------------
+	% Bibliography
+	\nocite{*}
+	\printbibliography
+	
+	% --------------------------------------------------------------------------
+	% Appendix
+	\begin{appendices}
+		\noappendicestocpagenum
+		\addappheadtotoc
+		
+		%\chapter*{Appendix}
+		%\input{appendix.tex}
+	\end{appendices}
+\end{document}
