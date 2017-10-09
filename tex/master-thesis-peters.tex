@@ -29,7 +29,7 @@
 \usepackage{pdfpages}				% include whole pdfs as pages
 
 \usepackage[title,toc,page]{appendix}		% appendix environment
-%\usepackage{listings}
+\usepackage{listings}				% source code listings
 %usepackage{longtable}				% multipage tables
 %usepackage{array}					% enables the user of m{} and b{} in tables
 %usepackage{multirow}				% allow multiple rows
@@ -58,7 +58,7 @@
 	pdfauthortitle={Master Student},
 	pdfcreator={},
 	pdflang={en},
-	pdfkeywords={KNX, netflow},
+	pdfkeywords={Building Automation, KNX, netflow},
 	pdftype={Text},
 	pdfcopyright={Copyright (C) 2017/2018, Martin Peters.},
 	pdflicenseurl={}
@@ -93,6 +93,8 @@
 % ------------------------------------------------------------------------------
 
 \begin{document}
+	% begin with roman page numbering
+	\pagenumbering{gobble}
 	% title
 	%\maketitle
 	\begin{titlepage}
@@ -107,8 +109,7 @@
 		\\[2cm]
 		{\large\theauthor\\[0.5cm]\thedate}
 	\end{titlepage}
-	% begin with roman page numbering
-	\pagenumbering{roman}
+	%
 	% compiling info
 	~ \vfill
 	{
@@ -119,7 +120,14 @@
 		may differ. Please refer to the respective LICENSE files.\\
 		\LaTeX ~compiled at \DTMnow
 	}
-	\newpage
+	\pagebreak
+	%
+	% --------------------------------------------------------------------------
+	%
+	% begin with roman page numbering
+	\clearpage
+	\setcounter{page}{1}
+	\pagenumbering{roman}
 	% the toc
 	\tableofcontents
 	% the lof
@@ -133,6 +141,26 @@
 	\pagenumbering{arabic}
 	
 	\chapter{Introduction}
+	\label{sec:intro}
+	\input{chapter/000-intro.tex}
+	
+	\chapter{Building Automation Systems and Field Buses}
+	% background about BAS and KNX
+	
+	\chapter{Network Analysis and Netflow}
+	% background about netflow
+	
+	\chapter{Conceptual Architecture}
+	% concept
+	
+	\chapter{Results}
+	% ...
+	
+	\chapter{Prototype Implementation}
+	
+	\chapter{Discussion}
+	% discussion (duh)
+	
 	
 	% --------------------------------------------------------------------------
 	% statement of own work
@@ -153,7 +181,7 @@
 	
 	% --------------------------------------------------------------------------
 	% Bibliography
-	\nocite{*}
+	%\nocite{*}
 	\printbibliography
 	
 	% --------------------------------------------------------------------------
@@ -163,6 +191,7 @@
 		\addappheadtotoc
 		
 		%\chapter*{Appendix}
-		%\input{appendix.tex}
+		\label{sec:appendix}
+		\input{chapter/appendix.tex}
 	\end{appendices}
 \end{document}
