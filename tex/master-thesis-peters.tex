@@ -9,7 +9,7 @@
 
 \usepackage{parskip}				% makes paragraph spacing nicer
 \usepackage{setspace}				% more spacing control
-\setstretch{1.25}
+%\setstretch{1.25}
 
 \usepackage[breaklinks,hidelinks]{hyperref}		% links
 
@@ -139,6 +139,7 @@
 	% begin new page numbering
 	\newpage
 	\pagenumbering{arabic}
+	\setstretch{1.25}
 	
 	\chapter{Introduction}
 	\label{sec:intro}
@@ -146,12 +147,18 @@
 	
 	\chapter{Building Automation Systems and Field Buses}
 	% background about BAS and KNX
+	\label{sec:background:bas}
+	\input{chapter/100-background-bas.tex}
 	
 	\chapter{Network Analysis and Netflow}
 	% background about netflow
+	\label{sec:background:network}
+	\input{chapter/200-background-network.tex}
 	
 	\chapter{Conceptual Architecture}
 	% concept
+	\label{sec:concept}
+	\input{chapter/300-concept.tex}
 	
 	\chapter{Results}
 	% ...
