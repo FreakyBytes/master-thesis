@@ -26,4 +26,5 @@
 .ropeproject/
 *.swp
 *.run.xml
+*.bcf
 tex/master-thesis-peters-blx.bib
