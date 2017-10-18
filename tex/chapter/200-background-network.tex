@@ -7,19 +7,33 @@
 \section{Netflow}
 
 \section{Intrusion Detection Systems (IDS)}
+\subsection{Signature Intrusion Detection Systems (SIDS)}
 \subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
 
 \section{Anomaly Detection}
 \subsection{Statistical BlaBla}
 \subsection{Entropy based}
 \subsection{Bayesian}
+\subsection{Pattern Matching}
 
 \section{Time-based Anomaly Detection}
 
-\section{Prior Work}
+\section{Prior Work and Existing Solutions \hint{as own chapter?}}
 
 \begin{itemize}
 	\item \parencite{Yang2006}
 	\item \parencite{Celeda2012}
-	\item \parencite{Pan2014} BACnet
+	\item \textcite{Pan2014} BACnet
+		\begin{itemize}
+			\item Anonmaly detection for BACnet fire alarm systems
+			\item taps BACnet traffic via IP
+			\item rule based learning (RIPPER)
+			\item protection against common BACnet attack vectors
+				\subitem who-is/who-has network probing
+				\subitem write-property (take control over device)
+				\subitem InitializedRoutingTable
+				\subitem reinitialize devices
+				\subitem application layer DoS
+				\subitem flooding of network
+		\end{itemize}
 \end{itemize}
