@@ -41,9 +41,9 @@
 		\item "Several lines are connected to a main line and form an area" \parencite{Merz2009}
 		\item "Several areas are connected with each other via the back bone line" \parencite{Merz2009}
 		\item Each node is assigned an address, defining area, line, and device number which forms the logical topology
-			\subitem \hint{include bit field table for phy addrs}
+			\subitem cf. Table~\ref{tab:background:bas:knx:topo:addr}
 		\item It is advised, that the physical topology reassembles the logical \parencite{Sokollik2017}
-		\item Even though, the physical \knx bus can build in various forms (star, tree, ring, and mixed forms) \parencite{Sokollik2017}
+		\item Even though, the physical \knx bus can build in various forms (star, tree, and mixed forms) \parencite{Sokollik2017}
 		\item Most significant subdivision of the physical topology in \knx.TP-1 is a line segment \parencite{Sokollik2017}
 			\subitem a segment defines how many \knx devices can be connected on a physical line \parencite{Sokollik2017}
 			\subitem segment is a part of the bus system, which connects \knx devices electrical continuous with each other. \parencite{Sokollik2017}
@@ -53,14 +53,15 @@
 			\subitem problem since market is very fragmented
 			\subitem products are often not clearly with regards to TP1-64 and TP1-256
 			\subitem better of assuming TP1-64 for installations, since one TP1-64 device in a segment forces the whole segment to be downgraded to the TP1-64 standard
-		\item therefore max a full logical line must be build in four segments with 3 line couplers \parencite{Sokollik2017}
+		\item therefore max a full logical line must be build in four segments with 3 line repeaters \parencite{Sokollik2017}
 			\subitem it is to note that is not to advice since a \knx telegram can only take 6 hops
 			\subitem e.g. can be transmitted by max 6 couplers
 		\item area is created by coupling up to 16 lines \parencite{Sokollik2017}
 			\subitem 1 main line and 15 sublines
-			\subitem lines are coupled via line repeater to the main line
+			\subitem lines are coupled via line couplers to the main line
 			\subitem line couplers have own physical address (device address 0) \parencite{Sokollik2017}
 			\subitem line couplers galvanically separate main line and sub line, are capable of routing \parencite{Sokollik2017}
+		\item all main lines are connected via backbone couplers to the backbone line \parencite{Merz2009}
 			
 	\end{itemize}
 	
@@ -75,10 +76,10 @@
 			Byte & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{0} \\\midrule
 			Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\midrule
 			Physical Address & \multicolumn{4}{c|}{area} & \multicolumn{4}{c|}{line} & \multicolumn{8}{c|}{device}\\\midrule
-			Group Address & \multicolumn{5}{c|}{main-} & \multicolumn{3}{c|}{middle-} & \multicolumn{8}{c|}{sub group}\\
+			Group Address & \multicolumn{5}{c|}{main} & \multicolumn{3}{c|}{middle} & \multicolumn{8}{c|}{sub group}\\
 			\bottomrule
 		\end{tabular}
-		\caption{Bit field for \knx addresses}
+		\caption[Bit field for \knx addresses]{Bit field for \knx addresses. Only the most common used 3-level group address is shown here. cf.~\textcite{Merz2009,Sokollik2017} }
 		\label{tab:background:bas:knx:topo:addr}
 	\end{table}
 	
