@@ -113,9 +113,10 @@
 			\aboverulesep=0ex
 			\belowrulesep=0ex
 			\renewcommand{\arraystretch}{1.2}
+			\newcolumntype{Y}{>{\centering\arraybackslash}X}
 			
 			\centering
-			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|}
+			\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
@@ -137,9 +138,10 @@
 			\aboverulesep=0ex
 			\belowrulesep=0ex
 			\renewcommand{\arraystretch}{1.2}
+			\newcolumntype{Y}{>{\centering\arraybackslash}X}
 			
 			\centering
-			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|}
+			\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
@@ -165,9 +167,10 @@
 			\aboverulesep=0ex
 			\belowrulesep=0ex
 			\renewcommand{\arraystretch}{1.2}
+			\newcolumntype{Y}{>{\centering\arraybackslash}X}
 			
 			\centering
-			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|}
+			\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
@@ -189,18 +192,31 @@
 			\aboverulesep=0ex
 			\belowrulesep=0ex
 			\renewcommand{\arraystretch}{1.2}
+			\newcolumntype{Y}{>{\centering\arraybackslash}X}
 			
 			\centering
-			
+			\begin{tabularx}{0.7\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
+				\toprule
+				Byte & \multicolumn{8}{c|}{0} \\\midrule
+				Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\bottomrule
+				\toprule
+				ACK  & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
+				NACK & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
+				BUSY & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\\midrule
+				NACK + BUSY & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\\bottomrule
+			\end{tabularx}
+			\caption[\knx acknowledge telegram]{\knx short acknowledge telegram.}
+			\label{tab:background:bas:knx:proto:ack}
 		\end{table}
 		
 		\begin{table}
 			\aboverulesep=0ex
 			\belowrulesep=0ex
 			\renewcommand{\arraystretch}{1.2}
+			\newcolumntype{Y}{>{\centering\arraybackslash}X}
 			
 			\centering
-			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|}
+			\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} \\\midrule
 				Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
@@ -218,9 +234,10 @@
 			\aboverulesep=0ex
 			\belowrulesep=0ex
 			\renewcommand{\arraystretch}{1.2}
+			\newcolumntype{Y}{>{\centering\arraybackslash}X}
 			
 			\centering
-			\begin{tabularx}{0.7\textwidth}{|l|X|X|X|X|X|X|X|X|}
+			\begin{tabularx}{0.7\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} \\\midrule
 				Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
