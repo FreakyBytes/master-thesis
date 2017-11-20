@@ -115,7 +115,7 @@
 			\renewcommand{\arraystretch}{1.2}
 			
 			\centering
-			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
@@ -128,7 +128,7 @@
 				Byte & \multicolumn{8}{c|}{6} & \multicolumn{8}{c|}{$7+n$} & \multicolumn{8}{c|}{$8+n$} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
 				Function & \multicolumn{16}{c|}{Payload $n+1$ Bytes} & \multicolumn{8}{c|}{Parity} \\\bottomrule
-			\end{tabular}
+			\end{tabularx}
 			\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to $16$ Bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
 			\label{tab:background:bas:knx:proto:knx-standard}
 		\end{table}
@@ -139,7 +139,7 @@
 			\renewcommand{\arraystretch}{1.2}
 			
 			\centering
-			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
@@ -156,7 +156,7 @@
 				Byte & \multicolumn{8}{c|}{$9+n$} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
 				Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
 				Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
-			\end{tabular}
+			\end{tabularx}
 			\caption[Extended \knx data telegram]{Extended \knx data telegram with $2$ to $255$ Bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
 			\label{tab:background:bas:knx:proto:knx-extended}
 		\end{table}
@@ -167,7 +167,7 @@
 			\renewcommand{\arraystretch}{1.2}
 			
 			\centering
-			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
@@ -180,9 +180,18 @@
 				Byte & \multicolumn{8}{c|}{6} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
 				Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
 				Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
-			\end{tabular}
+			\end{tabularx}
 			\caption[\knx poll telegram]{\knx poll telegram. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, expected length of poll data (poll data), and Parity.}
 			\label{tab:background:bas:knx:proto:knx-poll}
+		\end{table}
+	
+		\begin{table}
+			\aboverulesep=0ex
+			\belowrulesep=0ex
+			\renewcommand{\arraystretch}{1.2}
+			
+			\centering
+			
 		\end{table}
 		
 		\begin{table}
@@ -191,7 +200,7 @@
 			\renewcommand{\arraystretch}{1.2}
 			
 			\centering
-			\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+			\begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|X|X|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} \\\midrule
 				Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
@@ -200,7 +209,7 @@
 				Extended Data Telegram & 0 & 0 & R & 1 & \multicolumn{2}{c|}{P} & \multicolumn{2}{c|}{ } \\\midrule
 				Poll Telegram & 1 & 1 & 1 & 1 & 0 & 0 & \multicolumn{2}{c|}{ } \\\midrule
 				Acknowledge Telegram & \multicolumn{2}{c|}{ } & 0 &0 & \multicolumn{2}{c|}{ } & \multicolumn{2}{c|}{ } \\\bottomrule
-			\end{tabular}
+			\end{tabularx}
 			\caption[\knx CTRL Byte]{\knx CTRL Byte. Telegram Type (TT), Repeat (R), Acknowledge (A), and Priority (P). cf. \textcite{Sokollik2017}}
 			\label{tab:background:bas:knx:proto:ctrl}
 		\end{table}
@@ -211,12 +220,12 @@
 			\renewcommand{\arraystretch}{1.2}
 			
 			\centering
-			\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+			\begin{tabularx}{0.7\textwidth}{|l|X|X|X|X|X|X|X|X|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} \\\midrule
 				Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
 				Function & AT & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{EFF} \\\bottomrule
-			\end{tabular}
+			\end{tabularx}
 			\caption[\knx CTRLE Byte]{\knx CTRLE Byte. Address Type (AT), Hop Count, and Extended Frame Format (EFF). cf. \textcite{Sokollik2017}}
 			\label{tab:background:bas:knx:proto:ctrle}
 		\end{table}
