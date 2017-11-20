@@ -99,17 +99,51 @@
 	
 	\subsection{KNX Protocol}
 		\begin{itemize}
-			\item 3 types of packets
-				\subitem standard
-				\subitem extended
-				\subitem poll
+			\item 3 types of telegrams \parencite{Hubner2009} \parencite{Merz2009}
+				\subitem data - "sent in response to an individual action such as" \parencite{Merz2009} pressing a button (standard and extended \parencite{Hubner2009})
+				\subitem acknowledge - "All devices (receivers) that belong to this group simultaneously confirm that they have received the data frame by returning an acknowledgment frame." \parencite{Merz2009}
+				\subitem poll - "one device can query 1-Byte-Information from up to 15 other devices. Addressing is done via group addresses" \parencite{Hubner2009}
+			\item 
+			
 		\end{itemize}
+	
+		\begin{table}
+			\aboverulesep=0ex
+			\belowrulesep=0ex
+			\renewcommand{\arraystretch}{1.2}
+			
+			\centering
+			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+				\toprule
+				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
+				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+				Function & \multicolumn{8}{c|}{Ctrl} & \multicolumn{16}{c|}{Source Address} \\\midrule
+			\end{tabular}
+			\\
+			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+				\toprule
+				Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
+				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+				Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{1}{c|}{\parbox{0.1cm}{A T}} & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{Length} \\\midrule
+			\end{tabular}
+			\\
+			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+				\toprule
+				Byte & \multicolumn{8}{c|}{6} & \multicolumn{8}{c|}{$7+n$} & \multicolumn{8}{c|}{$8+n$} \\\midrule
+				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+				Function & \multicolumn{16}{c|}{Payload $n+1$ Bytes} & \multicolumn{8}{c|}{Parity} \\\midrule
+			\end{tabular}
+			\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to 16 Bytes payload.}
+			\label{tab:background:bas:knx:proto:knx-standard}
+		\end{table}
 	
 	\subsection{Security in KNX}
 	\begin{itemize}
 		\item copulers allow filtering 
 			\subitem "This means that data frames transmitted by a sender are only forwarded to recipients that are not on the sender’s line." \parencite{Merz2009}
 			\subitem "The filter function only forwards data frames to where they are needed. This reduces the overall amount of data frame traffic and keeps the data traffic on one line separate from the data traffic on another line, allowing data to be transferred on several lines simultaneously." \parencite{Merz2009}
+		\item main group 14 and 15 should not be used \parencite{Hubner2009}
+			\subitem can not be filtered due to limited space for filter tables in couplers \parencite{Hubner2009}
 			
 			
 	\end{itemize}
