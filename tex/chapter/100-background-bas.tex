@@ -62,6 +62,7 @@
 			\subitem line couplers have own physical address (device address 0) \parencite{Sokollik2017}
 			\subitem line couplers galvanically separate main line and sub line, are capable of routing \parencite{Sokollik2017}
 		\item all main lines are connected via backbone couplers to the backbone line \parencite{Merz2009}
+		
 			
 	\end{itemize}
 	
@@ -105,6 +106,14 @@
 		\end{itemize}
 	
 	\subsection{Security in KNX}
+	\begin{itemize}
+		\item copulers allow filtering 
+			\subitem "This means that data frames transmitted by a sender are only forwarded to recipients that are not on the sender’s line." \parencite{Merz2009}
+			\subitem "The filter function only forwards data frames to where they are needed. This reduces the overall amount of data frame traffic and keeps the data traffic on one line separate from the data traffic on another line, allowing data to be transferred on several lines simultaneously." \parencite{Merz2009}
+			
+			
+	\end{itemize}
+	
 	\subsection{Examples and Applications of KNX Networks}
 
 \section{\lonworks}
