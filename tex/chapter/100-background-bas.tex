@@ -12,6 +12,7 @@
 	\end{itemize}
 
 \section{\knx}
+	\alert{telegram vs frame. frame is used in the english standard document}
 	
 	\begin{itemize}
 		\item \knx or Konnex
@@ -103,7 +104,8 @@
 				\subitem data - "sent in response to an individual action such as" \parencite{Merz2009} pressing a button (standard and extended \parencite{Hubner2009})
 				\subitem acknowledge - "All devices (receivers) that belong to this group simultaneously confirm that they have received the data frame by returning an acknowledgment frame." \parencite{Merz2009}
 				\subitem poll - "one device can query 1-Byte-Information from up to 15 other devices. Addressing is done via group addresses" \parencite{Hubner2009}
-			\item 
+			\item Data Telegram
+				\subitem 
 			
 		\end{itemize}
 	
@@ -117,14 +119,14 @@
 				\toprule
 				Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-				Function & \multicolumn{8}{c|}{Ctrl} & \multicolumn{16}{c|}{Source Address} \\\midrule
+				Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{16}{c|}{Source Address} \\\midrule
 			\end{tabular}
 			\\
 			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 				\toprule
 				Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-				Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{1}{c|}{\parbox{0.1cm}{A T}} & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{Length} \\\midrule
+				Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{1}{c|}{\parbox[t][][t]{0.1cm}{A T}} & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{Length} \\\midrule
 			\end{tabular}
 			\\
 			\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
@@ -135,6 +137,41 @@
 			\end{tabular}
 			\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to 16 Bytes payload.}
 			\label{tab:background:bas:knx:proto:knx-standard}
+		\end{table}
+	
+		\begin{table}
+			\aboverulesep=0ex
+			\belowrulesep=0ex
+			\renewcommand{\arraystretch}{1.2}
+			
+			\centering
+			\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+				\toprule
+				Byte & \multicolumn{8}{c|}{0} \\\midrule
+				Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
+				Function & \multicolumn{2}{c|}{TT} & R & A & \multicolumn{2}{c|}{P} & \multicolumn{2}{c|}{reserved} \\\bottomrule \toprule
+				Standard Data Telegram & 1 & 0 & R & 1 & \multicolumn{2}{c|}{P} & \multicolumn{2}{c|}{ } \\\midrule
+				Extended Data Telegram & 0 & 0 & R & 1 & \multicolumn{2}{c|}{P} & \multicolumn{2}{c|}{ } \\\midrule
+				Poll Telegram & 1 & 1 & 1 & 1 & 0 & 0 & \multicolumn{2}{c|}{ } \\\midrule
+				Acknowledge Telegram & \multicolumn{2}{c|}{ } & 0 &0 & \multicolumn{2}{c|}{ } & \multicolumn{2}{c|}{ } \\\bottomrule
+			\end{tabular}
+			\caption[\knx CTRL Byte]{\knx CTRL Byte. Telegram Type (TT), Repeat (R), Acknowledge (A), and Priority (P). cf. \textcite{Sokollik2017}}
+			\label{tab:background:bas:knx:proto:ctrl}
+		\end{table}
+	
+		\begin{table}
+			\aboverulesep=0ex
+			\belowrulesep=0ex
+			\renewcommand{\arraystretch}{1.2}
+			
+			\centering
+			\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+				\toprule
+				Byte & \multicolumn{8}{c|}{0} \\\midrule
+				Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
+				Function & AT & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{EFF} \\\bottomrule
+			\end{tabular}
+			\caption[\knx CTRLE Byte]{\knx CTRLE Byte. Address Type (AT), Hop Count, and Extended Frame Format (EFF). cf. \textcite{Sokollik2017}}
 		\end{table}
 	
 	\subsection{Security in KNX}
