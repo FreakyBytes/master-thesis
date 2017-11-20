@@ -175,13 +175,13 @@
 				\toprule
 				Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
 				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-				Function & \multicolumn{16}{c|}{Destination Address} & 0 & 0 & 0 & 0 & \multicolumn{4}{c|}{exp. poll data} \\\bottomrule
+				Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{4}{c|}{ } & \multicolumn{4}{c|}{poll data} \\\bottomrule
 				\toprule
-				Byte & \multicolumn{8}{c|}{6} & \multicolumn{8}{c|}{$7+n$} & \multicolumn{8}{c|}{$8+n$} \\\midrule
-				Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-				Function & \multicolumn{16}{c|}{Payload $n+1$ Bytes} & \multicolumn{8}{c|}{Parity} \\\bottomrule
+				Byte & \multicolumn{8}{c|}{6} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+				Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+				Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
 			\end{tabular}
-			\caption[\knx poll telegram]{\knx poll telegram. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
+			\caption[\knx poll telegram]{\knx poll telegram. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, expected length of poll data (poll data), and Parity.}
 			\label{tab:background:bas:knx:proto:knx-poll}
 		\end{table}
 		
