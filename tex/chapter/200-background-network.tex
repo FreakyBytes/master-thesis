@@ -27,9 +27,9 @@
 	\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
 	\subsection{State-based Intrusion Detection Systems\hint{??}}
 
-\section{Anomaly and Novelty Detection}
+\section{Anomaly, Outlier, and Novelty Detection}
 
-	\subsection{General Approaches}
+	\subsection{Classification of Anomaly, Outlier, and Novelty Detection Approaches}
 	\begin{itemize}
 		\item cf. \textcite{Hodge2004}
 		\item Type 1: "Determine the outliers with no prior knowledge of the data" \parencite{Hodge2004}
@@ -64,9 +64,7 @@
 		
 	\end{itemize}
 	
-	\subsection{Anomaly Detection Methods}
-	
-	\subsubsection{Local Outlier Factor}
+	\subsection{Local Outlier Factor}
 	\begin{itemize}
 		\item seems to be a good fit
 		\item works on unclean training data
@@ -75,18 +73,18 @@
 		\item density based
 	\end{itemize}
 	
-	\subsubsection{On Class SVM}
+	\subsection{On Class SVM}
 	\begin{itemize}
 		\item aka. novelty detection
 		\item all training data is considered good
 	\end{itemize}
 	
-	\subsubsection{Isolation Forest}
+	\subsection{Isolation Forest}
 	\begin{itemize}
 		\item ...
 	\end{itemize}
 	
-	\subsubsection{Elliptical Envelope}
+	\subsection{Elliptical Envelope}
 	\begin{itemize}
 		\item tries to fit data to estimated \emph{shape}
 		\item does not seem to be a good match, since it required to know the distribution of the vector fields
