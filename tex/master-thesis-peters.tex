@@ -1,6 +1,6 @@
 % !TeX spellcheck = en_US
-\documentclass[12pt, a4paper, titlepage]{book}
-%\usepackage[a4paper, margin=3cm]{geometry}
+\documentclass[12pt, a4paper, titlepage, oneside]{book}
+\usepackage[a4paper, oneside, margin=3cm]{geometry}
 
 %
 \usepackage[utf8]{inputenc}			% utf-8, bitches
@@ -102,6 +102,8 @@
 	\pagenumbering{gobble}
 	% title
 	%\maketitle
+	\input{titlepage.tex}
+	\begin{comment}
 	\begin{titlepage}
 		\centering
 		%\vspace*{2cm}
@@ -114,17 +116,19 @@
 		\\[2cm]
 		{\large\theauthor\\[0.5cm]\thedate}
 	\end{titlepage}
+	\end{comment}
 	%
 	% compiling info
 	~ \vfill
-	{
+	\begin{flushright}
 		\tiny \noindent
-		{\normalsize \href{http://creativecommons.org/licenses/by-sa/4.0/}{\ccbysa}} \\*[-0.5em]
-		This work is licensed under a \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons\\*[-1em] Attribution-ShareAlike 4.0 International License}. \\
-		The license of the supplementary material especially source code\\*[-1em]
+		{\normalsize \href{http://creativecommons.org/licenses/by-sa/4.0/}{\ccbysa}} \\*[0.5em]
+		This work is licensed under a \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons\\%*[-1em]
+		Attribution-ShareAlike 4.0 International License}. \\
+		The license of the supplementary material especially source code\\%*[-1em]
 		may differ. Please refer to the respective LICENSE files.\\
 		\LaTeX ~compiled at \DTMnow
-	}
+	\end{flushright}
 	\pagebreak
 	%
 	% --------------------------------------------------------------------------
