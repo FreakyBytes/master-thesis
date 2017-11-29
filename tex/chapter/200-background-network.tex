@@ -130,4 +130,24 @@
 				\subitem application layer DoS
 				\subitem flooding of network
 		\end{itemize}
+	
+	\item \textcite{Eskin2002} algos for unsupervised anomaly detection in IDS
+	\item \textcite{Leung2005} Unsupervised anomaly detection in IDS, proposed new algo \emph{pfMAFIA}
+\end{itemize}
+
+\section{Methods of Feature Encoding}
+\begin{itemize}
+	\item use feature direct as vector-dimension (not so good)
+	\item OneHot encoding
+		\subitem one vector-dimension per possible feature vector
+		\subitem if feature has specific value, set dimension for this value to 1, the rest 0
+		\subitem reversible
+	\item Feature Hashing / Hashing Trick
+		\subitem defined amount of dimensions
+		\subitem feature value is hashed
+		\subitem hash value is then used
+		\subitem non reversible
+		\subitem possibility of hash collision
+		\subitem esp. when dimension count is low
+		
 \end{itemize}
