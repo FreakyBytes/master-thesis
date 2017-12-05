@@ -141,6 +141,7 @@
 	\item OneHot encoding
 		\subitem one vector-dimension per possible feature vector
 		\subitem if feature has specific value, set dimension for this value to 1, the rest 0
+		\subitem also cf. \textcite[][p. 12]{Eskin2002}, not mentioned as term, but good math-like description
 		\subitem reversible
 	\item Feature Hashing / Hashing Trick
 		\subitem defined amount of dimensions
@@ -149,5 +150,7 @@
 		\subitem non reversible
 		\subitem possibility of hash collision
 		\subitem esp. when dimension count is low
+	\item "normalize all [...] attributes to the number of standard deviations away from the mean." \parencite{Eskin2002}
+		\subitem "scale based on the likelihood of the attribute values" \parencite{Eskin2002}
 		
 \end{itemize}
