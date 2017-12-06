@@ -273,6 +273,28 @@
 			\caption[\knx priority encoding]{\knx priority encoding. cf.~\textcite{Merz2009}}
 		\end{table}
 	
+	\subsection{\knx communication}
+	\begin{itemize}
+		\item application layer described in \textcite{DIN_EN_50090-4-1}
+		\item communication modes \parencite{DIN_EN_50090-4-1}
+			\subitem point-to-multipoint, connection-less (multicast)
+			\subitem point-to-domain, connection-less (broadcast)
+			\subitem point-to-all-points, connection-less (system broadcast)
+			\subitem point-to-point, connection-less
+			\subitem point-to-point, connection-oriented
+		\item APCI describes operation on application layer
+		\item Response need to match the Request APCI type and must be send on the corresponding communication mode allowed for this packet. cf. \textcite[][page 9--10]{DIN_EN_50090-4-1}
+		\item 
+	\end{itemize}
+	
+	\subsubsection{Network management procedures}
+	\begin{itemize}
+		\item "describe the device independent management procedures" \parencite{DIN_EN_50090-7-1}
+		\item "shall be used to configure the network, and to get the information about the configuration of the network and connected devices" \parencite{DIN_EN_50090-7-1}
+		\item " no knowledge of the single devices is required. They will work with every device connected to the network" \parencite{DIN_EN_50090-7-1}
+		\item "shall be based on the use of the dedicated application layer services which are specified in EN 50090-4-1 \parencite{DIN_EN_50090-4-1} for this purpose" \parencite{DIN_EN_50090-7-1}
+	\end{itemize}
+	
 	\subsection{Security in KNX}
 	\begin{itemize}
 		\item copulers allow filtering 
