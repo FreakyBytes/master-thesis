@@ -1,0 +1,245 @@
+%% This is file 'beamerouterthemeRostock.sty'
+%% Based on the original template by Mathias Winkel
+
+\ProvidesPackage{./unirostock/beamerouterthemeRostock}
+\usepackage{pdftexcmds}
+\mode<presentation>
+
+\AtBeginPart{\setcounter{framenumber}{0}}
+% Zaehler zur Einstellung des Fusszeilenmodus
+\newcount\f@@tmode \f@@tmode0
+\DeclareOptionBeamer{footuni}{\def\f@@tmode{0}}
+\DeclareOptionBeamer{foottitle}{\def\f@@tmode{1}}
+\DeclareOptionBeamer{footheadings}{\def\f@@tmode{2}}
+\DeclareOptionBeamer{footuniheadings}{\def\f@@tmode{3}}
+
+% Zaehler zur Einstellung des Fusszeilenmodus
+\newcount\he@dmode \he@dmode0
+\DeclareOptionBeamer{headlogo}{\def\he@dmode{0}}
+\DeclareOptionBeamer{headtitle}{\def\he@dmode{1}}
+\DeclareOptionBeamer{headframetitle}{\def\he@dmode{2}}
+\DeclareOptionBeamer{headframesubtitle}{\def\he@dmode{3}}
+
+\ProcessOptionsBeamer\relax
+
+% Seitenraender
+\setbeamersize{text margin left=26\mm,text margin right=17.5\mm}
+
+% Mehr Freiheit bei der Fusszeile ermoeglichen
+% Selbst definierte Makros
+\newcommand{\mylogo}{}
+\def\titleimage#1{\edef\@titleimage{#1}}
+\def\@copyright{\textcopyright~\the\year}
+\def\@university{Universit\"at Rostock}
+\def\@institute{Fakult\"at f\"ur Blindtext- und Blindtextwissenschaften}
+\def\@footauthor{\insertshortauthor}
+\def\@foottitle{\insertshorttitle}
+\def\footinstitute#1{\def\@institute{#1}} % Umstellung des Institutsnamens in der Fusszeile mit \footinstitute{bla}
+\def\paragraph#1{\par\textbf{#1}\par}
+%\def\headLogoTop#1{#1}
+\def\headLogoT{}
+\newcommand{\headLogoTop}[1]{
+
+	\ifnum\pdfstrcmp{#1}{hafen}=0
+		\def\headLogoT{\includegraphics[height=20\mm]{./unirostock/Logo_hafen_der_Wissenschaft.png}}
+	\fi
+	\ifnum\pdfstrcmp{#1}{standard}=0
+		\def\headLogoT{\includegraphics[width=89\mm]{./unirostock/UNI-Logo_Siegel_4c_115mm}}
+	\fi
+}
+
+\def\secondHeadLogoT{}
+\newcommand{\secondHeadLogoTop}[2]{
+	\def\secondHeadLogoT{\includegraphics[height=#1\mm]{#2}}
+}
+
+\def\NaviSymbols{}
+\newcommand{\showNaviSymbols}{
+	\def\NaviSymbols{
+		\hskip 50pt
+		%\insertslidenavigationsymbol%
+		\insertframenavigationsymbol%
+		\insertsubsectionnavigationsymbol%
+		\insertsectionnavigationsymbol%
+		%\insertdocnavigationsymbol%
+		\insertbackfindforwardnavigationsymbol%}
+}}
+
+\def\NaviDots{}
+\newcommand{\showNaviDots}{
+	\def\NaviDots{
+		\insertnavigation{0.4\paperwidth}\\
+}}
+
+\def\colorFoot{author in head/foot}
+\def\heightTop{20.5}
+
+\newcommand{\printmode}[1]{
+	\ifnum\pdfstrcmp{#1}{handout}=0
+		\def\NaviDots{}
+		\def\NaviSymbols{}
+		\def\headLogoT{}
+		\def\heightTop{20.5}
+		\def\secondHeadLogoT{}
+		\def\colorFoot{author in head/foot inverted}
+	\fi
+}
+
+\def\PartNumberInFooter{}
+\newcommand{\withParts}{
+	\renewcommand{\thepart}{\arabic{part}}
+	\renewcommand{\p@framenumber}{\thepart-}
+	\def\PartNumberInFooter{\insertpartnumber\,--\,}
+}
+
+
+\newcommand*\parttitle{}
+\let\origpart\part
+\renewcommand*{\part}[2][]{%
+   \ifx\\#1\\% optional argument not present?
+      \origpart{#2}%
+      %\renewcommand*\parttitle{#2\,--\,}%hg
+			\renewcommand*\parttitle{#2}%hg
+   \else
+      \origpart[#1]{#2}%
+      %\renewcommand*\parttitle{#1\,--\,}%hg
+			\renewcommand*\parttitle{#1}%hg
+   \fi
+}
+
+\def\ifUnDefinedCs#1{\expandafter\ifx\csname#1\endcsname\relax}
+
+\DeclareOptionBeamer{logoStandard}{\def\@headlineimage[width=89\mm]{./unirostock/UNI-Logo_Siegel_4c_115mm}}
+\DeclareOptionBeamer{logoHafen}{\def\@headlineimage[height=20\mm]{./unirostock/Logo_hafen_der_Wissenschaft.png}}
+
+% Kopfzeile: UniLogo
+\defbeamertemplate*{headline}{unirostock}
+{ 
+	\vskip  5.4\mm \hskip 1\mm 
+	\begin{tabular}{lll}
+		\headLogoT
+		%\includegraphics[width=89\mm]{./unirostock/UNI-Logo_Siegel_4c_115mm} &
+		%\includegraphics[height=20\mm]{./unirostock/Logo_hafen_der_Wissenschaft.png} &
+			& \secondHeadLogoT &
+			%& \includegraphics[width=20\mm]{dbis_logo.jpg} &
+		\begin{minipage}[b][\heightTop\mm][b]{120\mm} %hg: -50 mit logo +20.5 ohne Logo
+		
+		\begin{beamercolorbox}[left]{palette tertiary}
+			%\vspace{-5.4\mm}
+			\NaviDots
+			%\insertnavigation{0.4\paperwidth}\\
+			%\vspace{1cm}
+			%\usebeamercolor{parent=palette tertiary}\usebeamerfont{frametitle}\parttitle\insertframetitle\par
+			%\vspace{-5.4\mm}
+			\usebeamercolor{parent=palette tertiary}\usebeamerfont{frametitle}\parttitle
+		\end{beamercolorbox}
+		\end{minipage} 
+	\end{tabular}
+	\vskip 7.3\mm %Schritt bis zum bunten Rahmen
+	\vskip 15.0\mm % Rand innerhalb des bunten Rahmens %weg wenn mehr pLatz innen sein soll
+}
+
+% Hintergrund: blauer Rahmen
+\defbeamertemplate*{background}{unirostock}
+{
+ \begin{pgfpicture}
+    \pgfsetlinewidth{0.5\pt}
+    \usebeamercolor{palette primary}
+    \color{fg}
+    \pgfpathmoveto{\pgfpoint{0.0\mm}{0.0\mm}}
+    \pgfpathlineto{\pgfpoint{236\mm}{0.0\mm}}
+    \pgfpatharc{90}{0}{8\mm}
+    \pgfpathlineto{\pgfpoint{244\mm}{-155.5\mm}}
+    \pgfusepath{stroke}
+    \pgfsetbaseline{35.0\mm}
+  \end{pgfpicture}
+}
+
+% Fusszeile
+\defbeamertemplate*{footline}{unirostock}
+{
+  \vspace*{5.17635\mm} % Rand oberhalb der Fusszeile
+  \leavevmode
+  \hbox{% 244\mm zzgl. der Liniendicke (0.5\pt)
+   \begin{beamercolorbox}[wd=244.17635\mm,ht=5\mm,dp=3\mm,sep=2.8\mm,left]{\colorFoot}
+   	%\vspace*{100\mm}
+    \hspace*{26\mm}
+    \usebeamerfont{date in head/foot}\insertshortdate{}
+    \hskip 2ex minus 1ex
+    \ifcase\f@@tmode % Uni-Fusszeile
+         \@copyright
+         \hskip 2ex minus 1ex
+         \usebeamerfont{university in head/foot}\MakeUppercase{\@university}
+      \ifx\@institute\@empty\else
+         \ | \ 
+         \usebeamerfont{institute in head/foot}\MakeUppercase{\@institute}
+      \fi
+    \or % Title-Fusszeile
+      \hskip 2ex minus 1ex
+      \usebeamerfont{title in head/foot}\MakeUppercase{\insertshorttitle}
+      \ | \ 
+      \usebeamerfont{author in head/foot}\MakeUppercase{\insertshortauthor}%
+    \or %Headings-Fusszeile
+      \hskip 2ex minus 1ex
+      \usebeamerfont{section in head/foot}\insertsectionhead
+      \ifx\insertsubsectionhead\@empty\else{\ | \ }\fi
+      \usebeamerfont{subsection in head/foot}\insertsubsectionhead
+    \or %Headings-Fusszeile incl. Author und Uni
+      \hskip 1ex minus 2ex
+      \usebeamerfont{author in head/foot}\MakeUppercase{\insertshortauthor}
+      \usebeamerfont{author in head/foot}{\ (\@university)}
+      \hskip 4ex minus 1ex%
+      \usebeamerfont{section in head/foot}\insertsectionhead
+      \ifx\insertsubsectionhead\@empty\else{\ | \ }\fi%
+      \usebeamerfont{subsection in head/foot}\insertsubsectionhead
+    \fi
+		\NaviSymbols
+    \hskip 0pt plus 1filll % rechtsbuendige Ausrichtung fuer die Foliennummer
+    \PartNumberInFooter\insertframenumber{}\hspace*{2ex} %/ \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}
+  \vskip0pt
+}
+
+\defbeamertemplate{footline}{titlewithoutnumber}
+{
+  \vspace*{5.17635\mm} % Rand oberhalb der Fusszeile
+  \leavevmode
+  \hbox{% 244\mm zzgl. der Liniendicke (0.5\pt)
+   \begin{beamercolorbox}[wd=244.17635\mm,ht=5\mm,dp=3\mm,sep=2.8\mm,left]{author in head/foot}
+    \hspace*{26\mm}
+    \usebeamerfont{date in head/foot}\insertshortdate{}
+    \hskip 2ex minus 1ex
+    \ifcase\f@@tmode % Uni-Fusszeile
+         \@copyright
+         \hskip 2ex minus 1ex
+         \usebeamerfont{university in head/foot}\MakeUppercase{\@university}
+      \ifx\@institute\@empty\else
+         \ | \ 
+         \usebeamerfont{institute in head/foot}\MakeUppercase{\@institute}
+      \fi
+    \or % Title-Fusszeile
+      \hskip 2ex minus 1ex
+      \usebeamerfont{title in head/foot}\MakeUppercase{\insertshorttitle}
+      \ | \ 
+      \usebeamerfont{author in head/foot}\MakeUppercase{\insertshortauthor}%
+    \or %Headings-Fusszeile
+      \hskip 2ex minus 1ex
+      \usebeamerfont{section in head/foot}\insertsectionhead
+      \ifx\insertsubsectionhead\@empty\else{\ | \ }\fi
+      \usebeamerfont{subsection in head/foot}\insertsubsectionhead
+    \or %Headings-Fusszeile incl. Author und Uni
+      \hskip 1ex minus 2ex
+      \usebeamerfont{author in head/foot}\MakeUppercase{\insertshortauthor}
+      \usebeamerfont{author in head/foot}{\ (\@university)}
+      \hskip 4ex minus 1ex%
+      \usebeamerfont{section in head/foot}\insertsectionhead
+      \ifx\insertsubsectionhead\@empty\else{\ | \ }\fi%
+      \usebeamerfont{subsection in head/foot}\insertsubsectionhead
+    \fi
+    \hskip 0pt plus 1filll % rechtsbuendige Ausrichtung fuer die Foliennummer
+    %\insertpartnumber\,--\,\insertframenumber{}\hspace*{2ex} %/ \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}
+  \vskip0pt
+}
+
+\mode<all>

@@ -1,0 +1,53 @@
+\documentclass{beamer}
+\providecommand\insertframetitle{}
+
+\usepackage{ngerman}
+\usepackage{environ}
+\usepackage{graphicx}
+\usepackage[tikz]{bclogo}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{multimedia}
+\usepackage{hyperref}
+\usetikzlibrary{calc}
+\usepackage[utf8]{inputenc}
+\usepackage[overlay,absolute]{textpos}
+\usepackage{xpatch}
+\beamertemplatenavigationsymbolsempty
+\makeatletter
+\xpatchcmd{\beamer@part}{\Hy@writebookmark{\the\c@section}{#1}{Outline\the\c@part}{1}{toc}}{}{}{}
+\newcommand{\srcsize}{\@setfontsize{\srcsize}{5pt}{5pt}}
+\usepackage[uni, footuni, headframelogo]{./unirostock/beamerthemeRostock}
+\footinstitute{Institute of Computer Science}
+%\footinstitute{Institut für Informatik}
+
+\input{../../tex/shortcuts.tex}
+\input{metadata.tex}
+
+\title[\thetitle]{\themaintitle}
+\subtitle{\thesubtitle}
+\author{\theauthor}
+\date{\thedate}
+
+\makeatletter
+\makeatother
+\headLogoTop{standard} % Main-Logo (``hafen'' or ``standard'')
+\secondHeadLogoTop{20}{./res/iuk-logo-farbe.pdf} % Optional: Image for a second logo in the header
+%\showNaviSymbols % show Navi-symbols in the footer
+%\showNaviDots %show Navi-Dots in the header
+\withParts %toogle Pagenumbering with parts on
+%\printmode{handout} % Remove decoration
+\begin{document}
+{
+	\setbeamertemplate{footline}[titlewithoutnumber] %hg%no numbers on first page
+	\maketitle
+	\note{Hello, my name is Martin Peters.}
+}
+
+\tableofcontents
+
+\input{intro.tex}
+\input{outro.tex}
+
+
+\end{document}

@@ -1,0 +1,14 @@
+\newcommand{\centerImageWithoutCaption}[2]{\hspace*{-18.5\mm}\centering\includegraphics[width=#1]{#2}}
+
+\newcommand{\centerImage}[4]{
+	\begin{center}
+		\hspace*{-18.5\mm}
+		\begin{minipage}{#1}
+			\begin{figure}
+				\includegraphics[width=#1]{#2}
+				\caption{#3}
+				\label{#4}
+			\end{figure}
+		\end{minipage}
+	\end{center}
+	}
