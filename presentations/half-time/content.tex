@@ -1,0 +1,302 @@
+% !TeX spellcheck = en_GB
+
+% ------------------------------------------------------------------------------
+\section{Motivation}
+\begin{frame}[c]
+	\frametitle{Motivation}
+	\begin{itemize}
+		\item Ever increasing inter-linkage of Building-, Automotive-, and Industrial-Networks
+		\item concerns are internal (accidental) threats \parencite{Gregory-Brown2017}
+			\begin{itemize}
+				\item many devices insecure by design
+				\item wide spread legacy technology
+				\item connectivity amplifies threat
+			\end{itemize}
+		\item \textit{\enquote{[...] threat from nearly every vector identified by ICS security practitioners
+			can be reduced by detailed monitoring of ICS network traffic [...]}} \parencite{Gregory-Brown2017}
+	\end{itemize}
+	
+	\note{}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Motivation}
+	%\centering
+	\textit{\enquote{4 out of 10 ICS security practitioners lack visibility or sufficient supporting intelligence into their ICS networks}}
+	
+	\hspace{60mm} --- \textcite{Gregory-Brown2017}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Motivation}
+	\begin{itemize}
+		\item Situation worse for Building Automation Systems
+		\item Leverage existing installations and infrastructure
+		\item Provide cheap reliable method to increase security in Building Automation Systems
+	\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\part{Background}
+\label{part:back}
+
+\section{Building Automation Systems}
+\begin{frame}[c]
+	\centering
+	\LARGE Building Automation Systems
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Building Automation Systems}
+	\begin{itemize}
+		\item Installed in an increasing amount of modern buildings
+		\item Serve ever changing requirements for HVAC, energy saving, and monitoring
+		\item \textit{\enquote{[...] optimize energy consumption and enable support and maintenance personnel to carry out their jobs more efficiently}} \parencite{Merz2009}
+	\end{itemize}
+	
+	\note{}
+\end{frame}
+
+\subsection{KNX}
+\begin{frame}[c]
+	\frametitle{KNX}
+	\begin{itemize}
+		\item Former European Installation Bus (EIB)
+		\item Widely used in Germany and the wider European Market
+		\item Typically galvanically isolated 2-wire installation next to the mains power line
+	\end{itemize}
+
+	\note{
+		Also KNX power line, KNX-IP, KNX-Wireless
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{KNX -- Bus Topology}
+	\begin{itemize}
+		\item Addresses separated in 3 Layers\\area, line, device
+		\item Every active device gets assigned a physical address
+		\item Devices may listen to group addresses
+		\item Different segments are connected by Line Couplers
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{KNX -- Bus Topology}
+	
+	\centerImage{155\mm}{./figures/knx-demo-topo.pdf}{KNX Demo Topology}{fig:knx-demo-topo}
+	\nocite{Sokollik2017}
+	
+	\note{
+		Area -> Line -> Device
+		Physical 
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{KNX -- Telegram Types}
+	\begin{itemize}
+		\item Data Telegram
+			\begin{itemize}
+				\item Standard Data Telegram ($\leq 16$ Bytes Payload)
+				\item Extended Data Telegram ($\leq 255$ Bytes Payload)
+			\end{itemize}
+		\item Poll Telegram
+		\item Acknowledge Telegram
+	\end{itemize}
+	
+	\note{
+		
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{KNX -- Communication Modes}
+	\begin{itemize}
+		\item Communication mode determined by TPCI and APCI
+			\begin{itemize}
+				\item point-to-multipoint, connection-less (multicast)
+				\item point-to-domain, connection-less (broadcast)
+				\item point-to-all-points, connection-less (system broadcast)
+				\item point-to-point, connection-less
+				\item point-to-point, connection-oriented
+			\end{itemize}
+			
+	\end{itemize}
+	
+	\note{
+		TPCI -> Transport Layer
+		APCI -> Application Layer
+		multicast am häufigsten
+	}
+\end{frame}
+
+
+% ------------------------------------------------------------------------------
+\part{Concept}
+\label{part:concept}
+
+\begin{frame}[c]
+	\centering
+	\LARGE Concept
+\end{frame}
+
+\begin{frame}[c]
+\frametitle{Conceptual Idea to detect attacks in BAS}
+\begin{itemize}
+	\item \textcolor{lightgray}{Deploy agents in the network}
+	\item Gather data in a collector to obtain world-view
+	\item Compare this data to a base-line model to detect \textit{anomalies}
+	\item aka. \textit{adapt netflow for BAS}
+\end{itemize}
+\end{frame}
+
+\section{Netflow}
+\begin{frame}[c]
+	\frametitle{What is Netflow?}
+	\begin{itemize}
+		\item Passive network monitoring
+		\item Packets are aggregated into flows \parencite{Hofstede2014}
+		\item Flow $\coloneqq$ set of packets passing an observation point during a certain time interval with common properties \parencite{Claise2013}
+		%\item Enables to monitor high throughput networks
+		\item in-band
+	\end{itemize}
+\end{frame}
+
+\section{Research Questions}
+\begin{frame}[c]
+	\frametitle{Research Questions}
+	\begin{enumerate}
+		\item \textit{\enquote{[...] anomaly detection methods seem especially applicable to SCADA system security which are characterized by routine and repetitious activities.}} \parencite{Yang2006}\\
+			Is it also a good fit for BAS? Does it make sense?
+		\item How can anomaly detection identify different attack vectors in BAS:\\
+			{\small new devices, (high) traffic load, network problems, configuration changes}
+		\item In which way does anomaly detection need to account for different seasons?
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}[c]
+\frametitle{Research Questions}
+	\begin{enumerate}
+		\setcounter{enumi}{3}
+		\item Does the additional in-band traffic influences normal operations?
+		\item Does the additional in-band traffic produces new attack surfaces?
+		\item Which anomaly detection/evaluation method îs the best for BAS?
+		\item Which data reduction is feasible and in which part of the system does it makes sense? (in the data collection agent)
+	\end{enumerate}
+\end{frame}
+
+\section{Known Limitations}
+\begin{frame}[c]
+	\frametitle{Known Conceptual Limitations}
+	\begin{itemize}
+		\item No classification of attacks (kind or severity)
+		\item Abnormal behaviour is also an anomaly
+		\item Requires training data
+		\item eavesdropping is not detectable
+		%\item Possibly using a sledgehammer to crack a hazel nut
+	\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\part{Architecture}
+\label{part:architecture}
+
+\section{Architecture}
+\begin{frame}[c]
+	\centering
+	\LARGE Architecture
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Architecture}
+	
+	\centerImageWithoutCaption{200\mm}{./figures/architecture.pdf}
+	
+	\note{
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Architecture}
+	
+	\centerImageWithoutCaption{200\mm}{./figures/unknown-addr.png}
+	
+	\note{
+	}
+\end{frame}
+
+\subsection{Algorithms}
+\begin{frame}[c]
+	\centering
+	\LARGE Algorithms
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Algorithms -- Unknown Address Detection}
+	
+	\begin{itemize}
+		\item Generate set of occurring source and destination addresses per agent over training period
+		\item Compare addresses of captured packages with this set
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Algorithms -- Local Outlier Factor}
+	
+	\begin{itemize}
+		\item Measures the local deviation of density of a given sample compared to its neighbours \parencite{Pedregosa2011}
+		\item How isolated is the object in regards of its surrounding? \\ (k-nearest neighbours)
+		\item Samples with lower density than their neighbours are consider outliers
+		\item Can be trained with unclean data
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Algorithms -- Entropy}
+	
+	\begin{itemize}
+		\item Determine statistical distribution of feature vector dimension in training phase
+		\item Calculate Entropy/Information Gain compared to this base distribution
+	\end{itemize}
+\end{frame}
+
+\subsection{Feature Vector}
+\begin{frame}[c]
+	\frametitle{Feature Vector}
+	
+	\begin{itemize}
+		\item Analysed Variance and Standard Derivation
+		\item source, destination, priority, hop\_count, APCI, payload\_length
+	\end{itemize}
+	\centerImage{100\mm}{./figures/variance-feature-vector.png}{Variance of KNX telegram fields}{fig:variance}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Feature Vector Encoding}
+	
+	\begin{itemize}
+		\item Encode addresses as bit vector, normalize against probability of appearance in window
+		\item Encode priority, hop\_count, payload\_length as single dimension each, normalized against absolute max
+		\item Encode APCI via OneHot, but with probability of appearance in window
+	\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\part{Outlook}
+\label{part:outlook}
+
+\section{Outlook}
+\begin{frame}[c]
+	\centering
+	\LARGE Outlook
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Outlook -- What's left to do}
+	\begin{itemize}
+		\item Finish and test implementation of LOF and Entropy analyser
+		\item Tune machine learning parameter
+		\item Write up
+	\end{itemize}
+\end{frame}

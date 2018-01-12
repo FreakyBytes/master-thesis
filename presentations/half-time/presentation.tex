@@ -1,7 +1,7 @@
 \documentclass{beamer}
 \providecommand\insertframetitle{}
 
-\usepackage{ngerman}
+\usepackage[english]{babel}
 \usepackage{environ}
 \usepackage{graphicx}
 \usepackage[tikz]{bclogo}
@@ -13,6 +13,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[overlay,absolute]{textpos}
 \usepackage{xpatch}
+\usepackage{csquotes}
+\usepackage{comment}
+\usepackage{mathtools}
+
 \beamertemplatenavigationsymbolsempty
 \makeatletter
 \xpatchcmd{\beamer@part}{\Hy@writebookmark{\the\c@section}{#1}{Outline\the\c@part}{1}{toc}}{}{}{}
@@ -29,6 +33,15 @@
 \author{\theauthor}
 \date{\thedate}
 
+\usepackage[backend=bibtex, style=numeric,
+	citestyle=numeric,
+	sortcites=true, block=none,	indexing=true,
+	citereset=none, isbn=false,
+	url=true, doi=true, natbib=false,
+	hyperref=true]{biblatex}					% even better citation support
+\addbibresource{bas-sec.bib}
+\addbibresource{standards.bib}
+
 \makeatletter
 \makeatother
 \headLogoTop{standard} % Main-Logo (``hafen'' or ``standard'')
@@ -44,9 +57,10 @@
 	\note{Hello, my name is Martin Peters.}
 }
 
-\tableofcontents
+%\tableofcontents
 
 \input{intro.tex}
+\input{content.tex}
 \input{outro.tex}
 
 
