@@ -1,4 +1,4 @@
-% !TeX spellcheck = en_US
+% !TeX spellcheck = en_GB
 
 \section{General Network Monitoring?}
 
@@ -23,8 +23,22 @@
 \end{itemize}
 
 \section{Intrusion Detection Systems (IDS)}
+	\begin{itemize}
+		\item \enquote{A good network intrusion detection system (IDS) can have an enormous positive impact on the overall security of your oragnization} \parencite{Northcutt2005}
+		\item \enquote{By detecting malicious activity, network intrusion detection enables you to identify and react to threats against your environment, as well as threasts that your hosts might be directing at hosts on other networks.} \parencite[p. 201]{Northcutt2005}
+		\item \enquote{Without intrusion detection, you may never know about an attack that doesn't damage your host, but simply extracts information[...]. Without intrusion detection, you will be unaware of these events until it's much too late.} \parencite[p. 202]{Northcutt2005}
+		\item Not only identifies attacks, but also reveals attack attempts and probing \parencite[p. 202]{Northcutt2005}
+		
+	\end{itemize}
+
 	\subsection{Signature Intrusion Detection Systems (SIDS)}
+
+	
 	\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
+		\begin{itemize}
+			\item \enquote{establishing baselines of normal network activity over a period of time, then detecting significant deviations from the baseline.} \parencite[p. 203]{Northcutt2005}
+			\item 
+		\end{itemize}
 	\subsection{State-based Intrusion Detection Systems\hint{??}}
 
 \section{Anomaly, Outlier, and Novelty Detection}
@@ -33,44 +47,55 @@
 	\begin{itemize}
 		\item cf. \textcite{Hodge2004}
 		\item Type 1: "Determine the outliers with no prior knowledge of the data" \parencite{Hodge2004}
-		\subitem "unsupervised clustering" \parencite{Hodge2004}
-		\subitem "assumes that errors or faults are separated from the ‘normal’ data and will thus appear as outliers" \parencite{Hodge2004}
-		\subitem " predominantly retrospective and is analogous to a batch-processing system" \parencite{Hodge2004} - Requires a bunch of data to begin with
-		\subitem " requires that all data be available before processing" \parencite{Hodge2004}
-		\subitem "data is static" \parencite{Hodge2004}
-		\subitem "two sub-techniques" \parencite{Hodge2004}
-		\subitem -> "outlier diagnostic approach highlights the potential outlying points" \parencite{Hodge2004} and "prune the outliers and fit their system model to the remaining data until no more outliers are detected" \parencite{Hodge2004}
-		\subitem -> "accommodation that incorporates the outliers into the distribution model generated and employs a robust classification method" \parencite{Hodge2004} which "can withstand outliers in the data and generally induce a boundary of normality around the majority of the data" \parencite{Hodge2004}
-		\subitem "Non-robust methods are best suited when there are only a few outliers in the data set" \parencite{Hodge2004}
-		\subitem "a robust method must be used if there are a large number of outliers to prevent this distortion" \parencite{Hodge2004}
+			\subitem "unsupervised clustering" \parencite{Hodge2004}
+			\subitem "assumes that errors or faults are separated from the ‘normal’ data and will thus appear as outliers" \parencite{Hodge2004}
+			\subitem " predominantly retrospective and is analogous to a batch-processing system" \parencite{Hodge2004} - Requires a bunch of data to begin with
+			\subitem " requires that all data be available before processing" \parencite{Hodge2004}
+			\subitem "data is static" \parencite{Hodge2004}
+			\subitem "two sub-techniques" \parencite{Hodge2004}
+			\subitem -> "outlier diagnostic approach highlights the potential outlying points" \parencite{Hodge2004} and "prune the outliers and fit their system model to the remaining data until no more outliers are detected" \parencite{Hodge2004}
+			\subitem -> "accommodation that incorporates the outliers into the distribution model generated and employs a robust classification method" \parencite{Hodge2004} which "can withstand outliers in the data and generally induce a boundary of normality around the majority of the data" \parencite{Hodge2004}
+			\subitem "Non-robust methods are best suited when there are only a few outliers in the data set" \parencite{Hodge2004}
+			\subitem "a robust method must be used if there are a large number of outliers to prevent this distortion" \parencite{Hodge2004}
 		\item Type 2: "Model both normality and abnormality." \parencite{Hodge2004}
-		\subitem "supervised classification" \parencite{Hodge2004}
-		\subitem "requires pre-labelled data" \parencite{Hodge2004}
-		\subitem "The entire area outside the normal class represents the outlier class" \parencite{Hodge2004}
-		\subitem "best suited to static data" \parencite{Hodge2004} "classification needs to be rebuilt from first principles if the data distribution shifts" \parencite{Hodge2004}
-		\subitem "can be used for on-line classification" \parencite{Hodge2004} learning while new samples are classified
-		\subitem "require a good spread of both normal and abnormal data" \parencite{Hodge2004}
-		\subitem "classification is limited to a ‘known’ distribution" \parencite{Hodge2004}
-		\subitem "cannot always handle outliers from unexpected regions" \parencite{Hodge2004}
+			\subitem "supervised classification" \parencite{Hodge2004}
+			\subitem "requires pre-labelled data" \parencite{Hodge2004}
+			\subitem "The entire area outside the normal class represents the outlier class" \parencite{Hodge2004}
+			\subitem "best suited to static data" \parencite{Hodge2004} "classification needs to be rebuilt from first principles if the data distribution shifts" \parencite{Hodge2004}
+			\subitem "can be used for on-line classification" \parencite{Hodge2004} learning while new samples are classified
+			\subitem "require a good spread of both normal and abnormal data" \parencite{Hodge2004}
+			\subitem "classification is limited to a ‘known’ distribution" \parencite{Hodge2004}
+			\subitem "cannot always handle outliers from unexpected regions" \parencite{Hodge2004}
 		\item Type 3: "Model only normality [...]" \parencite{Hodge2004}
-		\subitem "novelty detection" \parencite{Hodge2004} " semi-supervised recognition or detection task" \parencite{Hodge2004}
-		\subitem "needs pre-classified data but only learns data marked normal" \parencite{Hodge2004}
-		\subitem "suitable for static or dynamic data" \parencite{Hodge2004}
-		\subitem "can learn the model incrementally as new data arrives" \parencite{Hodge2004}
-		\subitem "aims to define a boundary of normality" \parencite{Hodge2004}
-		\subitem "requires the full gamut of normality to be available for training to permit generalisation" \parencite{Hodge2004} but "requires no abnormal data" \parencite{Hodge2004}
-		\subitem this is good, because "Abnormal data is often difficult to obtain or expensive in many fault detection domains [...]" \parencite{Hodge2004}
-		\subitem "as long as the new fraud lies outside the boundary of normality then the system will be correctly detect the fraud" \parencite{Hodge2004}
+			\subitem "novelty detection" \parencite{Hodge2004} " semi-supervised recognition or detection task" \parencite{Hodge2004}
+			\subitem "needs pre-classified data but only learns data marked normal" \parencite{Hodge2004}
+			\subitem "suitable for static or dynamic data" \parencite{Hodge2004}
+			\subitem "can learn the model incrementally as new data arrives" \parencite{Hodge2004}
+			\subitem "aims to define a boundary of normality" \parencite{Hodge2004}
+			\subitem "requires the full gamut of normality to be available for training to permit generalisation" \parencite{Hodge2004} but "requires no abnormal data" \parencite{Hodge2004}
+			\subitem this is good, because "Abnormal data is often difficult to obtain or expensive in many fault detection domains [...]" \parencite{Hodge2004}
+			\subitem "as long as the new fraud lies outside the boundary of normality then the system will be correctly detect the fraud" \parencite{Hodge2004}
 		
 	\end{itemize}
 	
 	\subsection{Local Outlier Factor}
 	\begin{itemize}
-		\item seems to be a good fit
+		\item seems to be a good fit cf. \textcite{Lazarevic2003}
 		\item works on unclean training data
 		\item good selection of vectors and distance functions is required
 		\item 11\% of the first 500 telegrams in \verb|eiblog.txt| are considered outliers
 		\item density based
+		\item base paper \textcite{Breunig2000}
+			\begin{itemize}
+				\item determines for each sample in the data-set its degree of \enquote{outlier-ness} \parencite{Breunig2000}
+				\item definition outlier: \enquote{An outlier is an observation that deviates so much from other
+					observations as to arouse suspicion that it was generated by a
+					different mechanism.} \parencite{Hawkins1980}
+				\item local approach
+					\subitem \enquote{most existing work in outlier detection lies in the field of statistics} \parencite{Breunig2000}
+					\subitem counteracts different density of clusters
+					\subitem outlier = point is further away from its nearest points than the other points are away from each other
+			\end{itemize}
 	\end{itemize}
 	
 	\subsection{On Class SVM}
@@ -105,8 +130,8 @@
 	\end{itemize}
 
 	\subsection{Entropy based}
-	\subsection{Bayesian}
-	\subsection{Pattern Matching}
+	%\subsection{Bayesian}
+	%\subsection{Pattern Matching}
 	\subsection{Autoassociative Kernel Regression (AAKR)}
 		used by \textcite{Yang2006}
 
