@@ -2,24 +2,6 @@
 
 \section{General Network Monitoring?}
 
-\section{Netflow}
-\begin{itemize}
-	\item active
-		\begin{itemize}
-			\item inject additional traffic to measure things \parencite{Hofstede2014}
-			\item e.g. ping, traceroute
-		\end{itemize}
-	\item passive
-		\begin{itemize}
-			\item "observe existing traffic as it passes by" \parencite{Hofstede2014}
-			\item e.g. packet capture "This method generally provides most insight into the network traffic, as complete packets can be captured and further analyzed. However, in high-speed networks with line rates of up to 100 Gbps, packet capture requires expensive hardware and substantial infrastructure for storage and analysis." \parencite{Hofstede2014}
-			\item "Another passive network monitoring approach that is more scalable for use in high-speed networks is flow export, in which packets are aggregated into flows and exported for storage and analysis." \parencite{Hofstede2014}
-			\item  "a set of IP packets passing an observation point in the network during a certain time interval, such that all packets belonging to a particular flow have a set of common properties." \parencite{Claise2013}
-			
-		\end{itemize}
-	\item 
-\end{itemize}
-
 \section{Intrusion Detection Systems (IDS)}
 	\begin{itemize}
 		\item \enquote{A good network intrusion detection system (IDS) can have an enormous positive impact on the overall security of your oragnization} \parencite{Northcutt2005}
@@ -58,6 +40,22 @@
 	
 	\subsection{State-based Intrusion Detection Systems\hint{??}}
 	
+\section{Netflow}
+	\begin{itemize}
+		\item active
+			\begin{itemize}
+				\item inject additional traffic to measure things \parencite{Hofstede2014}
+				\item e.g. ping, traceroute
+			\end{itemize}
+		\item passive
+			\begin{itemize}
+				\item "observe existing traffic as it passes by" \parencite{Hofstede2014}
+				\item e.g. packet capture "This method generally provides most insight into the network traffic, as complete packets can be captured and further analyzed. However, in high-speed networks with line rates of up to 100 Gbps, packet capture requires expensive hardware and substantial infrastructure for storage and analysis." \parencite{Hofstede2014}
+				\item "Another passive network monitoring approach that is more scalable for use in high-speed networks is flow export, in which packets are aggregated into flows and exported for storage and analysis." \parencite{Hofstede2014}
+				\item  "a set of IP packets passing an observation point in the network during a certain time interval, such that all packets belonging to a particular flow have a set of common properties." \parencite{Claise2013}
+				
+			\end{itemize}
+	\end{itemize}
 
 \section{Anomaly, Outlier, and Novelty Detection}
 
@@ -95,9 +93,24 @@
 			\subitem "as long as the new fraud lies outside the boundary of normality then the system will be correctly detect the fraud" \parencite{Hodge2004}
 		
 	\end{itemize}
+
+	\subsection{Statistical techniques}
+	\begin{itemize}
+		\item "Some [...] are applicable only for single dimensional data sets" \parencite{Hodge2004}
+		\item "requires no user parameters as all parameters are derived directly from data" \parencite{Hodge2004}
+		\item e.g. "Grubbs’ method (extreme studentized deviate) (Grubbs, 1969) which calculates a Z value as the difference between the mean value for the attribute and the query value divided by the standard deviation for the attribute where the mean and standard deviation are calculated from all attribute values including the query value. The Z value for the query is compared with a 1\% or 5\% significance level" \parencite{Hodge2004} also cf. \textcite{Grubbs1969}
+	\end{itemize}
+	
+	\subsection{Proximity-based techniques}
+	\begin{itemize}
+		\item "no prior assumptions about the data distribution" \parencite{Hodge2004}
+		\item "not feasible for high dimensionality data sets" \parencite{Hodge2004}
+		
+	\end{itemize}
 	
 	\subsection{Local Outlier Factor}
 	\begin{itemize}
+		\item Proximity-based technique
 		\item seems to be a good fit cf. \textcite{Lazarevic2003}
 		\item works on unclean training data
 		\item good selection of vectors and distance functions is required
@@ -133,19 +146,7 @@
 		\item does not seem to be a good match, since it required to know the distribution of the vector fields
 	\end{itemize}
 
-	\subsection{Statistical techniques}
-	\begin{itemize}
-		\item "Some [...] are applicable only for single dimensional data sets" \parencite{Hodge2004}
-		\item "requires no user parameters as all parameters are derived directly from data" \parencite{Hodge2004}
-		\item e.g. "Grubbs’ method (extreme studentized deviate) (Grubbs, 1969) which calculates a Z value as the difference between the mean value for the attribute and the query value divided by the standard deviation for the attribute where the mean and standard deviation are calculated from all attribute values including the query value. The Z value for the query is compared with a 1\% or 5\% significance level" \parencite{Hodge2004} also cf. \textcite{Grubbs1969}
-	\end{itemize}
-
-	\subsection{Proximity-based techniques}
-	\begin{itemize}
-		\item "no prior assumptions about the data distribution" \parencite{Hodge2004}
-		\item "not feasible for high dimensionality data sets" \parencite{Hodge2004}
-		
-	\end{itemize}
+	
 
 	\subsection{Entropy based}
 	%\subsection{Bayesian}
@@ -193,6 +194,8 @@
 		\subitem non reversible
 		\subitem possibility of hash collision
 		\subitem esp. when dimension count is low
+		\subitem \enquote{\emph{hashing-trick:} one hashes high dimensional input vectors $x$ into a \emph{lower} dimensional feature space $\mathbb{R}^m$ with $\phi: X \rightarrow \mathbb{R}^m$} \parencite{Weinberger2009,Shi2009,Langford2007}
+		\subitem \enquote{Different from random projections, the hashing-trick preserves sparsity and introduces no additional overhead to store projection matrices} \parencite{Weinberger2009}
 	\item "normalize all [...] attributes to the number of standard deviations away from the mean." \parencite{Eskin2002}
 		\subitem "scale based on the likelihood of the attribute values" \parencite{Eskin2002}
 		
