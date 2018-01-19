@@ -129,10 +129,22 @@
 			\end{itemize}
 	\end{itemize}
 	
-	\subsection{On Class SVM}
+	\subsection{Support Vector Machines}
 	\begin{itemize}
-		\item aka. novelty detection
-		\item all training data is considered good
+		\item \enquote{The task of classification is to find a rule, which, based on external observations, assigns an object to one of several classes} \parencite{Muller2001}
+		\item separate vector space by decision surfaces, setting boundaries between categories \parencite{Muller2001}
+		\item 
+		
+		
+		\item One Class SVM
+			\begin{itemize}
+				\item aka. novelty detection
+				\item all training data is considered good
+				\item decision surface is fitted as close as possible to the training data
+				\item new data outside this area, surrounded by decision surfaces, is considered an outlier
+				\item \enquote{[...] does not require training data to be labelled to determine a decision surface.} \parencite{Lazarevic2003} (seems to be not exactly One-Class SVM)
+				\item 
+			\end{itemize}
 	\end{itemize}
 	
 	\subsection{Isolation Forest}
