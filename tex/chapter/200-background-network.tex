@@ -2,8 +2,6 @@
 
 \section{General Network Monitoring?}
 
-\section{Anomaly Detection?}
-
 \section{Netflow}
 \begin{itemize}
 	\item active
@@ -28,18 +26,38 @@
 		\item \enquote{By detecting malicious activity, network intrusion detection enables you to identify and react to threats against your environment, as well as threasts that your hosts might be directing at hosts on other networks.} \parencite[p. 201]{Northcutt2005}
 		\item \enquote{Without intrusion detection, you may never know about an attack that doesn't damage your host, but simply extracts information[...]. Without intrusion detection, you will be unaware of these events until it's much too late.} \parencite[p. 202]{Northcutt2005}
 		\item Not only identifies attacks, but also reveals attack attempts and probing \parencite[p. 202]{Northcutt2005}
-		
+		\item 
 	\end{itemize}
 
 	\subsection{Signature Intrusion Detection Systems (SIDS)}
-
+		\begin{itemize}
+			\item \enquote{[...] IDS signature is a pattern you are looking for in traffic.} \parencite{Northcutt2005}
+			\item \enquote{When a signature for an attack matches observed traffic, an alert is generated, or the event is otherwise recorded.} \parencite{Northcutt2005}
+			\item \enquote{Many signatures are protocol or application specific;} \parencite{Northcutt2005}
+			\item requires to update a curated set of signatures regularly \parencite{Northcutt2005}
+			\item \enquote{Signature development is always a balancing act. A specific signature might be extremely accurate in identifying a particular attack [...] [but] If an attacker slightly modifies the attack, the signature might not be able to identify it at all.} \parencite{Northcutt2005}
+				\subitem precision/recall balance
+			\item \enquote{Every intrusion detection system generates false positives.} \parencite[p.~205]{Northcutt2005}
+			\item \enquote{By selecting a solid IDS product and tuning your sensors, you can reduce false positives, but you can't completely eliminate them.} \parencite[p.~205]{Northcutt2005}
+			\item \enquote{[...], but each false negative is a legitimate attack or incident that IDS failed to notice.} \parencite[p.~206]{Northcutt2005}
+			\item \enquote{Besides false positives, you might also have alerts that address legitimate problems that you simply don't care about.} (Unwanted Alerts) \parencite[p.~206]{Northcutt2005}
+			\item 
+		\end{itemize} 
 	
 	\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
 		\begin{itemize}
 			\item \enquote{establishing baselines of normal network activity over a period of time, then detecting significant deviations from the baseline.} \parencite[p. 203]{Northcutt2005}
-			\item 
+			\item \enquote{[...] later, if the IDS sensor sees a high volume of traffic involving a previously unused service on a host, this could indicate a distributed denial of service (DDoS) attack against the host or a compromised host providing a new service.} \parencite{Northcutt2005}
+			\item \enquote{[...] drawback of this type of anomaly detection is that the baseline needs to be updated constantly to reflect authorized changes[...]} \parencite{Northcutt2005}
+			\item \enquote{If the baseline can be kept current, or if the environment is quite static and the baseline changes rarely, anomaly detection can be extremely effective at identifying certain types of attacks [...]} \parencite{Northcutt2005}
+			\item \textbf{\enquote{Unfortunately, this type of anomaly detection cannot identify most other types of attacks, so it is best used to complement other IDS technologies.}} \parencite{Northcutt2005}
+			\item \enquote{[...] can [...] identifying certain previously unknown instances of attacks [...]} \parencite{Northcutt2005}
+			\item \enquote{cannot determine the intent of an attack} \parencite{Northcutt2005}
+			
 		\end{itemize}
+	
 	\subsection{State-based Intrusion Detection Systems\hint{??}}
+	
 
 \section{Anomaly, Outlier, and Novelty Detection}
 
