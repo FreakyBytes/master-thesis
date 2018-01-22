@@ -1,14 +1,21 @@
 % !TeX spellcheck = en_GB
 
-\begin{itemize}
-	\item 
-\end{itemize}
-
-\section{Design of Netflow Agent}
-	cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Infrastructure
-	\subsection{Truncating and Statistic Gathering}
-
 \section{Monitor Pipeline}
+
+\begin{itemize}
+	\item goal == monitor KNX traffic
+	\item monitoring should include the whole network/world view
+	\item monitoring needs to be distributed, so Line Couplers can be configured properly
+	\item monitoring is done by agents
+	\item agents will send data gather over a time window to the collector (ref to neflow terminology)
+	\item time windows of agents are synchronised (by the collector) to make data analysis more reliable
+	\item collector stores windows immediately in InfluxDB
+	\item collector checks regularly the InfluxDB, if all agents send in their time window
+	\item if so the collector relays all windows, describing the same time slot (+/- a couple seconds), to the analyser modules
+	\item if not all windows are in by specified timeout (10s or so) they are relayed anyway
+	\item bundled windows are distributed by pub-sub-server independently to different analytical modules
+	\item analytical modules compare the windows to a base-line model (in different fashions)
+\end{itemize}
 
 \begin{figure}[h]
 	\centering
@@ -17,7 +24,19 @@
 	\label{fig:concept:architecture}
 \end{figure}
 
-\section{Possible Errors}
+\section{Design of Netflow Agent}
+cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Infrastructure
+\subsection{Truncating and Statistic Gathering}
+
+\section{The Collector Module}
+
+\section{The Address Analyser}
+
+\section{The Local Outlier Factor Analyser}
+
+\section{The Entropy Analyser}
+
+\section{Possible Errors and Design Drawbacks}
 \begin{itemize}
 	\item Errors in handling daylight saving time and time zones, due to missing time zone information in log
 		\subitem simulated agent might be a bit off
