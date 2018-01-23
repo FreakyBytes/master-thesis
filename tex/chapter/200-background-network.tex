@@ -3,6 +3,8 @@
 \section{General Network Monitoring?}
 
 \section{Intrusion Detection Systems (IDS)}
+\label{sec:background:network:ids}
+
 	\begin{itemize}
 		\item \enquote{A good network intrusion detection system (IDS) can have an enormous positive impact on the overall security of your oragnization} \parencite{Northcutt2005}
 		\item \enquote{By detecting malicious activity, network intrusion detection enables you to identify and react to threats against your environment, as well as threasts that your hosts might be directing at hosts on other networks.} \parencite[p. 201]{Northcutt2005}
@@ -12,6 +14,8 @@
 	\end{itemize}
 
 	\subsection{Signature Intrusion Detection Systems (SIDS)}
+	\label{sec:background:network:ids:sig}
+	
 		\begin{itemize}
 			\item \enquote{[...] IDS signature is a pattern you are looking for in traffic.} \parencite{Northcutt2005}
 			\item \enquote{When a signature for an attack matches observed traffic, an alert is generated, or the event is otherwise recorded.} \parencite{Northcutt2005}
@@ -27,6 +31,8 @@
 		\end{itemize} 
 	
 	\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
+	\label{sec:background:network:ids:anomaly}
+	
 		\begin{itemize}
 			\item \enquote{establishing baselines of normal network activity over a period of time, then detecting significant deviations from the baseline.} \parencite[p. 203]{Northcutt2005}
 			\item \enquote{[...] later, if the IDS sensor sees a high volume of traffic involving a previously unused service on a host, this could indicate a distributed denial of service (DDoS) attack against the host or a compromised host providing a new service.} \parencite{Northcutt2005}
@@ -41,6 +47,8 @@
 	\subsection{State-based Intrusion Detection Systems\hint{??}}
 	
 \section{Netflow}
+\label{sec:background:network:netflow}
+
 	\begin{itemize}
 		\item active
 			\begin{itemize}
@@ -58,8 +66,11 @@
 	\end{itemize}
 
 \section{Anomaly, Outlier, and Novelty Detection}
+\label{sec:background:network:novelty}
 
 	\subsection{Classification of Anomaly, Outlier, and Novelty Detection Approaches}
+	\label{sec:background:network:novelty:class}
+	
 	\begin{itemize}
 		\item cf. \textcite{Hodge2004}
 		\item Type 1: "Determine the outliers with no prior knowledge of the data" \parencite{Hodge2004}
@@ -95,6 +106,8 @@
 	\end{itemize}
 
 	\subsection{Statistical techniques}
+	\label{sec:background:network:novelty:stat}
+	
 	\begin{itemize}
 		\item "Some [...] are applicable only for single dimensional data sets" \parencite{Hodge2004}
 		\item "requires no user parameters as all parameters are derived directly from data" \parencite{Hodge2004}
@@ -102,6 +115,8 @@
 	\end{itemize}
 	
 	\subsection{Proximity-based techniques}
+	\label{sec:background:network:novelty:prox}
+	
 	\begin{itemize}
 		\item "no prior assumptions about the data distribution" \parencite{Hodge2004}
 		\item "not feasible for high dimensionality data sets" \parencite{Hodge2004}
@@ -109,6 +124,8 @@
 	\end{itemize}
 
 	\subsection{K-nearest neighbour}
+	\label{sec:background:network:novelty:knn}
+	
 	\begin{itemize}
 		\item \enquote{determines whether or not a point lies in a sparse region of the feature space by computing the sum of the distances to the k-nearest neighbours of the point} \parencite{Eskin2002}
 		\item \enquote{[...] points in dense regions will have many points near them and will have a small k-NN score} \parencite{Eskin2002}
@@ -117,6 +134,8 @@
 	\end{itemize}
 	
 	\subsection{Local Outlier Factor}
+	\label{sec:background:network:novelty:lof}
+	
 	\begin{itemize}
 		\item Proximity-based technique
 		\item seems to be a good fit cf. \textcite{Lazarevic2003}
@@ -139,6 +158,8 @@
 	\end{itemize}
 	
 	\subsection{Support Vector Machines}
+	\label{sec:background:network:novelty:svm}
+	
 	\begin{itemize}
 		\item \enquote{The task of classification is to find a rule, which, based on external observations, assigns an object to one of several classes} \parencite{Muller2001}
 		\item separate vector space by decision surfaces, setting boundaries between categories \parencite{Muller2001}
@@ -157,6 +178,8 @@
 	\end{itemize}
 	
 	\subsection{Isolation Forest}
+	\label{sec:background:network:novelty:isoforest}
+	
 	\begin{itemize}
 		\item \enquote{explicitly isolates anomalies rather than profiles normal instances} \parencite{Liu2008}
 		\item \enquote{takes advantage of two anomalies’ quantitative properties} \parencite{Liu2008}
@@ -165,6 +188,8 @@
 	\end{itemize}
 	
 	\subsection{Elliptical Envelope}
+	\label{sec:background:network:novelty:envelope}
+	
 	\begin{itemize}
 		\item tries to fit data to estimated \emph{shape}
 		\item does not seem to be a good match, since it required to know the distribution of the vector fields
@@ -181,6 +206,8 @@
 \section{Time-based Anomaly Detection}
 
 \section{Prior Work and Existing Solutions}
+\label{sec:background:network:priorwork}
+
 \hint{as own chapter?}
 \begin{itemize}
 	\item \parencite{Yang2006}
@@ -204,6 +231,8 @@
 \end{itemize}
 
 \section{Methods of Feature Encoding}
+\label{sec:background:network:features}
+
 \begin{itemize}
 	\item use feature direct as vector-dimension (not so good)
 	\item OneHot encoding
