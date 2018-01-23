@@ -30,6 +30,7 @@
 \section{Design of Netflow Agent}
 \label{sec:concept:agent}
 cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Infrastructure
+\alert{Describe how a (anal) window looks like: which information are contained, in which form etc.}
 \subsection{Truncating and Statistic Gathering}
 
 \section{The Collector Module}
@@ -87,7 +88,16 @@ cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Inf
 
 \begin{itemize}
 	\item cf.~Section~\ref{sec:background:network:novelty:lof}
-	\item 
+	\item proximity based technique (cf.~Section~\ref{sec:background:network:novelty:prox})
+	\item tries to determine if a window represents normal behaviour
+	\item both for local and world view
+	\item builds feature vector out of
+		\subitem source addresses
+		\subitem destination addresses
+		\subitem priority distribution
+		\subitem hop count distribution
+		\subitem payload length distribution
+		\subitem \gls{apci} usage distribution
 \end{itemize}
 
 \subsection{The Entropy Analyser}
