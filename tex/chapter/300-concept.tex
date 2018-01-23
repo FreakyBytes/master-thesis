@@ -37,18 +37,18 @@ cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Inf
 
 \begin{itemize}
 	\item responsible for
-		\subitem collecting data from agents through the KNX network
-		\subitem storing raw time windows in InfluxDB
+		\subitem collecting data from agents through the \gls{knx} network
+		\subitem storing raw time windows in \gls{influxdb}
 		\subitem relaying raw, synchronised time windows to analytical modules
 	\item listens to a single message queue containing time windows from all agents assigned to the same project
 	\item agents must have unique names within one project
-	\item windows are parsed and then submitted into the InfluxDB, tagged with the agent-name and the project
-	\item window is split into different measurements (tables) determined by the KNX fields observed.
+	\item windows are parsed and then submitted into the \gls{influxdb}, tagged with the agent-name and the project
+	\item window is split into different measurements (tables) determined by the \gls{knx} fields observed.
 	\item one additional measurement (table) \code{agent-status}, representing general status information
 		\subitem timely length of the window
 		\subitem end timestamp of the window
 		\subitem boolean if window was relayed or not
-	\item collector regularly checks the InfluxDB for unrelayed windows (latest ones first)
+	\item collector regularly checks the \gls{influxdb} for unrelayed windows (latest ones first)
 	\item windows are grouped by time slot
 	\item if all agents have submitted a window for a specific timeslot these windows are bundled and relayed to the analyser message exchange (cf.~Figure~\ref{fig:concept:architecture})
 	\item for all successfully relayed windows set the \code{realayed} flag in the \code{agent-status} measurement to \code{true}
@@ -57,11 +57,37 @@ cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Inf
 \section{Analyser Modules}
 \label{sec:concept:anal}
 
+\begin{itemize}
+	\item 2 phases
+	\item distinguished learning phase
+	\item during learning phase the analyser module accesses directly the \gls{influxdb} for a specified time range
+	\item group windows by time equal to the functionality of the collector
+	\item construct \gls{vect} to train base model
+	\item save base model in the filesystem
+	
+	\item during normal (analytical) operation
+	\item accept grouped windows from collector via message exchange
+	\item compares current window groups to base model to detect anomalies
+	\item results of this analysis are stored back into the \gls{influxdb} as a separate \gls{idbmeasurement}
+\end{itemize}
+
 \subsection{The Address Analyser}
 \label{sec:concept:anal:addr}
 
-\subsection{The Local Outlier Factor Analyser}
+\begin{itemize}
+	\item purpose is to detect new (novel) device addresses
+	\item cf. new device attack
+	\item during the learning phase it logs all occurring source and destination addresses per agent
+	\item in the analytical phase it compares all source and destination addresses in a window with addresses (base model) accumulated in the training phase
+	\item output \glspl{idbmeasurement}: \code{unknown\_src\_addr}, \code{unknown\_src\_telegrams}, \code{unknown\_dest\_addr}, \code{unknown\_dest\_telegrams}, \code{unknown\_addr}, \code{unknown\_telegrams}
+\end{itemize}
+
+\subsection{The \Glsdesc{lof} Analyser}
 \label{sec:concept:anal:lof}
+
+\begin{itemize}
+	\item 
+\end{itemize}
 
 \subsection{The Entropy Analyser}
 \label{sec:concept:anal:entropy}

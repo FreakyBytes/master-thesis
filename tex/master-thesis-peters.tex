@@ -46,7 +46,7 @@
 \usepackage{textgreek}				% allows for greek chars
 \usepackage[style=iso]{datetime2}	% date format, that makes sense to everybody
 
-\usepackage[acronym]{glossaries}	% Glossary and Acronym support
+\usepackage[acronym,toc]{glossaries}	% Glossary and Acronym support
 
 \usepackage[backend=bibtex, style=authoryear,
 	citestyle=authoryear, sorting=ynt,
@@ -202,10 +202,10 @@
 	% --------------------------------------------------------------------------
 	% Glossary
 	\newpage
-	%\printglossary[type=\acronymtype]
+	\printglossary[type=\acronymtype]
 	%\newpage
-	%\printglossary[type=main]
-	\printglossaries
+	\printglossary[type=main]
+	%\printglossaries
 	
 	% --------------------------------------------------------------------------
 	% Appendix
