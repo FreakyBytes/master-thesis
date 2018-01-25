@@ -1,1 +1,8 @@
 % !TeX spellcheck = en_GB
+
+\begin{itemize}
+	\item analyser modules only detect relative changes (no absolute packet amount)
+		\subitem therefore no detection of increasing/decreasing of baseline traffic
+		\subitem therefore no detection of generally more or less normal activity -> possible unable to detect failing lines/devices/etc
+		\subitem solved by monitoring absolute amount of packets in \gls{grafana} -> easy solution, no additional impl effort
+\end{itemize}
