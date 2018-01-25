@@ -159,3 +159,18 @@
 \end{itemize}
 
 \section{Monitoring and Alerting}
+\label{sec:concept:mon}
+
+\begin{itemize}
+	\item using \gls{grafana}
+	\item visualise basic time series like amount of packets per agent
+	\item visualise and monitor output from analyser modules
+		\subitem should stay below certain threshold
+	\item use internal alerting function
+	\item benefits
+		\subitem use existing, proven solution
+		\subitem gain features for free (auth, alerting, graphing, etc)
+		\subitem integrate with metrics from other sources
+	\item decoupled from analyse modules
+	\item good integration with \gls{influxdb}
+\end{itemize}
