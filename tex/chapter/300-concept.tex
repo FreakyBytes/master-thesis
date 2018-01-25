@@ -29,8 +29,22 @@
 
 \section{Design of Netflow Agent}
 \label{sec:concept:agent}
+
+\begin{itemize}
+	\item dedicated device
+	\item sits in each or strategic important lines
+	\item listens to bypassing traffic and aggregates it
+	\item \alert{Critical to describe the difference to original netflow concept/idea here and why this decision was made}
+		\subitem netflow is very IP oriented, where protocols include normally connections (TCP) or at least multiple steps/packets
+		\subitem this provides a basis on which aggregation/grouping can be performed
+		\subitem basically no flow (multi step protocols) in \gls{knx} during normal operation (besides configuration phase in \gls{knx})
+		\subitem therefore gather statistical distribution of features on \gls{knx} \gls{telegram} over a given time span (window length)
+		\subitem time span/window length should be configurable by the collector, so it can be adjusted according to network utilisation
+		\subitem window length still needs to be synchronised among all agents to be able to use 
+	\item after 
+\end{itemize}
 cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Infrastructure
-\alert{Describe how a (anal) window looks like: which information are contained, in which form etc.}
+\todo{Describe how a (anal) window looks like: which information are contained, in which form etc.}
 \subsection{Truncating and Statistic Gathering}
 
 \section{The Collector Module}
@@ -133,6 +147,9 @@ cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Inf
 	\item entropy/information gain is calculated for the current distribution of the feature vector compared to the respectively base model
 	\item individual entropies are summed up and stored in the \gls{influxdb} (additional to the individual entropies)
 \end{itemize}
+
+\section{Monitoring and Alerting}
+
 
 \section{Possible Errors and Design Drawbacks}
 \label{sec:concept:flaws}
