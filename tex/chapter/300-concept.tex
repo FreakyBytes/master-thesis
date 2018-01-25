@@ -92,16 +92,47 @@ cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Inf
 	\item tries to determine if a window represents normal behaviour
 	\item both for local and world view
 	\item builds feature vector out of
+		\subitem normalized seconds since the beginning of the year
 		\subitem source addresses
 		\subitem destination addresses
 		\subitem priority distribution
 		\subitem hop count distribution
 		\subitem payload length distribution
 		\subitem \gls{apci} usage distribution
+	\item time sensitivity/seasonal sensitivity is archived by including the relative timepoint in the current year
+	\item training different model for different seasons is not necessary since \gls{lof} is a proximity base approach
 \end{itemize}
 
 \subsection{The Entropy Analyser}
 \label{sec:concept:anal:entropy}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[]{figures/300-time-slots.pdf}
+	\caption{Example of shifted time slots used in the entropy analyser module.}
+	\label{fig:concept:time-slots}
+\end{figure}
+
+\begin{itemize}
+	\item cf.~Section~\ref{sec:background:network:novelty:stat}
+	\item statistical approach
+	\item base model is trained using distribution of the \gls{pmf}
+		\subitem determine statistical distribution per dimension in feature vector
+	\item determine distribution for local (per agent) and world view
+	\item to incorporate different seasons multiple base models are trained 
+	\item the seasonal time range (day, week, year) is separated into slots
+	\item amount of slots is doubled with half a slot length offset, so 2 slots apply per time point cf. Figure~\ref{fig:concept:time-slots}
+	\item mitigates issues with artificial break on slot change
+	\item feature vector
+		\subitem source addresses
+		\subitem destination addresses
+		\subitem priority distribution
+		\subitem hop count distribution
+		\subitem payload length distribution
+		\subitem \gls{apci} usage distribution
+	\item entropy/information gain is calculated for the current distribution of the feature vector compared to the respectively base model
+	\item individual entropies are summed up and stored in the \gls{influxdb} (additional to the individual entropies)
+\end{itemize}
 
 \section{Possible Errors and Design Drawbacks}
 \label{sec:concept:flaws}
