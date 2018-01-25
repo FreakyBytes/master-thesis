@@ -8,7 +8,7 @@ compile_pdf:
     - latex
   script:
     - cd tex
-    - latexmk -pdf -silent -pdflatex="pdflatex -synctex=1  -interaction=nonstopmode %O %S" "master-thesis-peters.tex"
+    - latexmk -silent -pdf -bibtex -pdflatex="pdflatex -synctex=1  -interaction=nonstopmode %O %S" "master-thesis-peters.tex"
   artifacts:
     name: "$CI_COMMIT_REF_NAME"
     expire_in: 1 week
