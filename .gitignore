@@ -32,3 +32,5 @@ tex/master-thesis-peters-blx.bib
 *.snm
 *.vrb
 *.xdy
+*.fdb_latexmk
+*.fls
