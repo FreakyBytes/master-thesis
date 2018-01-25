@@ -8,4 +8,7 @@
 		\subitem therefore no detection of increasing/decreasing of baseline traffic
 		\subitem therefore no detection of generally more or less normal activity -> possible unable to detect failing lines/devices/etc
 		\subitem solved by monitoring absolute amount of packets in \gls{grafana} -> easy solution, no additional impl effort
+	\item in-band telegram from agent to collector contain sensitive information
+		\subitem encrypt and sign stats telegrams
+		
 \end{itemize}

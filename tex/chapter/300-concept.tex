@@ -40,12 +40,22 @@
 		\subitem basically no flow (multi step protocols) in \gls{knx} during normal operation (besides configuration phase in \gls{knx})
 		\subitem therefore gather statistical distribution of features on \gls{knx} \gls{telegram} over a given time span (window length)
 		\subitem time span/window length should be configurable by the collector, so it can be adjusted according to network utilisation
-		\subitem window length still needs to be synchronised among all agents to be able to use 
-	\item after 
+		\subitem window length still needs to be synchronised among all agents to be able to use all aggregated agent windows in a world model
+		\subitem further \gls{knx} can only transport 255 Bytes max in one telegram -> serious size restrictions
+	\item after timeout gathered/aggregated data is send via \gls{knx} \gls{telegram} to the collector
+	\item window consists
+		\subitem meta data (timestamps, window lengths)
+		\subitem absolute counter of how often an specific feature appeared in a window
+			\begin{itemize}
+				\item specific source address
+				\item specific destination address
+				\item apci value
+				\item a specific payload length
+				\item a specific \gls{hops}
+			\end{itemize}
+		\subitem checksum, and possibly signature
+	\item window is encoded in a binary format to fit in the 255 Bytes
 \end{itemize}
-cf. \textcite{Bloedorn2001} for a basic "How to get started" IDS Data Mining Infrastructure
-\todo{Describe how a (anal) window looks like: which information are contained, in which form etc.}
-\subsection{Truncating and Statistic Gathering}
 
 \section{The Collector Module}
 \label{sec:concept:collector}
