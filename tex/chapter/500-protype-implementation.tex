@@ -1,16 +1,39 @@
 % !TeX spellcheck = en_GB
 
 \begin{itemize}
-	\item 
+	\item implementation in \gls{py} 3
+	\item command line interface with subcommand as central entrypoint providing configuration and log management
+	\item each process is run as separate processes to mitigate \gls{gil} limitations
+	\item process has one task (agent simulator, collector, analyser module)
+	\item modules/process pass messages mainly using \gls{amqp} and \gls{rabbitmq} as message broker
 \end{itemize}
 
 \section{Basic Command Line Interface}
+\label{sec:impl:cli}
+
+\begin{itemize}
+	\item central entry point for all operations
+	\item consistent user experience -> less fiddling while debugging/developing
+	\item centralises configuration and log setup
+	\item can be easily made accessible via python setuptools
+		\subitem if globally installed, callable via normal terminal command
+	\item implemented using the \gls{lib-click} library version 6
+\end{itemize}
 
 \section{The Agent Simulator}
+\label{sec:impl:agent}
+
+\begin{itemize}
+	\item simulates multiple agents based of one log containing telegram in raw \gls{baos} format
+	\item utilizes own parser implementation \url{https://github.com/FreakyBytes/BaosKnxParser}
+\end{itemize}
 
 \section{The Collector Module}
+\label{sec:impl:collector}
 
 \section{The Address Analyser Module}
+\label{sec:impl:addr}
 
 \section{The Local Outlier Factor Analyser Module}
+\label{sec:impl:lof}
 
