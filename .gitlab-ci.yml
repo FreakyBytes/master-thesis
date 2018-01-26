@@ -9,6 +9,7 @@ compile_pdf:
   script:
     - cd tex
     - 'latexmk -silent -f -pdf -bibtex -pdflatex="pdflatex -synctex=1 -interaction=nonstopmode %O %S" "master-thesis-peters.tex" || true'
+    - 'makeglossaries "master-thesis-peters"'
     - 'latexmk -silent -f -pdf -bibtex -pdflatex="pdflatex -synctex=1 -interaction=nonstopmode %O %S" "master-thesis-peters.tex"'
     - 'curl -k -T master-thesis-peters.pdf -u "${NC_FILE_DROP}" -H "X-Requested-With: XMLHttpRequest" ${NC_URL}/master-thesis-peters.pdf'
   artifacts:
