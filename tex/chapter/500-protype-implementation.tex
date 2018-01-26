@@ -24,8 +24,20 @@
 \label{sec:impl:agent}
 
 \begin{itemize}
-	\item simulates multiple agents based of one log containing telegram in raw \gls{baos} format
+	\item simulates multiple agents based of one log containing telegram in raw \gls{baos} format. cf. Appendix~\todo{add log sample in appendix}
+	\item log must be in chronological order
 	\item utilizes own parser implementation \url{https://github.com/FreakyBytes/BaosKnxParser}
+	\item different agents can be simulated by applying filter rules to log stream, defining, what each agent "can see"
+	\item is supposed to replace actual agents during development
+		\subitem repeatable data
+		\subitem easy/fast setup
+		\subitem log-time much faster than real-time
+		\subitem load testing possible
+	\item reads in individual pack
+	\item filters according to agent filter rules
+	\item updates agent-specific window data model
+	\item if window length/timeout (cf. Section~\ref{sec:concept:agent}) is exceeded in log-time, windows are submitted to \gls{amqp} message broker
+	\item runs until log is fully red, or maximum packets to parse are exceeded, or defined end timestamp is reached
 \end{itemize}
 
 \section{The Collector Module}
