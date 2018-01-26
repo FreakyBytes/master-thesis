@@ -6,6 +6,7 @@
 	\item each process is run as separate processes to mitigate \gls{gil} limitations
 	\item process has one task (agent simulator, collector, analyser module)
 	\item modules/process pass messages mainly using \gls{amqp} and \gls{rabbitmq} as message broker
+	\item reusing \gls{influxdb} and \gls{rabbitmq} by separating pipelines using a project name
 \end{itemize}
 
 \section{Basic Command Line Interface}
@@ -36,12 +37,20 @@
 	\item reads in individual pack
 	\item filters according to agent filter rules
 	\item updates agent-specific window data model
-	\item if window length/timeout (cf. Section~\ref{sec:concept:agent}) is exceeded in log-time, windows are submitted to \gls{amqp} message broker
+	\item if window length/timeout (cf. Section~\ref{sec:concept:agent}) is exceeded in log-time, windows are submitted to \gls{amqp} message broker (cf. Figure~\ref{fig:concept:architecture})
 	\item runs until log is fully red, or maximum packets to parse are exceeded, or defined end timestamp is reached
 \end{itemize}
 
 \section{The Collector Module}
 \label{sec:impl:collector}
+
+\begin{itemize}
+	\item central hub for relaying information
+	\item receives agent windows via \gls{amqp} message broker (cf. Figure~\ref{fig:concept:architecture})
+	\item subscribed to the agent topic using \gls{lib-pika} version 0.11
+	\item 
+	
+\end{itemize}
 
 \section{The Address Analyser Module}
 \label{sec:impl:addr}
