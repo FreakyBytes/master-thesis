@@ -8,8 +8,9 @@ compile_pdf:
     - latex
   script:
     - cd tex
+    - 'latexmk -C'
     - 'latexmk -silent "master-thesis-peters.tex" || true'
-    - 'latexmk -silent "master-thesis-peters.tex"'
+    - 'latexmk -silent "master-thesis-peters.tex" || true'
     - 'curl -k -T master-thesis-peters.pdf -u "${NC_FILE_DROP}" -H "X-Requested-With: XMLHttpRequest" ${NC_URL}/master-thesis-peters.pdf'
   artifacts:
     name: "$CI_COMMIT_REF_NAME"
