@@ -63,7 +63,14 @@
 \label{sec:impl:addr}
 
 \begin{itemize}
-	\item 
+	\item purpose is to detect the usage of prior unknown addresses
+	\item (might) detect new (not malicious) devices
+	\item stores all occurring source and destination addresses during the training period in a separately in a set
+	\item set is stored to the disk using the standard \gls{py} \gls{json} serialiser
+	\item during normal analytical operation the module checks if occurring addresses already occured in the training phase
+	\item if not so counters are increased
+	\item \todo{and list of unknown addresses is exported}
+	\item exported metrics: \code{unknown\_src\_addr}, \code{unknown\_src\_telegrams}, \code{unknown\_dest\_addr}, \code{unknown\_dest\_telegrams}, \code{unknown\_addr}, \code{unknown\_telegrams}
 \end{itemize}
 
 \section{The Local Outlier Factor Analyser Module}
