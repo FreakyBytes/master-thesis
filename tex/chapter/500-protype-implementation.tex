@@ -59,6 +59,13 @@
 		\subitem allows them to analyse world-view without the need to compensate time-difference
 \end{itemize}
 
+\section{The Analyser Base Module}
+\label{sec:impl:base}
+
+\begin{itemize}
+	\item ...
+\end{itemize}
+
 \section{The Address Analyser Module}
 \label{sec:impl:addr}
 
@@ -75,4 +82,51 @@
 
 \section{The Local Outlier Factor Analyser Module}
 \label{sec:impl:lof}
+
+\begin{itemize}
+	\item purpose is to detect uncommon bus activity
+	\item world view as well as agent based
+	\item uses the \gls{lof} implementation of Scikit-learn \parencite{Pedregosa2011}
+	%\item during training phase, grouped agent windows are extracted from \gls{influxdb} (effectively mimicking the collectors grouping algorithm)
+	
+	% feature vector
+	\item for each window of each agent a \gls{fvect} is constructed from
+		\subitem normalized seconds since the beginning of the year
+		\subitem source addresses
+		\subitem destination addresses
+		\subitem priority distribution
+		\subitem hop count distribution
+		\subitem payload length distribution
+		\subitem \gls{apci} usage distribution
+	\item Both source and destination addresses are encoded as a vector of length 16
+		\subitem each dimension in this vector represents the probability of occurrence of a address bit in the current window
+		\subitem adaption of the hashing trick (cf. Section~\ref{sec:background:network:features:hashing})
+		\subitem to reduce \gls{vect}, instead of using $2 \cdot 2^16 = 2 \cdot 65536 = 131072$ dimensions to model the \gls{pmf} of both address fields
+		\subitem as a result only $2 \cdot 16 = 32$ dimensions to encode the addresses, without loosing information
+	\item priority is encoded using an adoption of the OneHot encoding (cf. Section~\ref{sec:background:network:features:onehot}) to model the \gls{pmf} of the occurrence of priorities in the current window
+		\subitem $4$ dimensions to encode the priorities \gls{pmf} (cf. Table~\ref{tab:background:bas:knx:proto:prio})
+	\item hop count similarly encoded as priority, using an OneHot adaption
+		\subitem $7$ dimension to encode the hop count \gls{pmf} (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}~and~\ref{tab:background:bas:knx:proto:ctrle})
+	\item payload length uses a different adaption of the OneHot encoding (cf. Section~\ref{sec:background:network:features:onehot})
+		\subitem the payload length (max $255$ Bytes) is divided into $10$ buckets to reduce the dimensions of the \gls{fvect}
+		\subitem most analysed traffic has rather short payload
+		\subitem therefore most telegrams will fit in the first or second bucket
+		\subitem still clear distinction if packets with longer payload occur, just granularity gets lost
+	\item \gls{apci} is model similar to priority and hop count using the same adaption of the OneHot encoding
+		\subitem every of the possible \alert{37} \todo{(check if this is still valid, after the modifications of the baos lib)} \gls{apci} values is modelled as unique dimension
+		\subitem overall representing the \gls{pmf} of occurrences per \gls{apci} values in the current window
+		
+	\item using this feature vector 2 models are trained per agent window
+		\subitem one agent specific model
+		\subitem one world model, which is trained using data from all agents (aka. the whole network)
+	\item purpose of the agent model is to be able to detect traffic leakage
+		\subitem i.e. traffic that is normal for one line (e.g. light switches and motion sensors) suddenly occurs in the line responsible for \gls{hvac} control
+		\subitem agent model is highly trained and most probably highly sensitive, but can detect unusual behaviour which is normal for the network but not for the line
+		\subitem world model is more general and not as sensitive, but cannot distinguish between purposes of lines
+	\item analyser module stores 1 for being an outlier or 0 for not being an outlier in the \gls{influxdb} per window
+		\subitem threshold is decided in analyser
+		\subitem easier monitoring, but data get mangled doing this
+		\subitem better might be to store the relative distance (output of \gls{lof}) as well
+	
+\end{itemize}
 
