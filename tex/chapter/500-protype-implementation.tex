@@ -48,12 +48,23 @@
 	\item central hub for relaying information
 	\item receives agent windows via \gls{amqp} message broker (cf. Figure~\ref{fig:concept:architecture})
 	\item subscribed to the agent topic using \gls{lib-pika} version 0.11
-	\item 
-	
+	\item incoming windows from agents are stored immediately in \gls{influxdb}
+	\item every 4 seconds a callback \hint{(other word for callback?)} is called
+	\item callback queries \gls{influxdb} for not relayed windows
+		\subitem ordered latest first
+		\subitem so a cumulating backlog does not affect the ability to show/process near-real-time metrics
+		\subitem old windows will be processed once backlog decreases
+	\item collector groups windows by timeslot
+		\subitem so analysers receive a snapshot of the network
+		\subitem allows them to analyse world-view without the need to compensate time-difference
 \end{itemize}
 
 \section{The Address Analyser Module}
 \label{sec:impl:addr}
+
+\begin{itemize}
+	\item 
+\end{itemize}
 
 \section{The Local Outlier Factor Analyser Module}
 \label{sec:impl:lof}
