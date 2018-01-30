@@ -1,4 +1,4 @@
-% !TeX spellcheck = en_US
+% !TeX spellcheck = en_GB
 
 \section{Introduction into Building Automation}
 \label{sec:background:bas:intro}
@@ -94,6 +94,19 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 			\subitem line couplers galvanically separate main line and sub line, are capable of routing \parencite{Sokollik2017}
 		\item all main lines are connected via backbone couplers to the backbone line \parencite{Merz2009}
 	\end{itemize}
+
+To accommodate for the initially mentioned advanced features in building automation systems, like central control and management, improved energy efficiency, or other comfort functions \gls{knx} introduces an additional wiring installation (cf. Section~\ref{sec:background:bas:knx}) next to the conventional mains power line. Both of these installations are galvanically isolated and \gls{knx} merely use mains power for actuators e.g. lights or blinds, since the \gls{knx} devices are powered via the \gls{knx} bus.
+As a result, 2 separate cable installations are required.
+\todo{write about more about physical installation of knx?}
+
+On top of the physical topology, \gls{knx} is designed to remodel the structure of buildings in \alert{semantically} tree topology. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{figures/100-knx-demo-topo.pdf}
+	\caption[KNX network topology]{Exemplary semantic topology of a \gls{knx} network with line couplers (LC) and normal devices.}
+	\label{fig:background:knx:topo}
+\end{figure}
 	
 	\begin{table}
 		\aboverulesep=0ex
