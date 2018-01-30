@@ -61,6 +61,8 @@ From an academic point of view the easy availability of the standards, provides 
 Additionally the University of Rostock also uses \gls{knx} in some buildings \todo{ref to Thomas}, which provides an promising source of test and demo data.
 	
 \subsection{Bus Topology of KNX Networks}
+\label{sec:background:bas:knx:topo}
+
 	\begin{itemize}
 		\item "Like a conventional electrical installation, a KNX installation needs to have a power line network to provide the loads with electricity. But it also has a communication network – the KNX installation bus" \parencite{Merz2009}
 		\item "Both networks are galvanically isolated" \parencite{Merz2009}
@@ -91,8 +93,6 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 			\subitem line couplers have own physical address (device address 0) \parencite{Sokollik2017}
 			\subitem line couplers galvanically separate main line and sub line, are capable of routing \parencite{Sokollik2017}
 		\item all main lines are connected via backbone couplers to the backbone line \parencite{Merz2009}
-		
-			
 	\end{itemize}
 	
 	\begin{table}
@@ -126,7 +126,9 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 		\label{tab:background:bas:knx:topo:tpsegments}
 	\end{table}
 	
-	\subsection{KNX Protocol}
+\subsection{KNX Protocol}
+\label{sec:background:bas:knx:proto}
+
 		\begin{itemize}
 			\item 3 types of telegrams \parencite{Hubner2009} \parencite{Merz2009}
 				\subitem data - "sent in response to an individual action such as" \parencite{Merz2009} pressing a button (standard and extended \parencite{Hubner2009})
@@ -302,7 +304,9 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 			\label{tab:background:bas:knx:proto:prio}
 		\end{table}
 	
-	\subsection{\knx communication}
+\subsection{\knx communication}
+\label{sec:background:bas:knx:communication}
+
 	\begin{itemize}
 		\item application layer described in \textcite{DIN_EN_50090-4-1}
 		\item communication modes \parencite{DIN_EN_50090-4-1}
