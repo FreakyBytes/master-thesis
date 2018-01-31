@@ -102,8 +102,8 @@ As a result, 2 separate cable installations are required.
 Besides the physical \gls{knx} wiring can be constructed in various forms, like star, tree, or mixed forms, it is strongly advised to ensure that the physical wiring resembles the logical structure of the network. \parencite{Sokollik2017,Merz2009}
 \todo{write about more about physical installation of knx?}
 
-The logical structure builds on top of the physical topology and is intended to remodel the functional structure of buildings in a logical tree topology. This tree topology is divided into 3 levels: areas, lines, and devices. Each device or node is assigned an address, defining area, line, and device number. (cf. Table~\ref{tab:background:bas:knx:topo:addr})
-A device is connected to a line, which can accommodate up to 256 devices, if supported by all devices on the line. Alternatively, up to 64 devices can be in one line segment before line repeater is required. (cf. Table~\ref{tab:background:bas:knx:topo:tpsegments}
+The logical structure builds on top of the physical topology and is intended to remodel the functional structure of buildings in a logical tree topology. This tree topology is divided into 3 levels: areas, lines, and devices. Each device or node is assigned a physical address, defining area, line, and device number. (cf. Table~\ref{tab:background:bas:knx:topo:addr})
+Each device is directly connected to a line, which can accommodate up to 256 devices, if supported by all devices on the line. Alternatively, up to 64 devices can be in one line segment before line repeater is required. (cf. Table~\ref{tab:background:bas:knx:topo:tpsegments}
 Most \gls{knx} devices still follow the TP1-64 specification and due to the high market fragmentation devices are often not mark in regards of supporting either TP1-64 or TP1-256, therefore it is still recommended to only use 64 devices within a line segment. \alert{sentence too long?} Thus, a full logical line is advised to be build using 3 line repeater. \parencite{Sokollik2017,Merz2009}
 
 Usually a line coupler is installed as a line repeater. A line coupler is an active device to connect one logical level of the \gls{knx} network to another one, which can be one line segment to another line segment.
@@ -114,6 +114,9 @@ As an active device line couplers are assigned an address, and is able to filter
 Further couplers provide galvanic isolation, to mitigate damages by high voltages, shorts, etc. As a result multiple power supplies are required, basically one for each line segment.
 An important feature to be aware of, when using line couplers, is that a \gls{knx} telegram can only be routed over 6 hops. This was introduced to prevent high network load in case of cyclic routing, comparable to the time to live in IP based networks. \parencite{Sokollik2017}
 
+Additional to the physical address each devices is assigned, devices may listen to group addresses.
+\todo{describe layers/modes of group addresses?}
+Whereby physical addresses are used to communicate with one specific device, which is common during installation, throughout normal operation mostly group addresses are used. As the name implies multiple devices may listen to such an address, allowing one light switch to turn on or off multiple lights for instance.
 
 \begin{figure}
 	\centering
