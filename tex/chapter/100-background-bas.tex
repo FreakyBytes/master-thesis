@@ -63,7 +63,8 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 \subsection{Bus Topology of KNX Networks}
 \label{sec:background:bas:knx:topo}
 
-	\begin{itemize}
+\begin{comment}
+		\begin{itemize}
 		\item "Like a conventional electrical installation, a KNX installation needs to have a power line network to provide the loads with electricity. But it also has a communication network – the KNX installation bus" \parencite{Merz2009}
 		\item "Both networks are galvanically isolated" \parencite{Merz2009}
 		\item 2 separate cable installations as a result
@@ -94,17 +95,30 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 			\subitem line couplers galvanically separate main line and sub line, are capable of routing \parencite{Sokollik2017}
 		\item all main lines are connected via backbone couplers to the backbone line \parencite{Merz2009}
 	\end{itemize}
+\end{comment}
 
-To accommodate for the initially mentioned advanced features in building automation systems, like central control and management, improved energy efficiency, or other comfort functions \gls{knx} introduces an additional wiring installation (cf. Section~\ref{sec:background:bas:knx}) next to the conventional mains power line. Both of these installations are galvanically isolated and \gls{knx} merely use mains power for actuators e.g. lights or blinds, since the \gls{knx} devices are powered via the \gls{knx} bus.
+To accommodate for the initially mentioned advanced features in building automation systems, like central control and management, improved energy efficiency, or other comfort functions \gls{knx} introduces an additional wiring installation (cf. Section~\ref{sec:background:bas:knx}) next to the conventional mains power line. Both of these installations are galvanically isolated and \gls{knx} merely use mains power for actuators e.g. lights or blinds, since the \gls{knx} devices are powered via the \gls{knx} bus from special \gls{knx} power supply units containing a choke. \hint{Maybe explain this?} Each power supply is able to power up to 32 or 64 devices, depending on the model.
 As a result, 2 separate cable installations are required.
+Besides the physical \gls{knx} wiring can be constructed in various forms, like star, tree, or mixed forms, it is strongly advised to ensure that the physical wiring resembles the logical structure of the network. \parencite{Sokollik2017,Merz2009}
 \todo{write about more about physical installation of knx?}
 
-On top of the physical topology, \gls{knx} is designed to remodel the structure of buildings in \alert{semantically} tree topology. 
+The logical structure builds on top of the physical topology and is intended to remodel the functional structure of buildings in a logical tree topology. This tree topology is divided into 3 levels: areas, lines, and devices. Each device or node is assigned an address, defining area, line, and device number. (cf. Table~\ref{tab:background:bas:knx:topo:addr})
+A device is connected to a line, which can accommodate up to 256 devices, if supported by all devices on the line. Alternatively, up to 64 devices can be in one line segment before line repeater is required. (cf. Table~\ref{tab:background:bas:knx:topo:tpsegments}
+Most \gls{knx} devices still follow the TP1-64 specification and due to the high market fragmentation devices are often not mark in regards of supporting either TP1-64 or TP1-256, therefore it is still recommended to only use 64 devices within a line segment. \alert{sentence too long?} Thus, a full logical line is advised to be build using 3 line repeater. \parencite{Sokollik2017,Merz2009}
+
+Usually a line coupler is installed as a line repeater. A line coupler is an active device to connect one logical level of the \gls{knx} network to another one, which can be one line segment to another line segment.
+However, their original purpose is to separate the different levels of the logical \gls{knx} topology, explicitly to attach a line to the main line of an area or to attach a main line to the backbone. (cf. Figure~\ref{fig:background:knx:topo})
+An area is formed by combining up to 16 lines: 1 main line and 15 sublines. All main lines are then connected to a backbone line, again via line couplers. \parencite{Sokollik2017}
+
+As an active device line couplers are assigned an address, and is able to filter traffic by addresses similar to IP router. %usually with device number 0 in case it connects a line to backbone line.
+Further couplers provide galvanic isolation, to mitigate damages by high voltages, shorts, etc. As a result multiple power supplies are required, basically one for each line segment.
+An important feature to be aware of, when using line couplers, is that a \gls{knx} telegram can only be routed over 6 hops. This was introduced to prevent high network load in case of cyclic routing, comparable to the time to live in IP based networks. \parencite{Sokollik2017}
+
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{figures/100-knx-demo-topo.pdf}
-	\caption[KNX network topology]{Exemplary semantic topology of a \gls{knx} network with line couplers (LC) and normal devices.}
+	\caption[KNX network topology]{Exemplary logical topology of a \gls{knx} network with line couplers (LC) and normal devices. \todo{draw more nodes?} \todo{add LC for coupling to backbone} \todo{mark main line}}
 	\label{fig:background:knx:topo}
 \end{figure}
 	
@@ -135,7 +149,7 @@ On top of the physical topology, \gls{knx} is designed to remodel the structure 
 			 maximum length of a physical line & 1000m & 1000m \\
 			 \bottomrule
 		\end{tabular}
-		\caption[Segment properties for \knx.TP1-64 and \knx.TP1-256]{Segment properties for \knx.TP1-64 and \knx.TP1-256. cf. \textcite{Sokollik2017}}
+		\caption[Segment properties for \knx.TP1-64 and \knx.TP1-256]{Segment properties for \knx.TP1-64 and \knx.TP1-256. cf. \textcite{Sokollik2017} \todo{adjust design of this table}}
 		\label{tab:background:bas:knx:topo:tpsegments}
 	\end{table}
 	
