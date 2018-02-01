@@ -183,28 +183,36 @@ Whereby physical addresses are used to communicate with one specific device, whi
 \end{comment}
 
 Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegrams, Poll Telegrams, and Acknowledge Telegrams. (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard},~\ref{tab:background:bas:knx:proto:ctrle},~\ref{tab:background:bas:knx:proto:knx-poll}, and~\ref{tab:background:bas:knx:proto:ack})
+\todo{write about prio}
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|}
+		\toprule
+		Bit & 1 & 0 \\\midrule
+		Function & \multicolumn{2}{c|}{Priority} \\\bottomrule
+		\toprule
+		System priority & 0 & 0 \\\midrule
+		Alarm priority & 1 & 0 \\\midrule
+		High priority & 0 & 1 \\\midrule
+		Low priority & 1 & 1 \\\bottomrule
+	\end{tabularx}
+	\caption[\knx priority encoding]{\knx priority encoding. cf.~\textcite{Merz2009}}
+	\label{tab:background:bas:knx:proto:prio}
+\end{table}
 
 \subsubsection{Data Telegram}
 
 The data telegram being utilised the most and used for transferring commands, state, and value changes, comes in 2 flavours.
 The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
 Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
-The recipient answers then with an acknowledge telegram.
+The recipient answers then with an acknowledge telegram. \parencite{Merz2009,Sokollik2017}
 
-\subsubsection{Acknowledge Telegram}
-
-The acknowledge telegram can indicate the correct reception (\code{ACK}, positive acknowledge), faulty reception (\code{NACK}, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
-It consists of 1 byte and is sent by the recipient after waiting 13 bit times.
-If the sender receives an positive acknowledge, the telegram was send successfully and no further action is required. However, if it detects an negative acknowledge or busy signal, the telegram is resend up to 3 times.
-Supposed a busy signal occurred, the sender adds a waiting period before attempting to resend the telegram.
-Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to 3 times.
-In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), an negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
-
-\subsubsection{Poll Telegram}
-
-Finally, the least commonly used telegram type is the poll telegram.
-
-	
 \begin{table}
 	\aboverulesep=0ex
 	\belowrulesep=0ex
@@ -229,7 +237,7 @@ Finally, the least commonly used telegram type is the poll telegram.
 	\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to $16$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
 	\label{tab:background:bas:knx:proto:knx-standard}
 \end{table}
-	
+
 \begin{table}
 	\aboverulesep=0ex
 	\belowrulesep=0ex
@@ -257,52 +265,6 @@ Finally, the least commonly used telegram type is the poll telegram.
 	\end{tabularx}
 	\caption[Extended \knx data telegram]{Extended \knx data telegram with $2$ to $255$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
 	\label{tab:background:bas:knx:proto:knx-extended}
-\end{table}
-		
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{16}{c|}{Source Address} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{4}{c|}{ } & \multicolumn{4}{c|}{poll data} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{6} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
-		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
-		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
-	\end{tabularx}
-	\caption[\knx poll telegram]{\knx poll telegram. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, expected length of poll data (poll data), and Parity.}
-	\label{tab:background:bas:knx:proto:knx-poll}
-\end{table}
-
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} \\\midrule
-		Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\bottomrule
-		\toprule
-		ACK  & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
-		NACK & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
-		BUSY & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\\midrule
-		NACK + BUSY & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\\bottomrule
-	\end{tabularx}
-	\caption[\knx acknowledge telegram]{\knx short acknowledge telegram.}
-	\label{tab:background:bas:knx:proto:ack}
 \end{table}
 
 \begin{table}
@@ -343,6 +305,15 @@ Finally, the least commonly used telegram type is the poll telegram.
 	\label{tab:background:bas:knx:proto:ctrle}
 \end{table}
 
+\subsubsection{Acknowledge Telegram}
+
+The acknowledge telegram can indicate the correct reception (\code{ACK}, positive acknowledge), faulty reception (\code{NACK}, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
+It consists of 1 byte and is sent by the recipient after waiting 13 bit times.
+If the sender receives an positive acknowledge, the telegram was send successfully and no further action is required. However, if it detects an negative acknowledge or busy signal, the telegram is resend up to 3 times.
+Supposed a busy signal occurred, the sender adds a waiting period before attempting to resend the telegram.
+Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to 3 times.
+In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), an negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
+
 \begin{table}
 	\aboverulesep=0ex
 	\belowrulesep=0ex
@@ -350,20 +321,50 @@ Finally, the least commonly used telegram type is the poll telegram.
 	\newcolumntype{Y}{>{\centering\arraybackslash}X}
 	
 	\centering
-	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|}
+	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
 		\toprule
-		Bit & 1 & 0 \\\midrule
-		Function & \multicolumn{2}{c|}{Priority} \\\bottomrule
+		Byte & \multicolumn{8}{c|}{0} \\\midrule
+		Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\bottomrule
 		\toprule
-		System priority & 0 & 0 \\\midrule
-		Alarm priority & 1 & 0 \\\midrule
-		High priority & 0 & 1 \\\midrule
-		Low priority & 1 & 1 \\\bottomrule
+		ACK  & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
+		NACK & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
+		BUSY & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\\midrule
+		NACK + BUSY & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\\bottomrule
 	\end{tabularx}
-	\caption[\knx priority encoding]{\knx priority encoding. cf.~\textcite{Merz2009}}
-	\label{tab:background:bas:knx:proto:prio}
+	\caption[\knx acknowledge telegram]{\knx short acknowledge telegram.}
+	\label{tab:background:bas:knx:proto:ack}
 \end{table}
+
+\subsubsection{Poll Telegram}
+
+Finally, the least commonly used telegram type is the poll telegram.
+\parencite{Merz2009,DIN_EN_50090-5-2}
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
 	
+	\centering
+	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+		\toprule
+		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{16}{c|}{Source Address} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{4}{c|}{ } & \multicolumn{4}{c|}{poll data} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{6} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
+	\end{tabularx}
+	\caption[\knx poll telegram]{\knx poll telegram. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, expected length of poll data (poll data), and Parity.}
+	\label{tab:background:bas:knx:proto:knx-poll}
+\end{table}
+
 \subsection{\knx communication}
 \label{sec:background:bas:knx:communication}
 
