@@ -165,7 +165,8 @@ Whereby physical addresses are used to communicate with one specific device, whi
 \subsection{KNX Protocol}
 \label{sec:background:bas:knx:proto}
 
-	\begin{itemize}
+\begin{comment}
+		\begin{itemize}
 		\item 3 types of telegrams \parencite{Hubner2009} \parencite{Merz2009}
 			\subitem data - "sent in response to an individual action such as" \parencite{Merz2009} pressing a button (standard and extended \parencite{Hubner2009})
 			\subitem acknowledge - "All devices (receivers) that belong to this group simultaneously confirm that they have received the data frame by returning an acknowledgment frame." \parencite{Merz2009}
@@ -178,15 +179,30 @@ Whereby physical addresses are used to communicate with one specific device, whi
 			\subitem cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}
 		\item Acknowledge Telegram
 			\subitem cf. Table~\ref{tab:background:bas:knx:proto:ack}
-		
 	\end{itemize}
+\end{comment}
 
 Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegrams, Poll Telegrams, and Acknowledge Telegrams. (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard},~\ref{tab:background:bas:knx:proto:ctrle},~\ref{tab:background:bas:knx:proto:knx-poll}, and~\ref{tab:background:bas:knx:proto:ack})
-The first one being utilised the most and used for transferring commands, state, and values comes in 2 flavours. The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
-Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
-The recipient answers then with an acknowledge telegram after waiting 13 bit times. The acknowledge telegram can indicate the correct reception (ACK, positive acknowledge), faulty reception (NACK, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
-In case 
 
+\subsubsection{Data Telegram}
+
+The data telegram being utilised the most and used for transferring commands, state, and value changes, comes in 2 flavours.
+The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
+Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
+The recipient answers then with an acknowledge telegram.
+
+\subsubsection{Acknowledge Telegram}
+
+The acknowledge telegram can indicate the correct reception (\code{ACK}, positive acknowledge), faulty reception (\code{NACK}, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
+It consists of 1 byte and is sent by the recipient after waiting 13 bit times.
+If the sender receives an positive acknowledge, the telegram was send successfully and no further action is required. However, if it detects an negative acknowledge or busy signal, the telegram is resend up to 3 times.
+Supposed a busy signal occurred, the sender adds a waiting period before attempting to resend the telegram.
+Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to 3 times.
+In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), an negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
+
+\subsubsection{Poll Telegram}
+
+Finally, the least commonly used telegram type is the poll telegram.
 
 	
 \begin{table}
