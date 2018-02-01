@@ -51,6 +51,7 @@ One of most commonly used systems for building automation systems in Germany and
 It was designed to substitute traditional electrical installations and to implement functions and processes in an automated fashion. \parencite{Merz2009}
 
 \Gls{knx} protocol is defined in the DIN EN 50090 family and can the transmitted over various physical media. Among those physical layers are \gls{knx} over twisted pair (KNX.TP), \gls{knx} over power line (KNX.PL) and \gls{knx} over radio (KNX.RF). Later 2 are intended for retrofitting older buildings. \parencite{Merz2009}
+\alert{forgot KNX/IP}
 
 As a result, \gls{knx} twisted-pair is the most commonly used installation method and is defined in 2 flavours. \parencite{DIN_EN_50090-5-2}
 The older variant TP-0 was derived from the BatiBUS \todo{ref?} and operates at 2400 Baud. However, nowadays most \gls{knx} devices implement TP-1, operating at 9600 Baud, which is a direct successor of \gls{eib}.
@@ -120,6 +121,8 @@ Additional to the physical address each devices is assigned, devices may listen 
 \todo{describe layers/modes of group addresses?}
 Whereby physical addresses are used to communicate with one specific device, which is common during installation, throughout normal operation mostly group addresses are used. As the name implies multiple devices may listen to such an address, allowing one light switch to turn on or off multiple lights for instance.
 
+\hint{Move addressing into own subsection?}
+
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{figures/100-knx-demo-topo.pdf}
@@ -179,7 +182,12 @@ Whereby physical addresses are used to communicate with one specific device, whi
 	\end{itemize}
 
 Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegrams, Poll Telegrams, and Acknowledge Telegrams. (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard},~\ref{tab:background:bas:knx:proto:ctrle},~\ref{tab:background:bas:knx:proto:knx-poll}, and~\ref{tab:background:bas:knx:proto:ack})
-The first one being utilised the most and used for transferring commands, state, and values comes in 2 flavours. The standard data telegram is able to \alert{xxx} bytes per telegram....
+The first one being utilised the most and used for transferring commands, state, and values comes in 2 flavours. The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
+Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
+The recipient answers then with an acknowledge telegram after waiting 13 bit times. The acknowledge telegram can indicate the correct reception (ACK, positive acknowledge), faulty reception (NACK, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
+In case 
+
+
 	
 \begin{table}
 	\aboverulesep=0ex
@@ -202,7 +210,7 @@ The first one being utilised the most and used for transferring commands, state,
 		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
 		Function & \multicolumn{16}{c|}{Payload $n+1$ Bytes} & \multicolumn{8}{c|}{Parity} \\\bottomrule
 	\end{tabularx}
-	\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to $16$ Bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
+	\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to $16$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
 	\label{tab:background:bas:knx:proto:knx-standard}
 \end{table}
 	
@@ -231,7 +239,7 @@ The first one being utilised the most and used for transferring commands, state,
 		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
 		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
 	\end{tabularx}
-	\caption[Extended \knx data telegram]{Extended \knx data telegram with $2$ to $255$ Bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
+	\caption[Extended \knx data telegram]{Extended \knx data telegram with $2$ to $255$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
 	\label{tab:background:bas:knx:proto:knx-extended}
 \end{table}
 		
