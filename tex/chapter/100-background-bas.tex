@@ -337,9 +337,8 @@ In case the sender addressed the original telegram to multiple devices by using 
 
 \subsubsection{Poll Telegram}
 
-The poll telegram allows to poll 1 byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks.
-By sending a poll telegram to a group address the sender has to define the amount of bytes it wants to receive (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll} poll data)
-\parencite{Merz2009,DIN_EN_50090-5-2}
+The poll telegram allows to poll 1 byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks. It consists of a poll data request frame (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}) and a poll data response frame. Former starts the poll telegram and sets the group address to query, also it defines how many bytes to receive.
+The poll data response consists of each device sending one byte on the bus without starting a new telegram. The responding devices are doing so in a prior configured time slot. \parencite{Hubner2009,DIN_EN_50090-5-2}
 
 \begin{table}
 	\aboverulesep=0ex
