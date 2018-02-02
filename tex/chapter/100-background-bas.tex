@@ -337,7 +337,8 @@ In case the sender addressed the original telegram to multiple devices by using 
 
 \subsubsection{Poll Telegram}
 
-Finally, the least commonly used telegram type is the poll telegram.
+The poll telegram allows to poll 1 byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks.
+By sending a poll telegram to a group address the sender has to define the amount of bytes it wants to receive (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll} poll data)
 \parencite{Merz2009,DIN_EN_50090-5-2}
 
 \begin{table}
