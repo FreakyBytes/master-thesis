@@ -1,0 +1,24 @@
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+		\toprule
+		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{16}{c|}{Source Address} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{4}{c|}{ } & \multicolumn{4}{c|}{poll data} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{6} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
+	\end{tabularx}
+	\caption[\knx poll telegram]{\knx poll telegram. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, expected length of poll data (poll data), and Parity.}
+	\label{tab:background:bas:knx:proto:knx-poll}
+\end{table}

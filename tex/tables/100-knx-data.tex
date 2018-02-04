@@ -1,0 +1,55 @@
+% KNX data telegram structure for standard and extended
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+		\toprule
+		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{16}{c|}{Source Address} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{1}{c|}{\parbox[t][26pt][s]{0.2cm}{A T}} & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{Length} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{6} & \multicolumn{8}{c|}{$7+n$} & \multicolumn{8}{c|}{$8+n$} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{16}{c|}{Payload $n+1$ Bytes} & \multicolumn{8}{c|}{Parity} \\\bottomrule
+	\end{tabularx}
+	\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to $16$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
+	\label{tab:background:bas:knx:proto:knx-standard}
+\end{table}
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
+		\toprule
+		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{8}{c|}{CTRLE} & \multicolumn{8}{c|}{Source Address} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{8}{c|}{Source Address} & \multicolumn{16}{c|}{Destination Address} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{6} & \multicolumn{8}{c|}{$7$} & \multicolumn{8}{c|}{$8+n$} \\\midrule
+		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
+		Function & \multicolumn{8}{c|}{Length} & \multicolumn{16}{c|}{Payload $n+1$ Bytes} \\\bottomrule
+		\toprule
+		Byte & \multicolumn{8}{c|}{$9+n$} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
+		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
+	\end{tabularx}
+	\caption[Extended \knx data telegram]{Extended \knx data telegram with $2$ to $255$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
+	\label{tab:background:bas:knx:proto:knx-extended}
+\end{table}

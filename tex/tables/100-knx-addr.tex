@@ -1,0 +1,19 @@
+% KNX Address byte-field
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	
+	\centering
+	\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+		\toprule
+		Byte & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{0} \\\midrule
+		Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\midrule
+		Physical Address & \multicolumn{4}{c|}{area} & \multicolumn{4}{c|}{line} & \multicolumn{8}{c|}{device}\\\midrule
+		Group Address & \multicolumn{5}{c|}{main} & \multicolumn{3}{c|}{middle} & \multicolumn{8}{c|}{sub group}\\
+		\bottomrule
+	\end{tabular}
+	\caption[Bit field for \knx addresses]{Bit field for \knx addresses. Only the most common used 3-level group address is shown here. cf.~\textcite{Merz2009,Sokollik2017} }
+	\label{tab:background:bas:knx:topo:addr}
+\end{table}

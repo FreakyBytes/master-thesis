@@ -1,0 +1,22 @@
+% KNX prio table
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|}
+		\toprule
+		Bit & 1 & 0 \\\midrule
+		Function & \multicolumn{2}{c|}{Priority} \\\bottomrule
+		\toprule
+		System priority & 0 & 0 \\\midrule
+		Alarm priority & 1 & 0 \\\midrule
+		High priority & 0 & 1 \\\midrule
+		Low priority & 1 & 1 \\\bottomrule
+	\end{tabularx}
+	\caption[\knx priority encoding]{\knx priority encoding. cf.~\textcite{Merz2009}}
+	\label{tab:background:bas:knx:proto:prio}
+\end{table}

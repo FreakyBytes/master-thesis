@@ -129,37 +129,9 @@ Whereby physical addresses are used to communicate with one specific device, whi
 	\caption[KNX network topology]{Exemplary logical topology of a \gls{knx} network with line couplers (LC) and normal devices. \todo{draw more nodes?} \todo{add LC for coupling to backbone} \todo{mark main line}}
 	\label{fig:background:knx:topo}
 \end{figure}
-	
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	
-	\centering
-	\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{0} \\\midrule
-		Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\midrule
-		Physical Address & \multicolumn{4}{c|}{area} & \multicolumn{4}{c|}{line} & \multicolumn{8}{c|}{device}\\\midrule
-		Group Address & \multicolumn{5}{c|}{main} & \multicolumn{3}{c|}{middle} & \multicolumn{8}{c|}{sub group}\\
-		\bottomrule
-	\end{tabular}
-	\caption[Bit field for \knx addresses]{Bit field for \knx addresses. Only the most common used 3-level group address is shown here. cf.~\textcite{Merz2009,Sokollik2017} }
-	\label{tab:background:bas:knx:topo:addr}
-\end{table}
 
-\begin{table}
-	\centering
-	\begin{tabular}{l r r }
-	 & \textbf{TP1-64} & \textbf{TP1-256} \\\toprule
-	 maximum devices per segment & 64 & 256 \\
-	 maximum distance between 2 devices & 700m & 700m \\
-	 maximum length of a physical line & 1000m & 1000m \\
-	 \bottomrule
-	\end{tabular}
-	\caption[Segment properties for \knx.TP1-64 and \knx.TP1-256]{Segment properties for \knx.TP1-64 and \knx.TP1-256. cf. \textcite{Sokollik2017} \todo{adjust design of this table}}
-	\label{tab:background:bas:knx:topo:tpsegments}
-\end{table}
+\input{tables/100-knx-addr.tex}
+\input{tables/100-knx-segments.tex}
 
 % ------------------------------------------------------------------------------	
 \subsection{KNX Protocol}
@@ -182,29 +154,12 @@ Whereby physical addresses are used to communicate with one specific device, whi
 	\end{itemize}
 \end{comment}
 
+To communicate within a \gls{knx} network, devices send telegrams in their line. Due to the topology (cf. Section~\ref{sec:background:bas:knx:topo}) and technological nature of \gls{knx} these telegrams are always broadcasted within the respective line, only line couplers may narrow down the scope in which a specific telegram might be received. Telegrams are very comparable to packets in an IP network.
+
 Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegrams, Poll Telegrams, and Acknowledge Telegrams. (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard},~\ref{tab:background:bas:knx:proto:ctrle},~\ref{tab:background:bas:knx:proto:knx-poll}, and~\ref{tab:background:bas:knx:proto:ack})
 \todo{write about prio}
 
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|}
-		\toprule
-		Bit & 1 & 0 \\\midrule
-		Function & \multicolumn{2}{c|}{Priority} \\\bottomrule
-		\toprule
-		System priority & 0 & 0 \\\midrule
-		Alarm priority & 1 & 0 \\\midrule
-		High priority & 0 & 1 \\\midrule
-		Low priority & 1 & 1 \\\bottomrule
-	\end{tabularx}
-	\caption[\knx priority encoding]{\knx priority encoding. cf.~\textcite{Merz2009}}
-	\label{tab:background:bas:knx:proto:prio}
-\end{table}
+\input{tables/100-knx-prio.tex}
 
 \subsubsection{Data Telegram}
 
@@ -213,97 +168,9 @@ The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-stan
 Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
 The recipient answers then with an acknowledge telegram. \parencite{Merz2009,Sokollik2017}
 
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{16}{c|}{Source Address} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{1}{c|}{\parbox[t][26pt][s]{0.2cm}{A T}} & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{Length} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{6} & \multicolumn{8}{c|}{$7+n$} & \multicolumn{8}{c|}{$8+n$} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{16}{c|}{Payload $n+1$ Bytes} & \multicolumn{8}{c|}{Parity} \\\bottomrule
-	\end{tabularx}
-	\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to $16$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
-	\label{tab:background:bas:knx:proto:knx-standard}
-\end{table}
-
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{8}{c|}{CTRLE} & \multicolumn{8}{c|}{Source Address} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{8}{c|}{Source Address} & \multicolumn{16}{c|}{Destination Address} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{6} & \multicolumn{8}{c|}{$7$} & \multicolumn{8}{c|}{$8+n$} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{8}{c|}{Length} & \multicolumn{16}{c|}{Payload $n+1$ Bytes} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{$9+n$} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
-		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
-		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
-	\end{tabularx}
-	\caption[Extended \knx data telegram]{Extended \knx data telegram with $2$ to $255$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
-	\label{tab:background:bas:knx:proto:knx-extended}
-\end{table}
-
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} \\\midrule
-		Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
-		Function & \multicolumn{2}{c|}{TT} & R & A & \multicolumn{2}{c|}{P} & \multicolumn{2}{c|}{reserved} \\\bottomrule \toprule
-		Standard Data Telegram & 1 & 0 & R & 1 & \multicolumn{2}{c|}{P} & \multicolumn{2}{c|}{ } \\\midrule
-		Extended Data Telegram & 0 & 0 & R & 1 & \multicolumn{2}{c|}{P} & \multicolumn{2}{c|}{ } \\\midrule
-		Poll Telegram & 1 & 1 & 1 & 1 & 0 & 0 & \multicolumn{2}{c|}{ } \\\midrule
-		Acknowledge Telegram & \multicolumn{2}{c|}{ } & 0 &0 & \multicolumn{2}{c|}{ } & \multicolumn{2}{c|}{ } \\\bottomrule
-	\end{tabularx}
-	\caption[\knx CTRL Byte]{\knx CTRL Byte. Telegram Type (TT), Repeat (R), Acknowledge (A), and Priority (P). cf. \textcite{Sokollik2017}}
-	\label{tab:background:bas:knx:proto:ctrl}
-\end{table}
-
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} \\\midrule
-		Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\midrule
-		Function & AT & \multicolumn{3}{c|}{Hops} & \multicolumn{4}{c|}{EFF} \\\bottomrule
-	\end{tabularx}
-	\caption[\knx CTRLE Byte]{\knx CTRLE Byte. Address Type (AT), Hop Count, and Extended Frame Format (EFF). cf. \textcite{Sokollik2017}}
-	\label{tab:background:bas:knx:proto:ctrle}
-\end{table}
+\input{tables/100-knx-data.tex}
+\input{tables/100-knx-ctrl.tex}
+\input{tables/100-knx-ctrle.tex}
 
 \subsubsection{Acknowledge Telegram}
 
@@ -314,56 +181,14 @@ Supposed a busy signal occurred, the sender adds a waiting period before attempt
 Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to 3 times.
 In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), an negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
 
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{0.7\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} \\\midrule
-		Bit & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\\bottomrule
-		\toprule
-		ACK  & 1 & 1 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
-		NACK & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 \\\midrule
-		BUSY & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\\midrule
-		NACK + BUSY & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\\bottomrule
-	\end{tabularx}
-	\caption[\knx acknowledge telegram]{\knx short acknowledge telegram.}
-	\label{tab:background:bas:knx:proto:ack}
-\end{table}
+\input{tables/100-knx-ack.tex}
 
 \subsubsection{Poll Telegram}
 
 The poll telegram allows to poll 1 byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks. It consists of a poll data request frame (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}) and a poll data response frame. Former starts the poll telegram and sets the group address to query, also it defines how many bytes to receive.
 The poll data response consists of each device sending one byte on the bus without starting a new telegram. The responding devices are doing so in a prior configured time slot. \parencite{Hubner2009,DIN_EN_50090-5-2}
 
-\begin{table}
-	\aboverulesep=0ex
-	\belowrulesep=0ex
-	\renewcommand{\arraystretch}{1.2}
-	\newcolumntype{Y}{>{\centering\arraybackslash}X}
-	
-	\centering
-	\begin{tabularx}{\textwidth}{|l|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|Y|}
-		\toprule
-		Byte & \multicolumn{8}{c|}{0} & \multicolumn{8}{c|}{1} & \multicolumn{8}{c|}{2} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{8}{c|}{CTRL} & \multicolumn{16}{c|}{Source Address} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{3} & \multicolumn{8}{c|}{4} & \multicolumn{8}{c|}{5} \\\midrule
-		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
-		Function & \multicolumn{16}{c|}{Destination Address} & \multicolumn{4}{c|}{ } & \multicolumn{4}{c|}{poll data} \\\bottomrule
-		\toprule
-		Byte & \multicolumn{8}{c|}{6} & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
-		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
-		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
-	\end{tabularx}
-	\caption[\knx poll telegram]{\knx poll telegram. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, expected length of poll data (poll data), and Parity.}
-	\label{tab:background:bas:knx:proto:knx-poll}
-\end{table}
+\input{tables/100-knx-poll.tex}
 
 \subsection{\knx communication}
 \label{sec:background:bas:knx:communication}
@@ -380,6 +205,8 @@ The poll data response consists of each device sending one byte on the bus witho
 		\item Response need to match the Request APCI type and must be send on the corresponding communication mode allowed for this packet. cf. \textcite[][page 9--10]{DIN_EN_50090-4-1}
 		\item 
 	\end{itemize}
+
+
 	
 \subsubsection{Network management procedures}
 	\begin{itemize}
