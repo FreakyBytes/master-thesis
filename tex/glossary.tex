@@ -2,11 +2,12 @@
 % Glossary
 % 
 
+% TODO apply something like https://tex.stackexchange.com/a/8951 where acronoyms should also be a glossary entry
+
 % BAS stuff
 \newacronym[plural=BAS,firstplural=Building Automation Sytems (BAS)]{bas}{BAS}{Building Automation System}
 \newacronym{hvac}{HVAC}{heating, ventilation, and air conditioning}
 
-\newglossaryentry{knx}{name={KNX},description={KNX or Konnex}}
 \newacronym{eib}{EIB}{European Installation Bus}
 \newglossaryentry{lon}{name={LonWorks},description={LonWorks}}
 \newglossaryentry{bac}{name={BACnet},description={BACnet}}
@@ -14,9 +15,18 @@
 % KNX terminology
 \newacronym{apci}{APCI}{Application Layer Protocol Control Information}
 \newacronym{tpci}{TPCI}{Transport Layer Protocol Control Information}
+\newacronym{csmaca}{CSMA/CA}{Carrier Sense Multiple Access / Collision Avoidance}
+\newacronym[plural=DPT,firstplural=Datapoint Types (DPT)]{dpt}{DPT}{Datapoint Type}
 
+\newglossaryentry{knx}{name={KNX},description={KNX or Konnex}}
+\newglossaryentry{knx-assoc}{name={KNX Association},description={\todo{knx assoc}}}
 \newglossaryentry{telegram}{name={Telegram},description={\gls{knx} Packet}}
 \newglossaryentry{hops}{name={hop count},description={\todo{hop count}}}
+
+% network stuff
+\newacronym{ip}{IP}{Internet Protocol}
+
+\newglossaryentry{osi}{name={OSI},description={The Open Systems Interconnection Model is a reference model for network protocols, providing an layered view}}
 
 % ML stuff
 \newglossaryentry{vect}{name={vector space},description={}}

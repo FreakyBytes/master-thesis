@@ -158,6 +158,7 @@ To communicate within a \gls{knx} network, devices send telegrams in their line.
 
 Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegrams, Poll Telegrams, and Acknowledge Telegrams. (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard},~\ref{tab:background:bas:knx:proto:ctrle},~\ref{tab:background:bas:knx:proto:knx-poll}, and~\ref{tab:background:bas:knx:proto:ack})
 \todo{write about prio}
+\todo{write about \gls{csmaca}}
 
 \input{tables/100-knx-prio.tex}
 
@@ -167,6 +168,7 @@ The data telegram being utilised the most and used for transferring commands, st
 The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
 Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
 The recipient answers then with an acknowledge telegram. \parencite{Merz2009,Sokollik2017}
+\todo{describe CTRL and CTRLE}
 
 \input{tables/100-knx-data.tex}
 \input{tables/100-knx-ctrl.tex}
@@ -193,7 +195,8 @@ The poll data response consists of each device sending one byte on the bus witho
 \subsection{\knx communication}
 \label{sec:background:bas:knx:communication}
 
-	\begin{itemize}
+\begin{comment}
+		\begin{itemize}
 		\item application layer described in \textcite{DIN_EN_50090-4-1}
 		\item communication modes \parencite{DIN_EN_50090-4-1}
 			\subitem point-to-multipoint, connection-less (multicast)
@@ -203,18 +206,54 @@ The poll data response consists of each device sending one byte on the bus witho
 			\subitem point-to-point, connection-oriented
 		\item APCI describes operation on application layer
 		\item Response need to match the Request APCI type and must be send on the corresponding communication mode allowed for this packet. cf. \textcite[][page 9--10]{DIN_EN_50090-4-1}
-		\item 
 	\end{itemize}
+\end{comment}
 
+Apart from the basic \gls{knx} protocol (cf. Section~\ref{sec:background:bas:knx:proto}), which is comparable to the data link layer in the \gls{osi} model, the \textcite{DIN_EN_50090-4-1} describes two layers on top: a transport layer and an application layer.
+However, it is to note, that even when official \gls{knx} specification draws parallels to the \gls{osi} model, a direct comparison to the \gls{osi} model as seen in \gls{ip} networks is difficult, due to the reduced complexity of the protocol stack in \gls{knx}.
 
+The transport layer defines multiple transport layer services, which are encoded in the \gls{tpci} (cf. Table~\ref{tab:background:bas:knx:comm:tpci-apci}) and can be grouped into 5 categories or modes: \hint{grouped does not seems to be the right word here}
+
+\begin{enumerate}
+	\item point-to-multipoint, connection-less (multicast)
+	\item point-to-domain, connection-less (broadcast)
+	\item point-to-all-points, connection-less (system broadcast)
+	\item point-to-point, connection-less
+	\item point-to-point, connection-oriented
+\end{enumerate}
+\parencite[cf.][p.~30]{DIN_EN_50090-4-2}
+
+Depending on the category, multiple telegrams might be send in order the establish a connection, e.g. point-to-point connection oriented.
+Further, these communication modes are used by the 54 different application layer services described in \textcite{DIN_EN_50090-4-1}.
+These application layer service can be used to access and set device states, encoded in \glspl{dpt}, or to configure the device.
+Each response needs to match the requests \gls{apci} type and must be send on with the corresponding communication mode allowed for this telegram. \parencite[][p.~9--10]{DIN_EN_50090-4-1}
+
+\glspl{dpt}, in turn, define the structure of the data, which is transported using the application layer services.
+They are defined to consist of a combination of a data type and a dimension. Whereby the former is required to specify format and encoding. The later, however, defines range and unit.
+It was decided not to specify data types and dimensions separately to reduce abstract naming and confusion.
+Therefore any \gls{dpt} declares a single combination of format, encoding, range, and unit. \parencite[p.~38]{DIN_EN_50090-3-3}
+
+Each \gls{dpt} is identified by an 16 bit main number and an 16 bit sub-number, separated by a dot. The main number describes the format and encoding and consequently the sub-number describes range and unit. As a result, \glspl{dpt} with the same main number share the format and encoding.
+
+\input{tables/100-knx-tpci-apci.tex}
 	
 \subsubsection{Network management procedures}
+
+\begin{comment}
 	\begin{itemize}
 		\item "describe the device independent management procedures" \parencite{DIN_EN_50090-7-1}
 		\item "shall be used to configure the network, and to get the information about the configuration of the network and connected devices" \parencite{DIN_EN_50090-7-1}
 		\item " no knowledge of the single devices is required. They will work with every device connected to the network" \parencite{DIN_EN_50090-7-1}
 		\item "shall be based on the use of the dedicated application layer services which are specified in EN 50090-4-1 \parencite{DIN_EN_50090-4-1} for this purpose" \parencite{DIN_EN_50090-7-1}
 	\end{itemize}
+\end{comment}
+
+To ensure maximum compatibility among \gls{knx} devices of different vendors, it is not enough to implement the same protocol stack (cf. Section~\ref{sec:background:bas:knx:proto}) and use the same communication services (cf. Section~\ref{sec:background:bas:knx:communication}).
+Moreover, it is also required to share a common set of management and configuration services.
+This is especially true in an environment like \gls{knx}, where devices need to be fully interchangeable and need to be configurable by a common tool used by electricians.
+
+Therefore the \gls{knx-assoc} specified device independent management procedure, which do not require any knowledge or insight of the devices and will work across all vendors and device types. \parencite{DIN_EN_50090-7-1}
+For these procedures dedicated application layer services were defined in \textcite{DIN_EN_50090-4-1}.
 	
 \subsection{Security in KNX}
 	\begin{itemize}
@@ -224,12 +263,10 @@ The poll data response consists of each device sending one byte on the bus witho
 		\item main group 14 and 15 should not be used \parencite{Hubner2009}
 			\subitem can not be filtered due to limited space for filter tables in couplers \parencite{Hubner2009}
 			
-			
+		\item cf DIN50090-3-4 page 13 (secure application layer)
 	\end{itemize}
 
 % ------------------------------------------------------------------------------
-\subsection{Examples and Applications of KNX Networks}
-
 \section{\lonworks}
 
 \section{\bacnet}
