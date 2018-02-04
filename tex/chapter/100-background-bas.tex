@@ -261,8 +261,8 @@ They mainly provide routines to configure addresses, read serial numbers, get fu
 Secondly, there are device management procedures, which require in depth knowledge of the devices. \parencite[pp.~30~ff.]{DIN_EN_50090-7-1}
 These are used to i.e. configure devices, restart them, and verify the configuration.
 
-	
 \subsection{Security in KNX}
+
 	\begin{itemize}
 		\item copulers allow filtering 
 			\subitem "This means that data frames transmitted by a sender are only forwarded to recipients that are not on the sender’s line." \parencite{Merz2009}
@@ -270,10 +270,13 @@ These are used to i.e. configure devices, restart them, and verify the configura
 		\item main group 14 and 15 should not be used \parencite{Hubner2009}
 			\subitem can not be filtered due to limited space for filter tables in couplers \parencite{Hubner2009}
 			
-		\item cf DIN50090-3-4 page 13 (secure application layer)
+		\item cf DIN50090-3-4 page 13 (secure application layer) \parencite{DIN_EN_50090-3-4}
 	\end{itemize}
 
-% ------------------------------------------------------------------------------
-\section{\lonworks}
+% with knx being widely used, also in security sensitive areas, a strategy for ensuring operational and informational security is important
+% ...
 
-\section{\bacnet}
+% ------------------------------------------------------------------------------
+%\section{\lonworks}
+
+%\section{\bacnet}
