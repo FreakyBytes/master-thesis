@@ -192,7 +192,7 @@ The poll data response consists of each device sending one byte on the bus witho
 
 \input{tables/100-knx-poll.tex}
 
-\subsection{\knx communication}
+\subsection{KNX Communication}
 \label{sec:background:bas:knx:communication}
 
 \begin{comment}
@@ -226,7 +226,7 @@ The transport layer defines multiple transport layer services, which are encoded
 Depending on the category, multiple telegrams might be send in order the establish a connection, e.g. point-to-point connection oriented.
 Further, these communication modes are used by the 54 different application layer services described in \textcite{DIN_EN_50090-4-1}.
 These application layer service can be used to access and set device states, encoded in \glspl{dpt}, or to configure the device.
-Each response needs to match the requests \gls{apci} type and must be send on with the corresponding communication mode allowed for this telegram. \parencite[][p.~9--10]{DIN_EN_50090-4-1}
+Each response needs to match the requests \gls{apci} type and must be send on with the corresponding communication mode allowed for this telegram. \parencite[][pp.~9--10]{DIN_EN_50090-4-1}
 
 \glspl{dpt}, in turn, define the structure of the data, which is transported using the application layer services.
 They are defined to consist of a combination of a data type and a dimension. Whereby the former is required to specify format and encoding. The later, however, defines range and unit.
@@ -237,7 +237,8 @@ Each \gls{dpt} is identified by an 16 bit main number and an 16 bit sub-number, 
 
 \input{tables/100-knx-tpci-apci.tex}
 	
-\subsubsection{Network management procedures}
+\subsection{KNX Management Procedures}
+\label{sec:background:bas:knx:management}
 
 \begin{comment}
 	\begin{itemize}
@@ -252,8 +253,14 @@ To ensure maximum compatibility among \gls{knx} devices of different vendors, it
 Moreover, it is also required to share a common set of management and configuration services.
 This is especially true in an environment like \gls{knx}, where devices need to be fully interchangeable and need to be configurable by a common tool used by electricians.
 
-Therefore the \gls{knx-assoc} specified device independent management procedure, which do not require any knowledge or insight of the devices and will work across all vendors and device types. \parencite{DIN_EN_50090-7-1}
-For these procedures dedicated application layer services were defined in \textcite{DIN_EN_50090-4-1}.
+Therefore the \gls{knx-assoc} specified 2 sets of management procedure.
+For these procedures dedicated application layer services were defined in \textcite{DIN_EN_50090-4-1}. (cf. Section~\ref{sec:background:bas:knx:communication})
+The first, being called network management procedures, are device independent, which do not require any knowledge or insight of the devices and will work across all vendors and device types. \parencite[pp.~11~ff.]{DIN_EN_50090-7-1}
+They mainly provide routines to configure addresses, read serial numbers, get functions, or to find all devices in programming mode.
+
+Secondly, there are device management procedures, which require in depth knowledge of the devices. \parencite[pp.~30~ff.]{DIN_EN_50090-7-1}
+These are used to i.e. configure devices, restart them, and verify the configuration.
+
 	
 \subsection{Security in KNX}
 	\begin{itemize}
