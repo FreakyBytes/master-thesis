@@ -56,19 +56,26 @@ However, it is to note, that every \gls{ids} will produce false positives. This 
 
 Other than false positives, there might be legitimate alerts that are of no interest. These unwanted alerts should be blocked, to not numb \alert{(is this the right word here?)} the system administrator. \parencite[cf.][pp.~205-206]{Northcutt2005}
 	
-	\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
-	\label{sec:background:network:ids:anomaly}
+\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
+\label{sec:background:network:ids:anomaly}
 	
-		\begin{itemize}
-			\item \enquote{establishing baselines of normal network activity over a period of time, then detecting significant deviations from the baseline.} \parencite[p. 203]{Northcutt2005}
-			\item \enquote{[...] later, if the IDS sensor sees a high volume of traffic involving a previously unused service on a host, this could indicate a distributed denial of service (DDoS) attack against the host or a compromised host providing a new service.} \parencite{Northcutt2005}
-			\item \enquote{[...] drawback of this type of anomaly detection is that the baseline needs to be updated constantly to reflect authorized changes[...]} \parencite{Northcutt2005}
-			\item \enquote{If the baseline can be kept current, or if the environment is quite static and the baseline changes rarely, anomaly detection can be extremely effective at identifying certain types of attacks [...]} \parencite{Northcutt2005}
-			\item \textbf{\enquote{Unfortunately, this type of anomaly detection cannot identify most other types of attacks, so it is best used to complement other IDS technologies.}} \parencite{Northcutt2005}
-			\item \enquote{[...] can [...] identifying certain previously unknown instances of attacks [...]} \parencite{Northcutt2005}
-			\item \enquote{cannot determine the intent of an attack} \parencite{Northcutt2005}
-			
-		\end{itemize}
+	\begin{itemize}
+		\item \enquote{establishing baselines of normal network activity over a period of time, then detecting significant deviations from the baseline.} \parencite[p. 203]{Northcutt2005}
+		\item \enquote{[...] later, if the IDS sensor sees a high volume of traffic involving a previously unused service on a host, this could indicate a distributed denial of service (DDoS) attack against the host or a compromised host providing a new service.} \parencite{Northcutt2005}
+		\item \enquote{[...] drawback of this type of anomaly detection is that the baseline needs to be updated constantly to reflect authorized changes[...]} \parencite{Northcutt2005}
+		\item \enquote{If the baseline can be kept current, or if the environment is quite static and the baseline changes rarely, anomaly detection can be extremely effective at identifying certain types of attacks [...]} \parencite{Northcutt2005}
+		\item \textbf{\enquote{Unfortunately, this type of anomaly detection cannot identify most other types of attacks, so it is best used to complement other IDS technologies.}} \parencite{Northcutt2005}
+		\item \enquote{[...] can [...] identifying certain previously unknown instances of attacks [...]} \parencite{Northcutt2005}
+		\item \enquote{cannot determine the intent of an attack} \parencite{Northcutt2005}
+		
+	\end{itemize}
+
+Another major technology used in \glspl{ids} is anomaly detection. (cf. Section~\ref{sec:background:network:novelty})
+Unlike signature based methods (cf. Section~\ref{sec:background:network:ids:sig}) it does not require an predefined set of rules, rather deploying anomaly detection it is able to auto-generate rules specific for the monitored network and then perform whitelisting using these rules.
+
+This is archived by having a so called training phase before deploying the \gls{ids}. During the training phase a baseline model is established using the normal network activity over period of time. It is to note, that this period should be long enough to cover normally recurring usage cycles, e.g. day-time/night-time, weekday/weekends, etc.
+
+After an successful training phase the \gls{ids} uses the generated baseline model to compare bypassing against it. If it detects a significant deviation from it, an alert is raise as it indicates unusual network activities.
 	
 	\subsection{State-based Intrusion Detection Systems\hint{??}}
 	\label{sec:background:network:ids:state}
