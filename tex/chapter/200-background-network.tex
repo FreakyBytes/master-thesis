@@ -25,22 +25,36 @@ Further, \gls{ids} may also identify attack attempts and probing, allowing to fu
 
 Nowadays \glspl{ids} are a commonly deployed in \gls{ip} networks. There are different kinds of \glspl{ids}, which can be discriminated by working principle. The following section is giving an overview of the most common technologies. \parencite[cf.][pp.~201-202]{Northcutt2005}
 
-	\subsection{Signature Intrusion Detection Systems (SIDS)}
-	\label{sec:background:network:ids:sig}
-	
-		\begin{itemize}
-			\item \enquote{[...] IDS signature is a pattern you are looking for in traffic.} \parencite{Northcutt2005}
-			\item \enquote{When a signature for an attack matches observed traffic, an alert is generated, or the event is otherwise recorded.} \parencite{Northcutt2005}
-			\item \enquote{Many signatures are protocol or application specific;} \parencite{Northcutt2005}
-			\item requires to update a curated set of signatures regularly \parencite{Northcutt2005}
-			\item \enquote{Signature development is always a balancing act. A specific signature might be extremely accurate in identifying a particular attack [...] [but] If an attacker slightly modifies the attack, the signature might not be able to identify it at all.} \parencite{Northcutt2005}
-				\subitem precision/recall balance
-			\item \enquote{Every intrusion detection system generates false positives.} \parencite[p.~205]{Northcutt2005}
-			\item \enquote{By selecting a solid IDS product and tuning your sensors, you can reduce false positives, but you can't completely eliminate them.} \parencite[p.~205]{Northcutt2005}
-			\item \enquote{[...], but each false negative is a legitimate attack or incident that IDS failed to notice.} \parencite[p.~206]{Northcutt2005}
-			\item \enquote{Besides false positives, you might also have alerts that address legitimate problems that you simply don't care about.} (Unwanted Alerts) \parencite[p.~206]{Northcutt2005}
-			\item 
-		\end{itemize} 
+\subsection{Signature Intrusion Detection Systems (SIDS)}
+\label{sec:background:network:ids:sig}
+
+\begin{comment}
+	\begin{itemize}
+		\item \enquote{[...] IDS signature is a pattern you are looking for in traffic.} \parencite{Northcutt2005}
+		\item \enquote{When a signature for an attack matches observed traffic, an alert is generated, or the event is otherwise recorded.} \parencite{Northcutt2005}
+		\item \enquote{Many signatures are protocol or application specific;} \parencite{Northcutt2005}
+		\item requires to update a curated set of signatures regularly \parencite{Northcutt2005}
+		\item \enquote{Signature development is always a balancing act. A specific signature might be extremely accurate in identifying a particular attack [...] [but] If an attacker slightly modifies the attack, the signature might not be able to identify it at all.} \parencite{Northcutt2005}
+			\subitem precision/recall balance
+		\item \enquote{Every intrusion detection system generates false positives.} \parencite[p.~205]{Northcutt2005}
+		\item \enquote{By selecting a solid IDS product and tuning your sensors, you can reduce false positives, but you can't completely eliminate them.} \parencite[p.~205]{Northcutt2005}
+		\item \enquote{[...], but each false negative is a legitimate attack or incident that IDS failed to notice.} \parencite[p.~206]{Northcutt2005}
+		\item \enquote{Besides false positives, you might also have alerts that address legitimate problems that you simply don't care about.} (Unwanted Alerts) \parencite[p.~206]{Northcutt2005}
+		\item 
+	\end{itemize} 
+\end{comment}
+
+One of the more traditional \gls{ids} principles are signature based systems.
+They work by comparing patterns (signatures) of malicious traffic to the observed traffic. When a pattern matches an alert is raised.
+This requires many protocol and application specific signatures, which are difficult to create and maintain, since a good balance between being too generic and being too specific needs to be found.
+
+A signature which is too generic, may cause many false positives. This might lead to an elimination of any positive effect of the \gls{ids}, since real alerts become impossible to spot among the false positives.
+In contrast, however, a signature which is too specific might suffer from a too narrow scope. Meaning, that it might be really precise in classifying one particular attack, but fails to do so if an attacker just slightly modifies it.
+
+As a result, a valuable \gls{ids} solution is characterised by an balanced precision/recall ratio. This can be archived by using a good signature database and fine tuning the sensors.
+However, it is to note, that every \gls{ids} will produce false positives. This derives out of the consideration, that each false negative is an legitimate attack, which was not detected. Therefore a slight tendency to (over) sensitivity is sensible.
+
+Other than false positives, there might be legitimate alerts that are of no interest. These unwanted alerts should be blocked, to not numb \alert{(is this the right word here?)} the system administrator. \parencite[cf.][pp.~205-206]{Northcutt2005}
 	
 	\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
 	\label{sec:background:network:ids:anomaly}
