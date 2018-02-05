@@ -263,6 +263,7 @@ These are used to i.e. configure devices, restart them, and verify the configura
 
 \subsection{Security in KNX}
 
+\begin{comment}
 	\begin{itemize}
 		\item copulers allow filtering 
 			\subitem "This means that data frames transmitted by a sender are only forwarded to recipients that are not on the sender’s line." \parencite{Merz2009}
@@ -272,9 +273,25 @@ These are used to i.e. configure devices, restart them, and verify the configura
 			
 		\item cf DIN50090-3-4 page 13 (secure application layer) \parencite{DIN_EN_50090-3-4}
 	\end{itemize}
+\end{comment}
 
-% with knx being widely used, also in security sensitive areas, a strategy for ensuring operational and informational security is important
-% ...
+With \gls{knx} being so widely used, it is also deployed in security sensitive areas like access control, ventilation, or \todo{something third}.
+As a consequence it is only sensible to consider not only the operational security, but also the information security of \gls{knx} networks. Meaning, it should not only be assured, that the network is operational at any time, but it needs to be protected against malicious usage or intrusion.
+
+By design \gls{knx} introduces a zone concept by distinguishing between lines and areas.
+This offers the possibility to limit a potential attack to just one line, because the traffic between lines is filtered by line couplers.
+This filter function ensures, that only traffic concerning devices in other lines is routed to the main or backbone line.
+
+However, filtering traffic comes with certain limitations. For instance the line couplers need be configured properly, which can be done automatically by the installation and configuration Software \gls{ets}. \parencite{Merz2009}
+Further, to ensure proper filtering the main groups 14 and 15 must not be used, since they cannot be filtered, due to limited space for filter tables in couplers. \parencite{Hubner2009}
+Moreover, traffic within the affected line can still be red and manipulated by an attacker, as well as device can be reconfigured or attacked.
+
+Another possibility to secure a \gls{knx} network is to enable \gls{s-al}, as defined in \textcite{DIN_EN_50090-3-4}. \Gls{s-al} is an extension of the \gls{knx} specification defining an encrypted application layer (cf. Section~\ref{sec:background:bas:knx:communication}) for multicast and point-to-point communication, which can be used next to normal unencrypted traffic.
+As encryption standard \textcite{DIN_EN_50090-3-4} defines \gls{aes}-128 in \gls{ctr} or \gls{ccm} mode.
+Later also functions as authentication. \todo{ensure short formes are used, at least for AES}
+
+Nonetheless it is to note, that \textcite{DIN_EN_50090-3-4} is merely a draft at the point of June 2017, therefore it is not to expect, that see available \gls{knx} devices with this capability on the market any time soon. This may also be caused by the comparably high life time of such devices.
+
 
 % ------------------------------------------------------------------------------
 %\section{\lonworks}
