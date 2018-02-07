@@ -140,7 +140,15 @@ Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise200
 	\label{fig:background:network:netflow:architecture}
 \end{figure}
 
-Typical flow monitoring architectures employ 3 stages. The first one being 
+Typical flow monitoring architectures can be roughly separated into 3 stages. (cf. Figure~\ref{fig:background:network:netflow:architecture})
+The first one, being Packet Observation and Flow Export, will observe bypassing traffic. Further the observed traffic is aggregated into flows, using common properties as selectors. (cf. above\alert{???}) After a flow is terminated, either by closing the underlying connection or by timeout, a record of it is exported and send of to the Flow Collector.
+This stage could be implemented by a stand-alone device or within an appliance like a router with flow export capability
+
+The exported flow are then receive by the Data Collector, which main task are storage and processing.
+Exported flows contain \enquote{information about a specific flow that was observed at an observation point} \parencite{Claise2013}, which may include characteristic properties like IP addresses and port number, as well as measured properties like packet count or overall flow size in bytes.
+
+Finally the last stage is concerned with the data analysis. This can be done in a manual, exploratory way, which is often the case in research projects. In more production oriented setups the analysis is often automated and integrated into the Data Collector.
+The data analysis commonly includes functions like traffic profiling, correlation, anomaly and intrusion detection (cf. Section~\ref{sec:background:network:ids}), and classification and characterisation. \parencite[cf.][]{Hofstede2014}
 
 
 \section{Anomaly, Outlier, and Novelty Detection}
