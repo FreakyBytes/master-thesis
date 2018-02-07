@@ -100,10 +100,11 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 	\begin{itemize}
 		\item cf. \textcite{Whitman2009} page 306 
 	\end{itemize}
-	
+
 \section{Flow Monitoring}
 \label{sec:background:network:netflow}
 
+\begin{comment}
 	\begin{itemize}
 		\item active
 			\begin{itemize}
@@ -119,6 +120,7 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 				
 			\end{itemize}
 	\end{itemize}
+\end{comment}
 
 Following the idea of network monitoring with \glspl{ids}, multiple method are being used. They can be roughly classified into active and passive. 
 Active approaches work by injecting additional traffic into the network to obtain certain measurements, like ping or traceroute.
@@ -129,9 +131,16 @@ A another predominantly used passive approach is flow monitoring, which focusses
 A flow is defined by \textcite{Claise2013} as \enquote{a set of IP packets passing an observation point in the network during a certain time interval, such that all packets belonging to a particular flow have a set of common properties.}
 Mentioned common properties most commonly include various header fields, like port, source- and destination address, but also the used application layer protocol or metadata derived from the packet content.
 It is widely used for \enquote{security analysis, capacity planning, accounting, and profiling, among others.} \parencite{Hofstede2014}
-Common protocols used for flow monitoring are Netflow \parencite{Claise2004} and \gls{ipfix} \parencite{Claise2013}.
+Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise2004} and \gls{ipfix} \parencite{Claise2013}.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{figures/200-netflow-architecture.pdf}
+	\caption[Simplified flow monitoring system architecture]{Simplified flow monitoring system architecture. \parencite[cf.][]{Hofstede2014} \todo{adjust font size}}
+	\label{fig:background:network:netflow:architecture}
+\end{figure}
 
+Typical flow monitoring architectures employ 3 stages. The first one being 
 
 
 \section{Anomaly, Outlier, and Novelty Detection}
