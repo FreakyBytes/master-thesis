@@ -101,6 +101,7 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 		\item cf. \textcite{Whitman2009} page 306 
 	\end{itemize}
 
+% ------------------------------------------------------------------------------
 \section{Flow Monitoring}
 \label{sec:background:network:netflow}
 
@@ -150,12 +151,17 @@ Exported flows contain \enquote{information about a specific flow that was obser
 Finally the last stage is concerned with the data analysis. This can be done in a manual, exploratory way, which is often the case in research projects. In more production oriented setups the analysis is often automated and integrated into the Data Collector.
 The data analysis commonly includes functions like traffic profiling, correlation, anomaly and intrusion detection (cf. Section~\ref{sec:background:network:ids}), and classification and characterisation. \parencite[cf.][]{Hofstede2014}
 
-
+% ------------------------------------------------------------------------------
 \section{Anomaly, Outlier, and Novelty Detection}
 \label{sec:background:network:novelty}
 
-	\subsection{Classification of Anomaly, Outlier, and Novelty Detection Approaches}
-	\label{sec:background:network:novelty:class}
+The analysis of flows or general network traffic as describes in Section~\ref{sec:background:network:ids:anomaly}~and referenced in Section~\ref{sec:background:network:netflow}, relies on algorithm and techniques to detect data points which deviate from the normal expected behaviour. These algorithms and techniques can be found \alert{(better phrasing)} under the term Anomaly, Outlier, or Novelty Detection.
+The aim of this section is to provide a classification of these algorithms with benefits and drawbacks.
+Further, an overview of the working principle is provided for a small selection of them.
+
+% ------------------------------------------------------------------------------
+\subsection{Classification of Anomaly, Outlier, and Novelty Detection Approaches}
+\label{sec:background:network:novelty:class}
 	
 	\begin{itemize}
 		\item cf. \textcite{Hodge2004}
@@ -191,8 +197,31 @@ The data analysis commonly includes functions like traffic profiling, correlatio
 		
 	\end{itemize}
 
-	\subsection{Statistical techniques}
-	\label{sec:background:network:novelty:stat}
+Anomaly, Outlier, or Novelty Detection describes a class of algorithms to detect data points which deviate from the expected normal behaviour.
+Or as defined by \textcite{Grubbs1969}, \enquote{an outlying observation, or outlier, is one that appears to deviate markedly from other members of the sample in which it occurs.}
+In the following this definition will be used as an understanding for outliers, which is exchangeable for anomaly or novelty. \alert{(think about this!)}
+
+The general class of algorithms for Anomaly, Outlier, and Novelty Detection can be divided into 3 sub-classes, based on which kind of data the algorithms require to be trained\alert{~and executed}.
+The first sub-class describes algorithms, which are able detect outliers without prior knowledge of the data, also known as unsupervised clustering.
+This means, the data points in a training set are not require to be labelled as \emph{normal} or \emph{outlier}, which is archived by relying on the assumption, that non-normal data is separated from normal data, thus appearing as outlier.
+Accordingly, a substantial amount of data is required to begin with, since these kind of algorithms word \enquote{predominantly retrospective} \parencite{Hodge2004}.
+Thus requiring (all) data to be available before processing and assuming it to be static.
+Within this technique, 2 approaches  are used for training the model. 
+The first identifies potential outliers and then continues to prune them from the original data set and fit the model to the remaining data points. This is iterated until no more outliers are detected. This non-robust method is well suited when only a few outliers are in the data set.
+The second approach, however, accommodates the outliers into the distribution model and then applies a robust classification method. This is a better suited for data sets with higher numbers of outliers, since a robust classification method can withstand outliers in the data set by inducing boundaries of normality around large portions of the data. \parencite[cf.][]{Hodge2004}
+
+The second sub-class within Outlier Detection works by modelling both, normality and outliers, it is also known as supervised classification.
+Therefore it requires pre-labelled data in the training phase, labelled as \emph{normal} or \emph{outlier}. Since both are used to build the model, a good spread of \emph{normal} and \emph{outlying} data is required, which also limits the classification to the known distribution of such.
+As a result the whole classification model needs to be rebuild from ground up, as soon as the distribution shifts.
+However, a major benefit of this method is, that it is allows for training the model while new data points are being classified, which is also known as on-line classification. \parencite[cf.][]{Hodge2004}
+
+
+
+
+
+% ------------------------------------------------------------------------------
+\subsection{Statistical techniques}
+\label{sec:background:network:novelty:stat}
 	
 	\begin{itemize}
 		\item "Some [...] are applicable only for single dimensional data sets" \parencite{Hodge2004}
