@@ -125,7 +125,7 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 
 Following the idea of network monitoring with \glspl{ids}, multiple method are being used. They can be roughly classified into active and passive. 
 Active approaches work by injecting additional traffic into the network to obtain certain measurements, like ping or traceroute.
-Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problem within high-speed networks or if network bandwidth is highly limited, but the packets are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth.
+Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problem within high-speed networks or if network bandwidth is highly limited, but the packets are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth. \todo{relevant in already highly utilised networks, etc.}
 \parencite[cf.][]{Hofstede2014}
 
 A another predominantly used passive approach is flow monitoring, which focusses on analysing flows within a network rather than analysing a full packet dump. Therefore archiving a significant data reduction.
@@ -133,6 +133,8 @@ A flow is defined by \textcite{Claise2013} as \enquote{a set of IP packets passi
 Mentioned common properties most commonly include various header fields, like port, source- and destination address, but also the used application layer protocol or metadata derived from the packet content.
 It is widely used for \enquote{security analysis, capacity planning, accounting, and profiling, among others.} \parencite{Hofstede2014}
 Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise2004} and \gls{ipfix} \parencite{Claise2013}.
+
+\todo{not predominantly used for security, but network congestion avoidance/mitigate.}
 
 \begin{figure}
 	\centering
@@ -221,8 +223,6 @@ It requires also pre-labelled data, but compared to the second type it only work
 However, the training data must not contain outliers, otherwise they will be assumed to be a part of normality.
 Generally the aim of this approach is to establish a tight boundary around normality and is therefore suitable for static as well as dynamic data.
 If a new data point lies outside of the this boundary it is considered an \emph{outlier}, if not it is part of the \emph{normal} data.
-
-
 
 % ------------------------------------------------------------------------------
 \subsection{Statistical techniques}
