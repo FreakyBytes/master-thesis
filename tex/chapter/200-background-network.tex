@@ -162,7 +162,8 @@ Further, an overview of the working principle is provided for a small selection 
 % ------------------------------------------------------------------------------
 \subsection{Classification of Anomaly, Outlier, and Novelty Detection Approaches}
 \label{sec:background:network:novelty:class}
-	
+
+\begin{comment}
 	\begin{itemize}
 		\item cf. \textcite{Hodge2004}
 		\item Type 1: "Determine the outliers with no prior knowledge of the data" \parencite{Hodge2004}
@@ -194,8 +195,8 @@ Further, an overview of the working principle is provided for a small selection 
 			\subitem "requires the full gamut of normality to be available for training to permit generalisation" \parencite{Hodge2004} but "requires no abnormal data" \parencite{Hodge2004}
 			\subitem this is good, because "Abnormal data is often difficult to obtain or expensive in many fault detection domains [...]" \parencite{Hodge2004}
 			\subitem "as long as the new fraud lies outside the boundary of normality then the system will be correctly detect the fraud" \parencite{Hodge2004}
-		
 	\end{itemize}
+\end{comment}
 
 Anomaly, Outlier, or Novelty Detection describes a class of algorithms to detect data points which deviate from the expected normal behaviour.
 Or as defined by \textcite{Grubbs1969}, \enquote{an outlying observation, or outlier, is one that appears to deviate markedly from other members of the sample in which it occurs.}
@@ -210,12 +211,16 @@ Within this technique, 2 approaches  are used for training the model.
 The first identifies potential outliers and then continues to prune them from the original data set and fit the model to the remaining data points. This is iterated until no more outliers are detected. This non-robust method is well suited when only a few outliers are in the data set.
 The second approach, however, accommodates the outliers into the distribution model and then applies a robust classification method. This is a better suited for data sets with higher numbers of outliers, since a robust classification method can withstand outliers in the data set by inducing boundaries of normality around large portions of the data. \parencite[cf.][]{Hodge2004}
 
-The second sub-class within Outlier Detection works by modelling both, normality and outliers, it is also known as supervised classification.
+The second sub-class within Outlier Detection techniques works by modelling both, normality and outliers, it is also known as supervised classification.
 Therefore it requires pre-labelled data in the training phase, labelled as \emph{normal} or \emph{outlier}. Since both are used to build the model, a good spread of \emph{normal} and \emph{outlying} data is required, which also limits the classification to the known distribution of such.
 As a result the whole classification model needs to be rebuild from ground up, as soon as the distribution shifts.
 However, a major benefit of this method is, that it is allows for training the model while new data points are being classified, which is also known as on-line classification. \parencite[cf.][]{Hodge2004}
 
-
+The third and last sub-class in Outlier Detection techniques models only normality. These techniques are often described as novelty detection or semi-supervised recognition.
+It requires also pre-labelled data, but compared to the second type it only works with \emph{normal} labelled data points. Consequently the full gamut of normality is required to train an precise model. On the other hand no \emph{outlying} data points are required for training, which is highly beneficial in certain, data-sparse, scenarios, when abnormal data is difficult to obtain.
+However, the training data must not contain outliers, otherwise they will be assumed to be a part of normality.
+Generally the aim of this approach is to establish a tight boundary around normality and is therefore suitable for static as well as dynamic data.
+If a new data point lies outside of the this boundary it is considered an \emph{outlier}, if not it is part of the \emph{normal} data.
 
 
 
