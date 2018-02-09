@@ -165,6 +165,7 @@ Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegr
 \input{tables/100-knx-prio.tex}
 
 \subsubsection{Data Telegram}
+\label{sec:background:bas:knx:proto:data}
 
 The data telegram being utilised the most and used for transferring commands, state, and value changes, comes in 2 flavours.
 The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
@@ -177,6 +178,7 @@ The recipient answers then with an acknowledge telegram. \parencite{Merz2009,Sok
 \input{tables/100-knx-ctrle.tex}
 
 \subsubsection{Acknowledge Telegram}
+\label{sec:background:bas:knx:proto:ack}
 
 The acknowledge telegram can indicate the correct reception (\code{ACK}, positive acknowledge), faulty reception (\code{NACK}, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
 It consists of 1 byte and is sent by the recipient after waiting 13 bit times.
@@ -188,6 +190,7 @@ In case the sender addressed the original telegram to multiple devices by using 
 \input{tables/100-knx-ack.tex}
 
 \subsubsection{Poll Telegram}
+\label{sec:background:bas:knx:proto:poll}
 
 The poll telegram allows to poll 1 byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks. It consists of a poll data request frame (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}) and a poll data response frame. Former starts the poll telegram and sets the group address to query, also it defines how many bytes to receive.
 The poll data response consists of each device sending one byte on the bus without starting a new telegram. The responding devices are doing so in a prior configured time slot. \parencite{Hubner2009,DIN_EN_50090-5-2}
@@ -264,6 +267,7 @@ Secondly, there are device management procedures, which require in depth knowled
 These are used to i.e. configure devices, restart them, and verify the configuration.
 
 \subsection{Security in KNX}
+\label{sec:background:bas:knx:security}
 
 \begin{comment}
 	\begin{itemize}
