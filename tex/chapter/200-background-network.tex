@@ -125,10 +125,11 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 
 Following the idea of network monitoring with \glspl{ids}, multiple method are being used. They can be roughly classified into active and passive. 
 Active approaches work by injecting additional traffic into the network to obtain certain measurements, like ping or traceroute.
-Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problem within high-speed networks or if network bandwidth is highly limited, but the packets are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth. \todo{relevant in already highly utilised networks, etc.}
+Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problem within high-speed networks or if network bandwidth is highly limited, like it is in field bus networks. This is especially problematic if information are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth. \todo{relevant in already highly utilised networks, etc.}
 \parencite[cf.][]{Hofstede2014}
+Especially the additional high network utilisation is of notable concern in field bus networks used in \glspl{bas}. Effectively doubling the traffic in the sub-lines, as well as routing the monitoring traffic to central place would not only occupy a good portion of free bus capacity, but would also render network separation (cf. Section~\ref{sec:background:bas:knx:security}) useless. Consequently, soften the security in the network and possibly decreasing the responsiveness of commands dramatically.
 
-A another predominantly used passive approach is flow monitoring, which focusses on analysing flows within a network rather than analysing a full packet dump. Therefore archiving a significant data reduction.
+A another predominantly used passive approach is flow monitoring, which focusses on analysing flows within a network rather than analysing a full packet dump. Therefore archiving a significant data reduction and consequently requiring only a fraction of the bandwidth, while also keeping principles like network separation in tact, since only aggregated statistical data is transferred.
 A flow is defined by \textcite{Claise2013} as \enquote{a set of IP packets passing an observation point in the network during a certain time interval, such that all packets belonging to a particular flow have a set of common properties.}
 Mentioned common properties most commonly include various header fields, like port, source- and destination address, but also the used application layer protocol or metadata derived from the packet content.
 It is widely used for \enquote{security analysis, capacity planning, accounting, and profiling, among others.} \parencite{Hofstede2014}
@@ -145,13 +146,15 @@ Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise200
 
 Typical flow monitoring architectures can be roughly separated into 3 stages. (cf. Figure~\ref{fig:background:network:netflow:architecture})
 The first one, being Packet Observation and Flow Export, will observe bypassing traffic. Further the observed traffic is aggregated into flows, using common properties as selectors. (cf. above\alert{???}) After a flow is terminated, either by closing the underlying connection or by timeout, a record of it is exported and send of to the Flow Collector.
-This stage could be implemented by a stand-alone device or within an appliance like a router with flow export capability
+This stage could be implemented by a stand-alone device or within an appliance like a router with flow export capability. \parencite[cf.][]{Hofstede2014}
 
 The exported flow are then receive by the Data Collector, which main task are storage and processing.
-Exported flows contain \enquote{information about a specific flow that was observed at an observation point} \parencite{Claise2013}, which may include characteristic properties like IP addresses and port number, as well as measured properties like packet count or overall flow size in bytes.
+Exported flows contain \enquote{information about a specific flow that was observed at an observation point} \parencite{Claise2013}, which may include characteristic properties like \gls{ip} addresses and port number, as well as measured properties like packet count or overall flow size in bytes. \parencite[cf.][]{Hofstede2014}
+In scope of \glspl{bas}, like \gls{knx}, characteristic properties could include source and destination address, and \gls{apci}. Hop count, payload length, and \gls{tpci} would then be used as measured properties.
 
 Finally the last stage is concerned with the data analysis. This can be done in a manual, exploratory way, which is often the case in research projects. In more production oriented setups the analysis is often automated and integrated into the Data Collector.
 The data analysis commonly includes functions like traffic profiling, correlation, anomaly and intrusion detection (cf. Section~\ref{sec:background:network:ids}), and classification and characterisation. \parencite[cf.][]{Hofstede2014}
+In this work mainly anomaly and intrusion detection is of interest.
 
 % ------------------------------------------------------------------------------
 \section{Anomaly, Outlier, and Novelty Detection}
