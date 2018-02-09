@@ -277,30 +277,12 @@ Using this lemma, For each data point the degree of \enquote{outlier-ness}, or l
 
 By not relying on a global threshold, the \gls{lof} can account for clusters of different density. Therefore, one could argue, that the \gls{lof} is not only proximity based, but rather density based. Further by not treating the classification of an outlying observation as a binary property, analysis made on top of the outlier classification can be more precise. \parencite[cf.][]{Breunig2000}
 
-Moreover, the ability of \gls{lof} to work on unclean data and account for different density in clusters through locality, making it a good match for \gls{ids} solutions, as \textcite{Lazarevic2003} shows. Also \textcite{Zanero2004} conducted an experiment on using unsupervised learning algorithms for intrusion detection and found, that the problem of locality with \gls{knn} has to be addressed in order to be more precise in predictions.
-
-
-\subsection{Statistical techniques}
-\label{sec:background:network:novelty:stat}
-	
-	\begin{itemize}
-		\item "Some [...] are applicable only for single dimensional data sets" \parencite{Hodge2004}
-		\item "requires no user parameters as all parameters are derived directly from data" \parencite{Hodge2004}
-		\item e.g. "Grubbs’ method (extreme studentized deviate) (Grubbs, 1969) which calculates a Z value as the difference between the mean value for the attribute and the query value divided by the standard deviation for the attribute where the mean and standard deviation are calculated from all attribute values including the query value. The Z value for the query is compared with a 1\% or 5\% significance level" \parencite{Hodge2004} also cf. \textcite{Grubbs1969}
-	\end{itemize}
-	
-\subsection{Proximity-based techniques}
-\label{sec:background:network:novelty:prox}
-	
-	\begin{itemize}
-		\item "no prior assumptions about the data distribution" \parencite{Hodge2004}
-		\item "not feasible for high dimensionality data sets" \parencite{Hodge2004}
-		
-	\end{itemize}
+Moreover, the ability of \gls{lof} to work on unclean data and account for different density in clusters through locality, making it a good match for \gls{ids} solutions, as \textcite{Lazarevic2003} shows. Also \textcite{Zanero2004} conducted an experiment on using unsupervised learning algorithms for intrusion detection and found, that the problem of locality with \gls{knn} has to be addressed in order to be more precise in predictions, what \gls{lof} archives.
 
 \subsection{Support Vector Machines}
 \label{sec:background:network:novelty:svm}
-	
+
+\begin{comment}
 	\begin{itemize}
 		\item \enquote{The task of classification is to find a rule, which, based on external observations, assigns an object to one of several classes} \parencite{Muller2001}
 		\item separate vector space by decision surfaces, setting boundaries between categories \parencite{Muller2001}
@@ -317,6 +299,14 @@ Moreover, the ability of \gls{lof} to work on unclean data and account for diffe
 				\item 
 			\end{itemize}
 	\end{itemize}
+\end{comment}
+
+Another technique to discriminate outliers from \emph{normality} is to precisely model \emph{normality}, as \textcite{Hodge2004} described as third class of outlier detection algorithms. (cf. Section~\ref{sec:background:network:novelty:class})
+\glspl{svm} are a widely used technique in this field. Especially one-class \glspl{svm} are applied in outlier and intrusion detection. \parencite[cf.][]{Lazarevic2003,Eskin2002}
+They classify data points by defining decision surfaces within the feature space, which separate categories. A learning algorithm fits these hyperplanes to prior labelled data, basically finding a rule to separate data points into different classes. 
+In case of one-class \gls{svm}, which are predominantly used for outlier detection, there is only one category resembling \emph{normality}. Hence the training data must contain the full gamut of normal data points, without any contamination introduced by anomalies. \parencite[cf.][]{Muller2001,Scholkopf2001a}
+
+As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable techniques to be used in anomaly-based \glspl{ids}. However, since the way this model is trained requires for clean training data, it is increasingly hard to fit it into new networks and changing environments. (cf. Section~\ref{sec:background:network:ids:anomaly})
 	
 \subsection{Isolation Forest}
 \label{sec:background:network:novelty:isoforest}
@@ -327,7 +317,10 @@ Moreover, the ability of \gls{lof} to work on unclean data and account for diffe
 			\subitem \enquote{they are the minority}
 			\subitem \enquote{have attribute-values that are very different}
 	\end{itemize}
-	
+
+\subsection{Entropy based}
+
+\begin{comment}
 \subsection{Elliptical Envelope}
 \label{sec:background:network:novelty:envelope}
 	
@@ -336,13 +329,29 @@ Moreover, the ability of \gls{lof} to work on unclean data and account for diffe
 		\item does not seem to be a good match, since it required to know the distribution of the vector fields
 	\end{itemize}
 
-	
+\subsection{Statistical techniques}
+\label{sec:background:network:novelty:stat}
 
-	\subsection{Entropy based}
-	%\subsection{Bayesian}
-	%\subsection{Pattern Matching}
-	\subsection{Autoassociative Kernel Regression (AAKR)}
-		used by \textcite{Yang2006}
+\begin{itemize}
+	\item "Some [...] are applicable only for single dimensional data sets" \parencite{Hodge2004}
+	\item "requires no user parameters as all parameters are derived directly from data" \parencite{Hodge2004}
+	\item e.g. "Grubbs’ method (extreme studentized deviate) (Grubbs, 1969) which calculates a Z value as the difference between the mean value for the attribute and the query value divided by the standard deviation for the attribute where the mean and standard deviation are calculated from all attribute values including the query value. The Z value for the query is compared with a 1\% or 5\% significance level" \parencite{Hodge2004} also cf. \textcite{Grubbs1969}
+\end{itemize}
+
+\subsection{Proximity-based techniques}
+\label{sec:background:network:novelty:prox}
+
+\begin{itemize}
+	\item "no prior assumptions about the data distribution" \parencite{Hodge2004}
+	\item "not feasible for high dimensionality data sets" \parencite{Hodge2004}
+\end{itemize}	
+
+
+%\subsection{Bayesian}
+%\subsection{Pattern Matching}
+\subsection{Autoassociative Kernel Regression (AAKR)}
+	used by \textcite{Yang2006}
+\end{comment}
 
 \section{Time-based Anomaly Detection}
 
