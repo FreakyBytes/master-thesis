@@ -392,8 +392,33 @@ Further, it might be to consider to determine a kernel function, fitted to the i
 
 \section{Methods of Feature Encoding}
 \label{sec:background:network:features}
-\label{sec:background:network:features:hashing}
+
+Most algorithms and techniques for Outlier Detection (cf. Section~\ref{sec:background:network:novelty}) work within a multi-dimensional vector space or feature space. Often it is not straight forward to map specific features of a data set into a vector space.
+Problematic cases included when the possible expressions of a feature need to be model as equidistant to each other.
+Alternatively, in certain cases it is necessary to reduce the amount of dimension a feature would add, because otherwise the resource utilisation would exceed sane boundaries.
+
+\subsection{One-Hot encoding}
 \label{sec:background:network:features:onehot}
+
+Certain features in a dataset can represent markers or flags. In traditional data processing flags are often encoded as bit-field, where each bit represents one specific flag or marker, or as numerical value, where each number represents a state.
+When using machine learning techniques, like Outlier Detection, directly on bit-fields or numerical encoded flags, a problem arises, especially with proximity base approaches.
+
+For instance the \gls{apci} value encodes the application type in a \gls{knx} telegram as numerical value. (cf. Section~\ref{sec:background:bas:knx:communication})
+For instance a \code{A\_GROUP\_VALUE\_WRITE} telegram is encoded with a value of \code{128}, whereby an \code{A\_GROUP\_VALUE\_READ} is encoded with a value of \code{000}, and \code{A\_INDIVIDUAL\_ADDRESS\_WRITE} with \code{192}.
+The euclidean distance between those different \gls{apci} values would be 128, 64, and 0, which would indicate some kind of hierarchy or order.
+
+However, for the sake of determining outliers, it is only of relevance if these values differ, the possibly induced hierarchy or order does not provide any information.
+In other words the different expressions of this feature must be kept equidistant to each other.
+
+To archive this, it is suggested in literature, to encode each expression as own dimension and only setting the expressed one to 1, leaving the rest at 0. This is referred to as \emph{one-hot} encoding. \parencite[cf.][]{Coates2011}
+
+\subsection{Feature Hashing}
+\label{sec:background:network:features:hashing}
+
+When introducing multiple aspects
+
+\subsection{Encoding Time}
+\label{sec:background:network:features:time}
 
 \begin{itemize}
 	\item use feature direct as vector-dimension (not so good)
