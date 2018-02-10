@@ -318,7 +318,17 @@ As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable te
 			\subitem \enquote{have attribute-values that are very different}
 	\end{itemize}
 
-\subsection{Entropy based}
+\subsection{Entropy based Outlier detection}
+\label{sec:background:network:novelty:entropy}
+
+The information entropy, introduced by \textcite{Shannon1948}, provides an effective way to determine the uncertainty of a given system or the information content of a variable. It is further also referred to as measurement for randomness. Especially later one is intuitively related to outlier detection.
+
+\textcite{Toshniwal2014} are using these characteristics and propose an algorithm to cluster data streams and determine outliers. 
+The basic principle is to try to fit every occurring data point to every existing cluster. The data point is then finally assigned to the cluster, where it produces the least increase of entropy. Finally, the relative change of entropy for assigning a data point to the nearest cluster (\emph{PCE}) is calculated. If this \emph{PCE} is higher than a prior defined threshold, the data point is considered an outlier.
+However, this method requires access to all previous data points, which implies a high resource utilisation. To increase performance \textcite{Toshniwal2014} are only keeping a window of data in memory.
+Further, it might be to consider to determine a kernel function, fitted to the individual dimensions. The entropy could then be calculated against the distribution function, rather than raw data.
+
+
 
 \begin{comment}
 \subsection{Elliptical Envelope}
