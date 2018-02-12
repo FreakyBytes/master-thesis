@@ -415,7 +415,17 @@ To archive this, it is suggested in literature, to encode each expression as own
 \subsection{Feature Hashing}
 \label{sec:background:network:features:hashing}
 
-When introducing multiple aspects
+When introducing multiple features in the vector space, the  amount of dimensions can increase rapidly, especially when using techniques like one-hot encoding (cf. Section~\ref{sec:background:network:features:onehot}).
+This has huge implications with regards to resource consumption and more importantly to the feasibility of used algorithms on the vector space.
+For instance proximity based approaches to Outlier Detection do not perform well in high dimensional vector spaces. \alert{cite needed}
+
+To reduce the number of dimensions the amount of features could be reduced, or one could compress the feature vector. One method to archive compression by maintaining the informative value is called Feature Hashing or Kernel Trick. \parencite{Weinberger2009,Shi2009}
+As the name suggests a specialised hash function is applied to the feature value to reduce the required dimensions down to a defined size.
+This process is non reversible, which might have implications for further processing the results, e.g. using the coordinates of decision planes in \glspl{svm}.
+Further, feature hashing introduces the possibility of hash collisions, especially when the targeted dimension number is low. Therefore the reduction needs to be considered carefully.
+However, when compared to a random projection, to reduce dimensionality, the hashing-trick preserves the density and introduces no additional overhead. \parencite{Weinberger2009,Shi2009}
+
+
 
 \subsection{Encoding Time}
 \label{sec:background:network:features:time}
