@@ -363,7 +363,7 @@ Further, it might be to consider to determine a kernel function, fitted to the i
 	used by \textcite{Yang2006}
 \end{comment}
 
-\section{Time-based Anomaly Detection}
+%\section{Time-based Anomaly Detection}
 
 \section{Prior Work and Existing Solutions}
 \label{sec:background:network:priorwork}
@@ -425,11 +425,12 @@ This process is non reversible, which might have implications for further proces
 Further, feature hashing introduces the possibility of hash collisions, especially when the targeted dimension number is low. Therefore the reduction needs to be considered carefully.
 However, when compared to a random projection, to reduce dimensionality, the hashing-trick preserves the density and introduces no additional overhead. \parencite{Weinberger2009,Shi2009}
 
-
-
 \subsection{Encoding Time}
 \label{sec:background:network:features:time}
 
+
+
+\begin{comment}
 \begin{itemize}
 	\item use feature direct as vector-dimension (not so good)
 	\item OneHot encoding
@@ -448,5 +449,5 @@ However, when compared to a random projection, to reduce dimensionality, the has
 		\subitem \enquote{Different from random projections, the hashing-trick preserves sparsity and introduces no additional overhead to store projection matrices} \parencite{Weinberger2009}
 	\item "normalize all [...] attributes to the number of standard deviations away from the mean." \parencite{Eskin2002}
 		\subitem "scale based on the likelihood of the attribute values" \parencite{Eskin2002}
-		
 \end{itemize}
+\end{comment}
