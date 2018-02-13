@@ -403,7 +403,18 @@ However, when compared to a random projection, to reduce dimensionality, the has
 \subsection{Encoding Time}
 \label{sec:background:network:features:time}
 
+Encoding time in machine learning and in the context of anomaly detection has to be considered carefully.
+First, time can not be simply expressed as \gls{unixts}, since it is not recurring by design, therefore providing no point to correlate future data points to.
+As a consequence. time has to be within a seasonal context. This can be a week, a year, or any other season time range, in which events reoccur.
+For example, human behaviour tends to organised in a weekly rhythm. This would make a week our reoccurring cycle. Within this cycle one could express time as seconds since the beginning of the week, e.g. Monday 00:00, and normalised against the length of a week in seconds.
 
+Another approach on how to incorporate time could be to train several models, each one representing a fraction of the seasonal cycle. For instance, the week could be divided by days, and there would a model for Monday, a model for Tuesday, etc. pp.
+However, doing this might introduce problems at the transition points between those models. So might an action which in the training set never occurred on a Monday, but always on Tuesdays only a few minutes past midnight, be considered an outlier simply due to the fact that it never happen to be trained in the Monday model.
+The overall consequence is, that a few minutes in timing can change the decision surface dramatically, which is used to determine the \emph{normality.}
+
+To mitigate these drawbacks, one could train the double amount of models, but with half of them shifted by half a time step. This would result in 14 models in our example. The first half would be normal day models, reaching from midnight to midnight. The second half, however, would be shifted by 12 hours and therefore reaching from noon to noon.
+
+\todo{include fig from concept}
 
 \begin{comment}
 \begin{itemize}
