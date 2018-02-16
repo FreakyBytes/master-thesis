@@ -1,1 +1,53 @@
 % !TeX spellcheck = en_GB
+
+\begin{itemize}
+	\item experiment
+	\item test data captured from a floor section of the computer science building
+	\item enriched with malicious packets to keep consistent
+	
+	\item (focusses only an purpose based) attack classes (cf. \parencite{Uma2013})
+		\subitem \gls{dos}
+			\subsubitem Short circuit -> blackout on entire line
+			\subsubitem flooding of \code{A\_Restart} telegrams
+			\subsubitem flooding nonsense
+		\subitem replay
+			\subsubitem repeating a time window
+			\subsubitem sniff a tag and repeat it compressed??? \alert{whatever this means?}
+		\subitem telegram manipulation
+		\subitem reconfiguration of devices (Access Attack)
+		\subitem reconfigure line couplers/make them useless (Access Attack)
+		\subitem spoofing 
+		\subitem Reconnaissance Attack
+			\subsubitem network mapping
+			\subsubitem do inverse action
+		\subitem 
+	
+	\item aim is to show if attacks can be identified by anomaly detection on flow data
+		\subitem under the assumption, that attacks noticeable alter the characteristic and behaviour of \gls{knx} traffic
+		\subitem cf. \parencite{Mukherjee1994,Yang2006,Pan2014}
+	\item demonstrate a message-passing architecture to perform online analytics on \gls{knx} flow-data
+	\item benchmark different algorithms against each other
+\end{itemize}
+
+\begin{comment}
+Angriffe:
+
+DoS
+	Kurzschluss im Bus -> DoS auf gesamtem Segment
+	A_Restart-Pakete -> DoS gegen einzelne Teilnehmer
+Replay-Angriffe
+	Zeit mitschneiden -> wiedergeben
+	Tag mitschneiden, komprimiert wiedergeben
+Manipulation von Paketen (Payload tauschen)
+Konfiguration manipulieren
+Überwindung von Linienkopplern
+Address-Spoofing
+	falsche Adresse in Liniensegment
+	mit existierender Adresse senden
+Netzanalyse mit knxMap (https://github.com/takeshixx/knxmap)
+Mitlesen und sofort gegenteilige Aktion auslösen
+High-Level-Angriffe:
+	nur best. Aktionen zulassen
+	Provokation/Sabotage von menschl. Verhalten
+Social-Engineering -> Einschleusen von Geräten
+\end{comment}
