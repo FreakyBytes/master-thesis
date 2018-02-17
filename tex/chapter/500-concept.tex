@@ -1,5 +1,6 @@
 % !TeX spellcheck = en_GB
 
+\begin{comment}
 \begin{itemize}
 	\item goal == identify threats/attacks in KNX networks
 	\item only a part in defence system
@@ -19,6 +20,7 @@
 	\item only high level anomaly detection is done by algorithms, since simple measurements can be evaluated in Grafana
 		\subitem e.g. change in packets per seconds
 \end{itemize}
+\end{comment}
 
 \todo{better intro sentence?}
 The overall goal is to identify and react to threats and attacks within \gls{bas} networks, which are indicated by malicious traffic.
@@ -26,12 +28,30 @@ This thesis attempts to solve on part of the problem by providing a framework to
 However, it is not part of this concept to identify the kind of attack, nor to distinguish it from abnormal network activity, caused by a rapid change of user behaviour.
 Also it is to note, that the introduced system is merely a part in the defence line.
 
-The architecture proposed in this section is heavily inspired by \textcite{Pan2014}, with extensions made in regards for scalability and continuous use. (cf. Section~\ref{sec:concept:pipeline})
+The architecture proposed in this section is inspired by \textcite{Pan2014}, with extensions made in regards for scalability and continuous use. (cf. Section~\ref{sec:concept:pipeline})
 Opposed to \textcite{Pan2014}, which are using an inductive rule learning algorithm (cf. Chapter~\ref{sec:background:prior-work}), this work employs anomaly detection algorithm, which are able to be trained with unlabelled data sets. (cf. Section~\ref{sec:background:network:novelty})
 This decision was made because \gls{bas} are mostly heterogeneous, since every building and its usage is different, compared to the fire detection system used by \textcite{Pan2014}.
 Therefore, either the baseline model has to reflect a very broad \emph{normality}, or attacks are modelled as signatures. Later option has the drawback of requiring constant updates. Also a sufficiently large database of common attacks is required in first place.
 Neither of these options seemed feasible.
+Consequently, relying on anomaly detection algorithms made more sense in the provided context.
+Despite anomaly based \glspl{ids} being highly useful in changing environments with possibly unknown threats (cf. Section~\ref{sec:background:network:ids:anomaly}), it is to note that they \enquote{are based on the beliefs that an intruder's behavior will be noticeably different from that of a legitimate user and that many unauthorized actions are detectable}. \parencite{Mukherjee1994,Yang2006}
 
+\todo{better transition}
+Further, to enable scalability and on-line detection, the proposed framework was designed around the message-passing design principle.
+This allows for an easily scalable deployment, strongly capsules application modules, and handles recovery after crashes without data-loss.
+Especially later two are not only desired characteristics of an production system, but also speed up development and testing rapidly.
+
+Another novelty, compared to prior examples in literature (cf. Chapter~\ref{sec:background:prior-work}), is the focus of passing the flow-data from the agent to the collector in-band. By doing so, there is no requirement for additional network wiring, which results in easier and possibly cheaper deployment for agents across the network.
+However, this also introduces new challenges, as the aggregated flow data needs to fit within a relatively small data package, in case of \gls{knx} 255 Bytes. (cf. Section~\ref{sec:background:bas:knx:proto:data})
+Also, the collector and the analytical modules need to account for the fact, that no traffic from the agents can pass the network, e.g. due to \gls{dos} attacks.
+
+\todo{challenge, since there are no real flows.}
+Another challenge arises from the nature of \gls{bas} itself. Unlike \gls{scada} networks, where actions follow strict rules and orders and are therefore highly predictable, the communication in \gls{bas} networks consists of many short commands, which are issued in seemingly random fashion, since they are mainly triggered by human behaviour. This includes (light) switches, \gls{pir} motion detectors, or door sensors.
+Due to the fact, that most telegrams are short commands or status reports from sensors, there are no elaborative connection based communication flows in \gls{bas} networks, thus rendering flow-monitoring less useful.
+To counteract this \hint{somewhat special} characteristic, the idea of flow-monitoring is interpreter rather liberal. 
+Namely, by focussing more statistics of all telegrams or packets during a specific synchronised time window, instead of tracking individual flows, which also requires less resources on the agent.
+
+As already mentioned, this system can merely be a part of comprehensive security system. Acknowledging this fact, the outlier detection algorithms focus mainly on high level anomaly detection, as simpler measurements, like a change in telegrams per seconds, can be simply evaluated in a monitoring and alerting frontend like \gls{grafana}.
 
 \section{Monitor Pipeline}
 \label{sec:concept:pipeline}
