@@ -15,7 +15,23 @@
 	\item basic architecture according to \textcite{Pan2014}
 	\item \enquote{Intrusion detection systems (IDSs) “are based on the beliefs that an intruder’s behavior will be noticeably different from that of a legitimate user and that many unauthorized actions are detectable” [2].} \parencite{Mukherjee1994,Yang2006}
 	\item focus on inside attacks \enquote{The intruder has been granted access to the network and may have some knowledge about the network architecture, including where their targeted files or system vulnerabilities.} \parencite{Yang2006}
+	
+	\item only high level anomaly detection is done by algorithms, since simple measurements can be evaluated in Grafana
+		\subitem e.g. change in packets per seconds
 \end{itemize}
+
+\todo{better intro sentence?}
+The overall goal is to identify and react to threats and attacks within \gls{bas} networks, which are indicated by malicious traffic.
+This thesis attempts to solve on part of the problem by providing a framework to detect anomalies in those networks.
+However, it is not part of this concept to identify the kind of attack, nor to distinguish it from abnormal network activity, caused by a rapid change of user behaviour.
+Also it is to note, that the introduced system is merely a part in the defence line.
+
+The architecture proposed in this section is heavily inspired by \textcite{Pan2014}, with extensions made in regards for scalability and continuous use. (cf. Section~\ref{sec:concept:pipeline})
+Opposed to \textcite{Pan2014}, which are using an inductive rule learning algorithm (cf. Chapter~\ref{sec:background:prior-work}), this work employs anomaly detection algorithm, which are able to be trained with unlabelled data sets. (cf. Section~\ref{sec:background:network:novelty})
+This decision was made because \gls{bas} are mostly heterogeneous, since every building and its usage is different, compared to the fire detection system used by \textcite{Pan2014}.
+Therefore, either the baseline model has to reflect a very broad \emph{normality}, or attacks are modelled as signatures. Later option has the drawback of requiring constant updates. Also a sufficiently large database of common attacks is required in first place.
+Neither of these options seemed feasible.
+
 
 \section{Monitor Pipeline}
 \label{sec:concept:pipeline}
