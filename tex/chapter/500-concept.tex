@@ -150,8 +150,11 @@ However, the later solution would neglect any advantages gained by passing the f
 Therefore, the deployment as dedicated appliance is to be preferred.
 
 Despite the kind of implementation, the general task of the Agent is to analyse bypassing traffic and to generate statistical data over it.
+Basically this means, that not flows are the subject of interest but the general network activity and the statistical distribution of specific features appearing in packets over a given timespan (window).
+This time span or time windows is defined and synchronised by the Collector via configuration commands. This allows to adjust the timeout, when new aggregated windows are send to the Collector, e.g. according to the utilization of the \gls{bas} network.
+However, this adjustment can not be made by the Agent itself, since the statistical data from all Agents must be timely aligned. (cf. Section~\ref{sec:concept:pipeline},~\ref{sec:concept:collector})
 
-As already outlined earlier, this design decision diverges significantly with the original concept of flow monitoring. ...
+As already outlined earlier, the design decision to only collect statistical data instead of flows diverges significantly with the original concept of flow monitoring. ...
 
 \section{The Collector Module}
 \label{sec:concept:collector}
