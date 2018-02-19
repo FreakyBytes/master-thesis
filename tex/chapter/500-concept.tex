@@ -102,7 +102,7 @@ E.g. the Collector could prolong the window length, when the \gls{bas} network i
 Finally, the analytical modules receive the bundled statistical windows from the Agents via the Collector. They compare this data to baseline models using different techniques and algorithms. (cf. Section~\ref{sec:concept:anal})
 The results are then again stored in a database, from which they can be queried by a standard graphing and alerting tool, e.g. \gls{grafana}. (cf. Section~\ref{sec:concept:mon})
 
-\todo{figure, that shows how Agents are distributed in the network?}
+\todo{figure, that shows how Agents are distributed in the bas network?}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{figures/300-concept-architecture.pdf}
@@ -110,7 +110,7 @@ The results are then again stored in a database, from which they can be queried 
 	\label{fig:concept:architecture}
 \end{figure}
 
-\section{Design of Netflow Agent}
+\section{Design of the Flow Monitoring Agent}
 \label{sec:concept:agent}
 
 \begin{itemize}
@@ -139,6 +139,19 @@ The results are then again stored in a database, from which they can be queried 
 		\subitem checksum, and possibly signature
 	\item window is encoded in a binary format to fit in the 255 Bytes
 \end{itemize}
+
+The concept of flow based network monitoring defines a separation of the an Agent, which captures bypassing traffic and aggregates it into flows, and the Collector, receiving the flow data from the Agents and analysing it further.
+This separation holds the fundamental benefit of employing flow monitoring: Since sensible pre-processing of the data to be analysed can already performed in the sensor itself, the required data to be send to the Collector is minimized and does not require for additional out-of-band transport. (cf. Section~\ref{sec:background:network:netflow})
+In this adaption of the flow monitoring idea, the concept of this separation is kept for this very reason. In the following the concept of the Agent module is further described.
+
+The Agent, in the context of \glsfirst{bas}, could be physically implemented in various ways.
+The 2 predominant ones seemed to be as an implementation as dedicated appliance, which can installed directly in the network without any additional requirements, or as software agent accessing the \gls{bas} network via an \gls{ip}-gateway.
+However, the later solution would neglect any advantages gained by passing the flow data in-band to the Collector. This includes ease of installation, no requirement for an \gls{ip} network connection, and also no additional exposure of the \gls{bas} network via \gls{ip}.
+Therefore, the deployment as dedicated appliance is to be preferred.
+
+Despite the kind of implementation, the general task of the Agent is to analyse bypassing traffic and to generate statistical data over it.
+
+As already outlined earlier, this design decision diverges significantly with the original concept of flow monitoring. ...
 
 \section{The Collector Module}
 \label{sec:concept:collector}
@@ -183,6 +196,9 @@ The results are then again stored in a database, from which they can be queried 
 	\item \textcite{Eskin2002} suggests clustering and SVM as best performing algorithms
 	\item ...
 \end{itemize}
+
+\subsection{The Feature Space}
+\label{sec:concept:anal:feature-vector}
 
 \subsection{The Address Analyser}
 \label{sec:concept:anal:addr}
