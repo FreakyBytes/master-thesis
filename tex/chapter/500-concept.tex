@@ -56,6 +56,7 @@ As already mentioned, this system can merely be a part of comprehensive security
 \section{Monitoring Pipeline}
 \label{sec:concept:pipeline}
 
+\begin{comment}
 \begin{itemize}
 	\item goal == monitor KNX traffic
 	\item notion of \emph{project} is used to differentiate unique, not comparable KNX networks. Can be seen as a common prefix for everything which need to be named internally.
@@ -72,12 +73,14 @@ As already mentioned, this system can merely be a part of comprehensive security
 	\item bundled windows are distributed by pub-sub-server independently to different analytical modules
 	\item analytical modules compare the windows to a base-line model (in different fashions)
 \end{itemize}
+\end{comment}
 
 For the overall goal to identify threats and attacks within \gls{bas} networks by detecting anomalies, a reliable way to monitor packets or telegrams within said networks is required. Further, this data needs to be processed and analysed, for which a data-pipeline seems well suited.
 In this section the general structure and flow within this pipeline is presented. (cf. Figure~\ref{fig:concept:architecture})
 
 Within the here proposed pipeline the notion of a \emph{project} is used to differentiate unique, not comparable \gls{bas} networks, which share the same analytical resources. It can be understood as common prefix for all internal references. (cf. Chapter~\ref{sec:impl})
 This is not only a beneficial option, when monitoring multiple networks one the same analytical infrastructure, but also allows for quick testing with different data-sets during development.
+Further, all exchanged messages are buffered in queues, to enable easy scaling and recovery after a module or service crashes.
 %To further improve use in production, as well as ease of development, ... (RabbitMQ, but this a detail for impl sec)
 
 Following concepts in literature \parencite[cf.][]{Celeda2012,Pan2014} the pipeline is not build around analysing a full-take of traffic within a \gls{bas}, but rather follows the flow monitoring idea. (cf. Section~\ref{sec:background:network:netflow})
@@ -96,8 +99,8 @@ Regular two-way communication between Agents and Collector also has the benefit 
 Further, accounting for dynamic configuration of the agents allows for adjusting parameters based on the general network load.
 E.g. the Collector could prolong the window length, when the \gls{bas} network is under heavy load to reduce additional traffic. Or the Collector could do the exact opposite to receive more detailed information on heavy resource utilisation.
 
-
-
+Finally, the analytical modules receive the bundled statistical windows from the Agents via the Collector. They compare this data to baseline models using different techniques and algorithms. (cf. Section~\ref{sec:concept:anal})
+The results are then again stored in a database, from which they can be queried by a standard graphing and alerting tool, e.g. \gls{grafana}. (cf. Section~\ref{sec:concept:mon})
 
 \todo{figure, that shows how Agents are distributed in the network?}
 \begin{figure}[h]
