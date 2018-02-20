@@ -50,6 +50,7 @@ Another challenge arises from the nature of \gls{bas} itself. Unlike \gls{scada}
 Due to the fact, that most telegrams are short commands or status reports from sensors, there are no elaborative connection based communication flows in \gls{bas} networks, thus rendering flow-monitoring less useful.
 To counteract this \hint{somewhat special} characteristic, the idea of flow-monitoring is interpreter rather liberal. 
 Namely, by focussing more statistics of all telegrams or packets during a specific synchronised time window, instead of tracking individual flows, which also requires less resources on the Agent.
+\todo{mention, that also rapid change in user behaviour will trigger anomaly detection}
 
 As already mentioned, this system can merely be a part of comprehensive security system. Acknowledging this fact, the outlier detection algorithms focus mainly on high level anomaly detection, as simpler measurements, like a change in telegrams per seconds, can be simply evaluated in a monitoring and alerting frontend like \gls{grafana}.
 
@@ -113,6 +114,7 @@ The results are then again stored in a database, from which they can be queried 
 \section{Design of the Flow Monitoring Agent}
 \label{sec:concept:agent}
 
+\begin{comment}
 \begin{itemize}
 	\item dedicated device
 	\item sits in each or strategic important lines
@@ -139,6 +141,7 @@ The results are then again stored in a database, from which they can be queried 
 		\subitem checksum, and possibly signature
 	\item window is encoded in a binary format to fit in the 255 Bytes
 \end{itemize}
+\end{comment}
 
 The concept of flow based network monitoring defines a separation of the an Agent, which captures bypassing traffic and aggregates it into flows, and the Collector, receiving the flow data from the Agents and analysing it further.
 This separation holds the fundamental benefit of employing flow monitoring: Since sensible pre-processing of the data to be analysed can already performed in the sensor itself, the required data to be send to the Collector is minimized and does not require for additional out-of-band transport. (cf. Section~\ref{sec:background:network:netflow})
@@ -149,12 +152,20 @@ The 2 predominant ones seemed to be as an implementation as dedicated appliance,
 However, the later solution would neglect any advantages gained by passing the flow data in-band to the Collector. This includes ease of installation, no requirement for an \gls{ip} network connection, and also no additional exposure of the \gls{bas} network via \gls{ip}.
 Therefore, the deployment as dedicated appliance is to be preferred.
 
-Despite the kind of implementation, the general task of the Agent is to analyse bypassing traffic and to generate statistical data over it.
+Regardless of the kind of implementation, the general task of the Agent is to analyse bypassing traffic and to generate statistical data over it.
 Basically this means, that not flows are the subject of interest but the general network activity and the statistical distribution of specific features appearing in packets over a given timespan (window).
-This time span or time windows is defined and synchronised by the Collector via configuration commands. This allows to adjust the timeout, when new aggregated windows are send to the Collector, e.g. according to the utilization of the \gls{bas} network.
+These features might include hop count, payload length, source and destination addresses, as well as higher level attributes like the application layer protocol. (cf. Section~\ref{sec:background:bas:knx:communication})
+The time span or time windows, however, is defined and synchronised by the Collector via configuration commands. This allows to adjust the timeout, when new aggregated windows are send to the Collector, e.g. according to the utilization of the \gls{bas} network.
 However, this adjustment can not be made by the Agent itself, since the statistical data from all Agents must be timely aligned. (cf. Section~\ref{sec:concept:pipeline},~\ref{sec:concept:collector})
 
-As already outlined earlier, the design decision to only collect statistical data instead of flows diverges significantly with the original concept of flow monitoring. ...
+As already outlined earlier, the design decision to only collect statistical data instead of flows diverges significantly with the original concept of flow monitoring.
+However, this decision was made due to the fact, that most traffic in \gls{bas} networks consist of short, self-contained commands, which are triggered or at least influenced by human behaviour. This has multiple implications:
+First of all, aggregating packets or telegrams to flows would have negligible resource benefits. Since a flow is defined as a set of packets with common properties bypassing an observation point, there would a many rather short flows, because the majority of packets contain only commands or status updates, which are then simply acknowledge by the receiving party. \parencite[cf.][]{Claise2013} (cf. Section~\ref{sec:background:network:netflow}) \todo{this is ugly af.}
+Consequently, the Agent would be required to report many short flows to the Collector. This would, however, consume a lot of time on the \gls{bas} network, since e.g. in \gls{knx} only a maximum of 255 Byte per telegram can be send. (cf. Section~\ref{sec:background:bas:knx:proto:data})
+Further, it would be of limited use and have higher resource utilization compared to a full-take of the traffic.
+Secondly, keeping state in minimal Agent appliances might be difficult, due to resource constrains induce by cost reduction, as well as limited space and power.
+Therefore, a less resource intensive way of aggregation is desirable, if it is aspired to follow the idea of deploying minimal agent appliances.
+Also considering the limited space available in one \gls{knx} telegram.
 
 \section{The Collector Module}
 \label{sec:concept:collector}
