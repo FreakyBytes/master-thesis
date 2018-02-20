@@ -79,6 +79,13 @@ As already mentioned, this system can merely be a part of comprehensive security
 For the overall goal to identify threats and attacks within \gls{bas} networks by detecting anomalies, a reliable way to monitor packets or telegrams within said networks is required. Further, this data needs to be processed and analysed, for which a data-pipeline seems well suited.
 In this section the general structure and flow within this pipeline is presented. (cf. Figure~\ref{fig:concept:architecture})
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{figures/300-concept-architecture.pdf}
+	\caption[Pipeline Architecture]{Architecture of the monitoring pipeline \todo{explain symbols.} \todo{information flow back to agents, for time sync.}}
+	\label{fig:concept:architecture}
+\end{figure}
+
 Within the here proposed pipeline the notion of a \emph{project} is used to differentiate unique, not comparable \gls{bas} networks, which share the same analytical resources. It can be understood as common prefix for all internal references. (cf. Chapter~\ref{sec:impl})
 This is not only a beneficial option, when monitoring multiple networks one the same analytical infrastructure, but also allows for quick testing with different data-sets during development.
 Further, all exchanged messages are buffered in queues, to enable easy scaling and recovery after a module or service crashes.
@@ -104,12 +111,6 @@ Finally, the analytical modules receive the bundled statistical windows from the
 The results are then again stored in a database, from which they can be queried by a standard graphing and alerting tool, e.g. \gls{grafana}. (cf. Section~\ref{sec:concept:mon})
 
 \todo{figure, that shows how Agents are distributed in the bas network?}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=\textwidth]{figures/300-concept-architecture.pdf}
-	\caption[Pipeline Architecture]{Architecture of the monitoring pipeline \todo{explain symbols.} \todo{information flow back to agents, for time sync.}}
-	\label{fig:concept:architecture}
-\end{figure}
 
 \section{Design of the Flow Monitoring Agent}
 \label{sec:concept:agent}
