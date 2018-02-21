@@ -238,6 +238,7 @@ By having curated and well defined training periods on clean data, this kind of 
 During the operational phase this base-line model is used to compare it to the data, captured by the different Agents.
 Due to the message-passing design of the pipeline, it does not matter if a backlog builds up for an Analyser module, as long as it is cause by a temporal limited issue.
 However, it is important to not stick to an first-in first-out principle, but rather favour always the latest data for immediate analysis. This ensures that system stays in fact an online analytical tool and does not build up a large lack. Not to mention, that skipped windows should be analysed once to load is reduced.
+It is to note, that this behaviour might introduce the risk of missing attacks or general malicious activities, when to man windows need to be skipped. ...
 \todo{write about bad implications of this? Would could they are? Missing attacks, du to skipped windows? <- counter argument is, that attacks change the behaviour significantyl and noticeable, so a couple skipped window should not matter. }
 
 \subsection{The Feature Space}
