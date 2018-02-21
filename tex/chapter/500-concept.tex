@@ -224,6 +224,22 @@ Doing otherwise would results in huge backlog and therefore missing analysis, in
 	\item ...
 \end{itemize}
 
+The core functionality of the proposed pipeline is delivered by the Analyser modules, which capsule different approaches and algorithms to detect anomalies within a data set. (cf. Section~\ref{sec:background:network:novelty})
+The general idea is to compare current occurring data with some sort of base-line model generated during a dedicated training period.
+Therefore, the function of each analytical module can be distinguished in two phases: a learning phase and an operation phase.
+
+In the learning phase the module retrieves already captured data from the database, aligns it in the same timely fashion as the Collector would do, transforms the data into the feature space (cf. Section~\ref{sec:concept:anal:feature-vector}), and then uses an appropriate training technique to generate a base-line model.
+Ideally this step can be performed iteratively so the base-line model can be extended or further trained with new data, without redoing the entire training process. This is especially useful, since the usage of a building might change over time and consequently requires for adjustments.
+
+The requirement for adjusting the base-line model from time to time could be mitigated by just continuously train the base-line model with new in-coming data.
+However, this also introduces introduces a vulnerability for long planned attacks. For instance an attacker could inject increasing amounts of malicious traffic, beginning with a very small rate. This way the base-line model would be biased over a long time without raising an alarm, by keeping the abnormal to normal ratio under the threshold. Finally ending up with a model which no longer resembles the intended \emph{normality}.
+By having curated and well defined training periods on clean data, this kind of attack can be prevented.
+
+During the operational phase this base-line model is used to compare it to the data, captured by the different Agents.
+Due to the message-passing design of the pipeline, it does not matter if a backlog builds up for an Analyser module, as long as it is cause by a temporal limited issue.
+However, it is important to not stick to an first-in first-out principle, but rather favour always the latest data for immediate analysis. This ensures that system stays in fact an online analytical tool and does not build up a large lack. Not to mention, that skipped windows should be analysed once to load is reduced.
+\todo{write about bad implications of this? Would could they are? Missing attacks, du to skipped windows? <- counter argument is, that attacks change the behaviour significantyl and noticeable, so a couple skipped window should not matter. }
+
 \subsection{The Feature Space}
 \label{sec:concept:anal:feature-vector}
 
