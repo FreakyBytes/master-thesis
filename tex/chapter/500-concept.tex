@@ -155,7 +155,7 @@ Therefore, the deployment as dedicated appliance is to be preferred.
 
 Regardless of the kind of implementation, the general task of the Agent is to analyse bypassing traffic and to generate statistical data over it.
 Basically this means, that not flows are the subject of interest but the general network activity and the statistical distribution of specific features appearing in packets over a given timespan (window).
-These features might include hop count, payload length, source and destination addresses, as well as higher level attributes like the application layer protocol. (cf. Section~\ref{sec:background:bas:knx:communication})
+These features might include hop count, payload length, source and destination addresses, as well as higher level attributes like the application layer protocol. (cf. Section~\ref{sec:background:bas:knx:communication}) Alongside meta information like timestamps for begin and end of the time window, and a unique Agent name.
 The time span or time windows, however, is defined and synchronised by the Collector via configuration commands. This allows to adjust the timeout, when new aggregated windows are send to the Collector, e.g. according to the utilization of the \gls{bas} network.
 However, this adjustment can not be made by the Agent itself, since the statistical data from all Agents must be timely aligned. (cf. Section~\ref{sec:concept:pipeline},~\ref{sec:concept:collector})
 
@@ -171,6 +171,7 @@ Also considering the limited space available in one \gls{knx} telegram.
 \section{The Collector Module}
 \label{sec:concept:collector}
 
+\begin{comment}
 \begin{itemize}
 	\item responsible for
 		\subitem collecting data from agents through the \gls{knx} network
@@ -187,8 +188,19 @@ Also considering the limited space available in one \gls{knx} telegram.
 	\item collector regularly checks the \gls{influxdb} for unrelayed windows (latest ones first)
 	\item windows are grouped by time slot
 	\item if all agents have submitted a window for a specific timeslot these windows are bundled and relayed to the analyser message exchange (cf.~Figure~\ref{fig:concept:architecture})
-	\item for all successfully relayed windows set the \code{realayed} flag in the \code{agent-status} measurement to \code{true}
+	\item for all successfully relayed windows set the \code{relayed} flag in the \code{agent-status} measurement to \code{true}
 \end{itemize}
+\end{comment}
+
+Eventually, when the length of a time window exceeds, the Agents will send of their gathered statistical data to the central Collector service.
+As the name implies, the foremost task of it is to collect data from the various Agents (cf. Section~\ref{sec:background:network:netflow}) and stores them immediately in a database to ensure persistence of data, tagged with the unique Agent name, project id, and timestamps.
+
+Also the Collector aligns the individual windows to each other. This is accomplished by regularly configuring the Agents via management commands, so all Agents within one network are fully synchronised, which improves data quality for the analytical modules. To account for clock drift, changing transmission times, and general imprecisions in date calculation, the alignment allows for a divergence in time. However, the maximum divergence has to be carefully considered, based on the jitter to be expected in the network.
+A too high tolerance can lead to grouping unrelated time windows together. Whereby, a too tight tolerance might result in fragmented windows, due to small inaccuracies in time measurement.
+
+When all windows for a specific aligned time period are received by the Collector, the statistical data from the windows is bundled and relayed to the Analyser modules as one block and marks this specific time block as relayed.
+In case the Collector fails to receive all windows for a time window within a certain timeout, it may forward them to the Analysers anyway.
+Doing otherwise would results in huge backlog and therefore missing analysis, in case an Agent is offline or any other reason the transmission of data might be disrupted.
 
 \section{Analyser Modules}
 \label{sec:concept:anal}
