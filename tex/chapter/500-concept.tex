@@ -246,6 +246,35 @@ Nevertheless, following the basic assumption, that malicious activities signific
 \subsection{The Feature Space}
 \label{sec:concept:anal:feature-vector}
 
+\begin{itemize}
+	\item multidimensional numerical vector
+	\item represents one object in the feature space
+		\subitem feature space == set of feature vectors of describing similar objects
+	\item required by most machine learning algorithms
+	\item usually normalised
+	
+	\item in the here proposed concept a feature vector is build from one window received from Agents
+	\item encoded using various methods described in Section~\ref{sec:background:network:features}
+	\item additionally encode the time relative within a seasonal period (e.g. day, week, month, year) (cf. Section~\ref{sec:background:network:features:time})
+	
+	\item feature vector should include easy the measure low-level features
+		\subitem source
+		\subitem destination
+		\subitem priority
+		\subitem hop count
+		\subitem payload length
+		\subitem apci
+	\item (it is to note, that) a window encodes the statistical distribution of features in \gls{bas} packets within a certain time window
+	\item not a single a packet.
+	\item therefore techniques like One-Hot encoding or Feature Hashing, as described in Section~\ref{sec:background:network:features:onehot}~and~\ref{sec:background:network:features:hashing}, need to be adapted
+	\item the individual numeric values in the vector will not be binary (0 or 1) as originally intended by said techniques, but rather will reflect a percentage.
+	\item This means, that the individual features will be normalised against their maximum within the time window.
+	\item It was decided against using absolute values, since this introduce many different value ranges into the feature vector, which distorts the balance of weights between different fields. E.g. the priority would weight more, since it is encode with a narrow value range from 1 to 4 and consequently there are more packets with priority 2, then there packets addressed to a specific physical address. The result would be an unwanted weight shift towards favouring priority as a feature.
+	\item By normalising to a local maximum, instead of a global fixed maximum, the composition of a window is compared, instead of the absolut appearance of features
+	\item As a result a drop in transmitted packets, which still results in the same composition could not be detected.
+	\item However, as mentioned in Section~\ref{}
+\end{itemize}
+
 \subsection{The Address Analyser}
 \label{sec:concept:anal:addr}
 
