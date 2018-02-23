@@ -316,6 +316,7 @@ Additionally, one dimension will encode the time passed within a seasonal period
 \subsection{The Address Analyser}
 \label{sec:concept:anal:addr}
 
+\begin{comment}
 \begin{itemize}
 	\item purpose is to detect new (novel) device addresses
 	\item cf. new device attack
@@ -323,6 +324,16 @@ Additionally, one dimension will encode the time passed within a seasonal period
 	\item in the analytical phase it compares all source and destination addresses in a window with addresses (base model) accumulated in the training phase
 	\item output \glspl{idbmeasurement}: \code{unknown\_src\_addr}, \code{unknown\_src\_telegrams}, \code{unknown\_dest\_addr}, \code{unknown\_dest\_telegrams}, \code{unknown\_addr}, \code{unknown\_telegrams}
 \end{itemize}
+\end{comment}
+
+The address analyser is by far the most simple analytical module within the proposed concept.
+Its purpose is to detect new device addresses and is intended to mainly identify new devices within the line or possibly reconfigured ones. (cf. Chapter~\ref{sec:methods})
+Due to the simplicity it does not rely on the feature vector generation as described above.
+
+During the learning phase the module gathers all occurring source and destination addresses per Agent and stores them in separated sets, forming the base-line model.
+These sets are then queried during the actual operational phase. Every address that is not know will be reported and statistics about the observations will be stored in the database.
+The output of this module is therefore the number of observed unknown source or destination addresses and the number of packets using having unknown source or destination addresses.
+Accordingly the monitoring should report an alert, in case any of these measurements raise above 0.
 
 \subsection{The Local Outlier Factor Analyser}
 \label{sec:concept:anal:lof}
