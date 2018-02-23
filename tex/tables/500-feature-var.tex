@@ -1,0 +1,30 @@
+% Variance of features in eiblog
+
+\begin{wraptable}{r}{0.5\textwidth}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	\newcolumntype{Z}{>{\hfill\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.5\textwidth}{|l|Z|}
+		\toprule
+		\textbf{Field} & \textbf{Variance} \\\midrule
+		source address & $1.30 \times 10^6$ \\
+		destination address & $4.37 \times 10^6$ \\
+		telegram type & $0.00$ \\
+		repeat flag & $0.00$ \\
+		ACK flag & $0.00$ \\
+		priority & $0.01$ \\
+		confirm flag & $0.00$ \\
+		hop count & $0.99$ \\
+		\gls{apci} & $1.08$ \\
+		\gls{tpci} & $0.00$ \\
+		sequence number & $0.00$ \\
+		payload length & $0.77$ \\
+		\bottomrule
+	\end{tabularx}
+	\caption[Variance of different features in a KNX sample]{Variance of different features in a \gls{knx} sample \todo{more title}}
+	\label{tab:concept:anal:feature-vector:var}
+\end{wraptable}

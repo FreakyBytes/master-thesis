@@ -243,9 +243,10 @@ However, it is important to not stick to an first-in first-out principle, but ra
 It is to note, that this behaviour might introduce the risk of missing attacks or general malicious activities, when to man windows need to be skipped.
 Nevertheless, following the basic assumption, that malicious activities significantly and noticeably alter the behaviour of the network, they should be detectable even when some windows are not analysed immediately. Moreover, the performance of the analytical infrastructure should be scaled with the requirements, so that a backlog is generated only in rare cases, if at all.
 
-\subsection{The Feature Space}
+\subsection{Generating the Feature Vector}
 \label{sec:concept:anal:feature-vector}
 
+\begin{comment}
 \begin{itemize}
 	\item multidimensional numerical vector
 	\item represents one object in the feature space
@@ -272,8 +273,45 @@ Nevertheless, following the basic assumption, that malicious activities signific
 	\item It was decided against using absolute values, since this introduce many different value ranges into the feature vector, which distorts the balance of weights between different fields. E.g. the priority would weight more, since it is encode with a narrow value range from 1 to 4 and consequently there are more packets with priority 2, then there packets addressed to a specific physical address. The result would be an unwanted weight shift towards favouring priority as a feature.
 	\item By normalising to a local maximum, instead of a global fixed maximum, the composition of a window is compared, instead of the absolut appearance of features
 	\item As a result a drop in transmitted packets, which still results in the same composition could not be detected.
-	\item However, as mentioned in Section~\ref{}
+	\item However, as mentioned in Section~\ref{sec:concept:mon}, the Analyser modules will merely focus on high level anomaly detection, since a general drop in packets can be easily identified in common monitoring and alerting tools such as \gls{grafana}.
 \end{itemize}
+\end{comment}
+
+Generally, a feature vector is a n-dimensional, numerical vector, which represents one object within the feature space. Whereby each feature of this object is described by one or more dimensions of the vector.
+The feature space, in turn, is the mathematical space containing all possible feature vectors describing similar objects.
+Most clustering or machine learning algorithms use feature vectors as inputs, in which case the vectors are usually normalised beforehand.
+
+In the here proposed concept, a feature vector is used to represent each window received form all Agents. Each statistical distribution captured in the window will be one feature, which is encoded into multiple dimensions each using adopted versions of One-Hot encoding or Feature Hashing. (cf. Sections~\ref{sec:background:network:features:onehot}~and~\ref{sec:background:network:features:hashing})
+Instead of binary values the resulting dimensions will rather contain probabilities, in order to map the statistical information into the feature vector.
+
+Also individual features will be normalised against their maximum within the time window, as they are not reflecting an \emph{true} or \emph{false} state, but rather the percentage of occurrence.
+It was decided against using absolute values, since this would introduce many different value ranges into the feature vector, which distorts the balance of weights between different fields.
+E.g. the priority would weight more, since it is encode with a narrow value range from 1 to 4 and consequently there are more packets with priority 2, then there packets addressed to a specific physical address. The result would be an unwanted weight shift towards favouring priority as a feature.
+By normalising to a local maximum, instead of a global fixed maximum, the compositions of a windows is compared, instead of the absolute appearance of features.
+As a result a drop in transmitted packets, which still results in the same composition could not be detected.
+However, as mentioned in Section~\ref{sec:concept:mon}, the Analyser modules will merely focus on high level anomaly detection, since a general drop in packets can be easily identified in common monitoring and alerting tools such as \gls{grafana}.
+
+\input{tables/500-feature-var.tex}
+The construction of the feature vector directly influences the quality of the used anomaly detection method, therefore the feature to include has to be carefully selected. In case of \gls{bas} networks, e.g. \gls{knx}, there are only a few fields available, which are also common among all packets. Later requirement essentially limits the selection of features defined in lower levels of the protocol, since the content of the payload and therefore application and device specific data can not be predicted.
+This issue is also considered in traditional flow-monitoring, hence mainly values from the \gls{ip} level are processed. (cf. Section~\ref{sec:background:network:netflow})
+Within the scope of \gls{knx} this includes the the fields as listed in Table~\ref{tab:concept:anal:feature-vector:var}. Further a analysis of the variance per field was performed on a test dataset, which was captured over the course of \todo{add time duration for eiblog.txt} in one corridor of the computer science building at the University Rostock.
+It shows to no surprise that source and destination address vary strongly, followed with a large gap by \gls{apci}, hop count, and payload length. 
+
+For the construction of a feature vector normally the only the features with the higher variance would be chosen, since the fields seems to stay constant and therefore do not add any additional information.
+However, in anomaly detection also normally stable could be of interest, since a change in them would most certainly indicate an anomaly.
+As a compromise between both points of views the following fields were selected as feature vector dimensions:
+
+\begin{itemize}
+	\item seconds of the week
+	\item source address
+	\item destination address
+	\item priority
+	\item hop count
+	\item payload length
+	\item \gls{apci}
+\end{itemize}
+
+Additionally, one dimension will encode the time passed within a seasonal period, which could seconds of the day, week, or even year. (cf. Section~\ref{sec:background:network:features:time}) By doing so the base-line model will also represent reoccurring events. This enables the detection of normal activities which just happen at an unusual time within the chosen period.
 
 \subsection{The Address Analyser}
 \label{sec:concept:anal:addr}
