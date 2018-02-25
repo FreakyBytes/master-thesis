@@ -338,6 +338,7 @@ Accordingly the monitoring should report an alert, in case any of these measurem
 \subsection{The Local Outlier Factor Analyser}
 \label{sec:concept:anal:lof}
 
+\begin{comment}
 \begin{itemize}
 	\item cf.~Section~\ref{sec:background:network:novelty:lof}
 	\item proximity based technique (cf.~Section~\ref{sec:background:network:novelty:prox})
@@ -353,7 +354,32 @@ Accordingly the monitoring should report an alert, in case any of these measurem
 		\subitem \gls{apci} usage distribution
 	\item time sensitivity/seasonal sensitivity is archived by including the relative timepoint in the current year
 	\item training different model for different seasons is not necessary since \gls{lof} is a proximity base approach
+	\item good for ids \textcite{Lazarevic2003} \textcite{Zanero2004}
 \end{itemize}
+\end{comment}
+
+The \gls{lof} Analyser module uses the proximity-based anomaly detection algorithm as introduced in Section~\ref{sec:background:network:novelty:lof}, which basic idea is to extend \gls{knn} by the means of locality.
+As outlined by \textcite{Lazarevic2003} and \textcite{Zanero2004}, the \gls{lof} is a good fit for \gls{ids} related anomaly detection.
+
+Using the \gls{lof} algorithm, this Analyser tries to determine, if there are neighbours to the current window with similar statistical distributions of packet features, by comparing the individual feature vectors.
+The base-line model is therefore a set of prior observations.
+Due to the robustness of the algorithm, the data forming the base-line model does not need be purged of all anomalies, however it should not exceed a certain percentile.
+
+In this concept two kinds of base-line models are proposed: One general world-view model and many Agent specific model. 
+The first used to compare \emph{every} window against, to determine if activities are generally foreign to the network.
+The second, Agent specific, models are used to compare only windows from respective Agent to.
+Using two models to compare every window to ensures, that activities which are normal on one line, but never occurred on another line, will trigger be identified as anomaly.
+This could also be archived by modelling the agent as additional feature in the feature vector.
+However, this would then require a complete rebuild of the models, when the network is altered in a way, that an Agent is added or removed. Since the feature vector would be altered then as well, observations after this modification can not be compared to older ones.
+
+The general nature of the \gls{lof} does allow for continuous training. Although requiring less maintenance, it was decided to not make use of this ability. Continuous training introduces the possible attack surface of an attacker slowly introducing malicious and increasing the amount packets over time. By keeping the malicious activities under the alert threshold the attacker could sustainably alter the modelled normality, thus effectively disabling the alerts for intended malicious activities.
+Therefore, also the \gls{lof} Analyser will fall in line with all other analytical modules and have separated training and operational phases.
+
+During the training phases the module basically takes all observations from the training set and converts them into format, which allows for resource economical proximity queries. The seasonal sensitivity is hereby archived by including the relative time point within the chosen season, as described in Section~\ref{sec:concept:anal:feature-vector}.
+
+Within normal operations, all in coming windows will be matched against the world-view and the agent specific model, by comparing the distance to the \emph{MinPts} nearest neighbours with the average distance among those neighbours. (cf. Section~\ref{sec:background:network:novelty:lof})
+Given the difference stays within certain limits, the window is considered part of normality. If not, the window does not reflect common behaviour and is therefore considered an outlier or anomaly.
+The result is stored in the database regardless of the outcome, from where the monitoring and alerting system can gather the measurements and raise and alert, if the amount of abnormal windows per time unit reaches a threshold.
 
 \subsection{The Entropy Analyser}
 \label{sec:concept:anal:entropy}
