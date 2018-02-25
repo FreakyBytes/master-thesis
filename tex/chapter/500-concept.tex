@@ -243,6 +243,8 @@ However, it is important to not stick to an first-in first-out principle, but ra
 It is to note, that this behaviour might introduce the risk of missing attacks or general malicious activities, when to man windows need to be skipped.
 Nevertheless, following the basic assumption, that malicious activities significantly and noticeably alter the behaviour of the network, they should be detectable even when some windows are not analysed immediately. Moreover, the performance of the analytical infrastructure should be scaled with the requirements, so that a backlog is generated only in rare cases, if at all.
 
+\todo{move paragraph about separate world-view/agent specific models up here?}
+
 \subsection{Generating the Feature Vector}
 \label{sec:concept:anal:feature-vector}
 
@@ -366,9 +368,9 @@ The base-line model is therefore a set of prior observations.
 Due to the robustness of the algorithm, the data forming the base-line model does not need be purged of all anomalies, however it should not exceed a certain percentile.
 
 In this concept two kinds of base-line models are proposed: One general world-view model and many Agent specific model. 
-The first used to compare \emph{every} window against, to determine if activities are generally foreign to the network.
+The first is used to compare \emph{every} window against, to determine if activities are generally foreign to the network.
 The second, Agent specific, models are used to compare only windows from respective Agent to.
-Using two models to compare every window to ensures, that activities which are normal on one line, but never occurred on another line, will trigger be identified as anomaly.
+Using two models to compare every window to ensures, that activities which are normal on one line, but never occurred on another line, will trigger be identified as anomaly. \hint{mention different sensitivity tuning by doing this?}
 This could also be archived by modelling the agent as additional feature in the feature vector.
 However, this would then require a complete rebuild of the models, when the network is altered in a way, that an Agent is added or removed. Since the feature vector would be altered then as well, observations after this modification can not be compared to older ones.
 
@@ -391,8 +393,9 @@ The result is stored in the database regardless of the outcome, from where the m
 	\label{fig:concept:time-slots}
 \end{figure}
 
+\begin{comment}
 \begin{itemize}
-	\item cf.~Section~\ref{sec:background:network:novelty:stat}
+	\item cf.~Section~\ref{sec:background:network:novelty:entropy}
 	\item statistical approach
 	\item base model is trained using distribution of the \gls{pmf}
 		\subitem determine statistical distribution per dimension in feature vector
@@ -411,6 +414,22 @@ The result is stored in the database regardless of the outcome, from where the m
 	\item entropy/information gain is calculated for the current distribution of the feature vector compared to the respectively base model
 	\item individual entropies are summed up and stored in the \gls{influxdb} (additional to the individual entropies)
 \end{itemize}
+\end{comment}
+
+The Entropy Analyser, relies less on the spatial properties of the vector space, but rather on the statistical.
+It uses the information theorem by \textcite{Shannon1948} to calculate the information gain or entropy a new incoming window would provide to a base-model.
+The base-model is generated during a dedicated training phase and contains a \glsfirst{pmf} for every dimension of the feature vector. Only the time dimension is excluded, since it is discrete.
+Seasonal sensitivity is instead archived, as described in Section~\ref{sec:background:network:features:time}, by diving one period into multiple time chunks. Each of these chunks equates to one sub-model, which represents the activity during this time slot. To reduce hard breaks at the end of each chunk, another set chunks is used shifted by half the chunk length. Hence every point of time with in the season period is within two chunks. (see Figure~\ref{fig:concept:time-slots})
+
+Further, two types of base-line models will be trained: One general world-view and many Agent specific models.
+The world-view model is used to identify general abnormal behaviour in the network and can be seen as a general-purpose, less sensitive model.
+The Agent specific models, on the other hand, are specialised on the traffic and behaviour unique for one Agent. Therefore, they are able to identify local anomalies, which might be completely normal when seen by another Agent.
+Opposed to the proximity based \gls{lof} approach, this could not be modelled as additional dimension in the feature vector.
+Even though the Agent is an discrete feature, it is assumed to be totally equal distributed, since all Agents report in the same interval.
+Consequently, this feature does not add any additional value to the model and certainly is not able to separate behaviour for different Agents.
+
+During normal operation the entropy is calculated for the feature vector of incoming windows compared to the respectively applying chunks of world-view and the specific Agent model.
+The resulting entropies are then stored into the database individually as well as sum. From there the monitoring and alerting system can pick these values up and raise an alert, if the summed entropy raises over a certain threshold.
 
 \section{Monitoring and Alerting}
 \label{sec:concept:mon}
