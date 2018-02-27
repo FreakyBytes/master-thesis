@@ -1,5 +1,6 @@
 % !TeX spellcheck = en_GB
 
+\begin{comment}
 \begin{itemize}
 	\item implementation in \gls{py} 3
 	\item command line interface with subcommand as central entrypoint providing configuration and log management
@@ -8,6 +9,15 @@
 	\item modules/process pass messages mainly using \gls{amqp} and \gls{rabbitmq} as message broker
 	\item reusing \gls{influxdb} and \gls{rabbitmq} by separating pipelines using a project name
 \end{itemize}
+\end{comment}
+
+To validate, test, and proof the concept as described in Chapter~\ref{sec:concept}, it was implemented as prototype using \gls{py}3 and the \gls{sklearn} library for data analysis.
+As the concept evolves around a message-passing architecture, the prototype follow this approach as well by using \gls{amqp} with \gls{rabbitmq} as message-broker. As central data storage the time-series database \gls{influxdb} is used, since it provides good querying capabilities and excellent integration with existing third-party solutions like \gls{grafana}, which will be used as monitoring and alerting solution.
+
+This enables to run the various modules as separate processes on possibly different machines, as every message exchange is done via the message-broker and historical data can be queried directly form the database.
+As a side effect the possible restrictions introduced by \gls{py}s \glsfirst{gil} are circumvented.
+Even though each module is capsuled in an own process, all of them can be started using an unified \gls{cli}, which abstracts things like configuration and logging, as well as connection management for the \gls{amqp} message-broker and the database.
+The implementation details of each module are described in-depth in the following sections.
 
 \section{Basic Command Line Interface}
 \label{sec:impl:cli}
