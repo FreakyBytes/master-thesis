@@ -434,6 +434,7 @@ The resulting entropies are then stored into the database individually as well a
 \section{Monitoring and Alerting}
 \label{sec:concept:mon}
 
+\begin{comment}
 \begin{itemize}
 	\item using \gls{grafana}
 	\item visualise basic time series like amount of packets per agent
@@ -447,3 +448,19 @@ The resulting entropies are then stored into the database individually as well a
 	\item decoupled from analyse modules
 	\item good integration with \gls{influxdb}
 \end{itemize}
+\end{comment}
+
+The by far most important component of the proposed concept is the monitoring and alerting module.
+Its task is to visualise metrics derived from the windows stored in the database directly, as well as to visualise the results from the analyser modules.
+Most importantly, it also generates user alerts if values raise above a certain secure threshold, so a system administration can assess the situation and possibly initiate counter measures.
+Without a proper monitoring and alerting solution the insights gained by the different Analyser modules would be useless, as it would be difficult for a system administrator to troubleshoot incidents and maintain an overview just using log files.
+Consequently, visual representations of certain system characteristics allow and observe the network behaviour easily.
+The most obvious visualisation is to plot these values as a time series graph, which allows to estimate the change of a measurement over time.
+Additionally, graphs visualising the amount of packets per source or destination address, or the amounts of packets per application could be visualised as bar graph.
+Based on these graphs and plots alerting rules and threshold can be defined.
+However, the exact visualisation setup and alerting rules should be always adapted to the specific use case and network, so it is merely feasible to provide an example here.
+
+Since the problem of monitoring and alerting is a well solved one, it is very feasible to rely on existing standards and third-party solutions for this task and follow the principle of decoupling modules from each other.
+This reduces also the scope of this work, and as a result also the code base which need to be maintained for this project.
+Furthermore, most organisation already have an existing monitoring solution. By relying on standards it allows them to easily incorporate measurements from the here proposed concept of monitoring \gls{bas} networks into their existing system and possibly combine them with other metrics.
+
