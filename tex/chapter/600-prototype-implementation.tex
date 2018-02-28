@@ -12,6 +12,7 @@
 \end{comment}
 
 To validate, test, and proof the concept as described in Chapter~\ref{sec:concept}, it was implemented as prototype using \gls{py}3 and the \gls{sklearn} library for data analysis.
+The working name for the prototype is \emph{BAS Observe}, or short \emph{BOb}.
 As the concept evolves around a message-passing architecture, the prototype follow this approach as well by using \gls{amqp} with \gls{rabbitmq} as message-broker. As central data storage the time-series database \gls{influxdb} is used, since it provides good querying capabilities and excellent integration with existing third-party solutions like \gls{grafana}, which will be used as monitoring and alerting solution.
 
 This enables to run the various modules as separate processes on possibly different machines, as every message exchange is done via the message-broker and historical data can be queried directly form the database.
@@ -19,9 +20,10 @@ As a side effect the possible restrictions introduced by \gls{py}s \glsfirst{gil
 Even though each module is capsuled in an own process, all of them can be started using an unified \gls{cli}, which abstracts things like configuration and logging, as well as connection management for the \gls{amqp} message-broker and the database.
 The implementation details of each module are described in-depth in the following sections.
 
-\section{Basic Command Line Interface}
+\section{The Command Line Interface}
 \label{sec:impl:cli}
 
+\begin{comment}
 \begin{itemize}
 	\item central entry point for all operations
 	\item consistent user experience -> less fiddling while debugging/developing
@@ -30,26 +32,22 @@ The implementation details of each module are described in-depth in the followin
 		\subitem if globally installed, callable via normal terminal command
 	\item implemented using the \gls{lib-click} library version 6
 \end{itemize}
+\end{comment}
 
-\section{The Agent Simulator}
-\label{sec:impl:agent}
+The \glsfirst{cli} provides a central and consistent entry point for all operations and is implemented using \gls{lib-click}, which provides an fast way to define command line options and parameters with code annotations.
+The \gls{cli} can be installed via \gls{py} setup tools and exports one command into the operating system's search path, called \code{bob}.
+This exported main command does not provide any functionality itself, apart from taking basic configuration parameter like the database and message-broker host, log level, and a project identifier. Rather the command exposes a series of subcommands.
 
-\begin{itemize}
-	\item simulates multiple agents based of one log containing telegram in raw \gls{baos} format. cf. Appendix~\todo{add log sample in appendix}
-	\item log must be in chronological order
-	\item utilizes own parser implementation \url{https://github.com/FreakyBytes/BaosKnxParser}
-	\item different agents can be simulated by applying filter rules to log stream, defining, what each agent "can see"
-	\item is supposed to replace actual agents during development
-		\subitem repeatable data
-		\subitem easy/fast setup
-		\subitem log-time much faster than real-time
-		\subitem load testing possible
-	\item reads in individual pack
-	\item filters according to agent filter rules
-	\item updates agent-specific window data model
-	\item if window length/timeout (cf. Section~\ref{sec:concept:agent}) is exceeded in log-time, windows are submitted to \gls{amqp} message broker (cf. Figure~\ref{fig:concept:architecture})
-	\item runs until log is fully red, or maximum packets to parse are exceeded, or defined end timestamp is reached
-\end{itemize}
+The first being \code{bob collector}, which invokes the collector module and only requires a list of available agents additionally to the basic configuration and is further described in Section~\ref{sec:impl:collector}.
+Besides the Collector an agent simulator can be invoked by \code{bob simulate}, which can simulate multiple Agents from the content of a \gls{knx} log file, as described in Section~\ref{sec:impl:agent}.
+By only on replaying existing observations an controllable and repeatable test environment can be archived. An Agent implementation able to process live traffic was not considered necessary for the point of demonstrating and testing the proposed concept.
+
+The Analyser modules, however, can be invoked by either two generic subcommands, \code{bob train} which starts a module in training mode or \code{bob analyse} which runs the module in the operational, analytical mode.
+All training commands take tree additional parameters: a start and end time of the period to be used as training data and the path to a model file, where the training results can be stored. The module which is supposed to be trained can be selected by adding it as another subcommand, so would \code{bob train lof} start the training mode of the \gls{lof} Analyser.
+Same applies for the operation mode, where, however, the start and end date can be omitted and only the path to a model file needs to be passed. So can the Address Analyser be called by \code{bob analyse addr}.
+
+Additionally to starting modules, the \gls{cli} implementation also takes care of configuration management and logging.
+Despite being not critical for demonstrating the performance of the implemented concept, a consistent, easy, and documented mechanism for running modules eases development and hopefully will increase the reuse-ability of the source code.
 
 \section{The Collector Module}
 \label{sec:impl:collector}
@@ -67,6 +65,26 @@ The implementation details of each module are described in-depth in the followin
 	\item collector groups windows by timeslot
 		\subitem so analysers receive a snapshot of the network
 		\subitem allows them to analyse world-view without the need to compensate time-difference
+\end{itemize}
+
+\section{The Agent Simulator}
+\label{sec:impl:agent}
+
+\begin{itemize}
+	\item simulates multiple agents based of one log containing telegram in raw \gls{baos} format. cf. Appendix~\todo{add log sample in appendix}
+	\item log must be in chronological order
+	\item utilizes own parser implementation \url{https://github.com/FreakyBytes/BaosKnxParser}
+	\item different agents can be simulated by applying filter rules to log stream, defining, what each agent "can see"
+	\item is supposed to replace actual agents during development
+	\subitem repeatable data
+	\subitem easy/fast setup
+	\subitem log-time much faster than real-time
+	\subitem load testing possible
+	\item reads in individual pack
+	\item filters according to agent filter rules
+	\item updates agent-specific window data model
+	\item if window length/timeout (cf. Section~\ref{sec:concept:agent}) is exceeded in log-time, windows are submitted to \gls{amqp} message broker (cf. Figure~\ref{fig:concept:architecture})
+	\item runs until log is fully red, or maximum packets to parse are exceeded, or defined end timestamp is reached
 \end{itemize}
 
 \section{The Analyser Base Module}
