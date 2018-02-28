@@ -110,6 +110,17 @@ In the case one Agent's window is never received by the Collector, it waits a co
 	\item runs until log is fully red, or maximum packets to parse are exceeded, or defined end timestamp is reached
 \end{itemize}
 
+The original idea and concept describes multiple Agents, possibly in custom hardware, listening to lines, aggregating traffic, and sending statistical windows to the collector.
+In the sense of developing, testing, and benchmarking the concept and prototype implementation this does not seem appealing. Primarily, because by using actual \gls{knx} hardware in a test network would unnecessarily increase complexity and introduce more error sources, since an actual operational Agent has to be developed.
+Further, the test environment can only kept stable with enormous effort, due to the fact, that sensors like buttons or motion detectors would need to be triggered manually in an consistent way. This alone makes it impossible to design repeatable tests and benchmarks.
+Also there is no guarantee, that a test network will resemble an actual \gls{knx} network.
+
+All this led to the decision to not implement a real operation Agent, but rather an Agent Simulator, which can emulate the behaviour of multiple Agents.
+For this it reads a tab separated log dump containing a timestamp and raw \gls{knx} telegrams, encoded in the \gls{baos} format.
+These dump files were easy to produce out of a database, containing a significant large recording of the \gls{knx} traffic of one line if the computer science building.
+
+Since the module used to capture... baos format... parser... etc...
+
 \section{The Analyser Base Module}
 \label{sec:impl:base}
 
