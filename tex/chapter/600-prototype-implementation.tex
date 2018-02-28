@@ -36,7 +36,8 @@ The implementation details of each module are described in-depth in the followin
 
 The \glsfirst{cli} provides a central and consistent entry point for all operations and is implemented using \gls{lib-click}, which provides an fast way to define command line options and parameters with code annotations.
 The \gls{cli} can be installed via \gls{py} setup tools and exports one command into the operating system's search path, called \code{bob}.
-This exported main command does not provide any functionality itself, apart from taking basic configuration parameter like the database and message-broker host, log level, and a project identifier. Rather the command exposes a series of subcommands.
+This exported main command does not provide any functionality itself, apart from taking basic configuration parameter like the database and message-broker host, log level, and a project identifier -- all of which are preset to sane defaults.
+Rather the command exposes a series of subcommands.
 
 The first being \code{bob collector}, which invokes the collector module and only requires a list of available agents additionally to the basic configuration and is further described in Section~\ref{sec:impl:collector}.
 Besides the Collector an agent simulator can be invoked by \code{bob simulate}, which can simulate multiple Agents from the content of a \gls{knx} log file, as described in Section~\ref{sec:impl:agent}.
@@ -67,6 +68,7 @@ A feature that deliberately was left out were configuration files. For the purpo
 		\subitem so analysers receive a snapshot of the network
 		\subitem allows them to analyse world-view without the need to compensate time-difference
 \end{itemize}
+
 
 
 \section{The Agent Simulator}
