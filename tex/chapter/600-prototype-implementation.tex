@@ -18,6 +18,7 @@ As the concept evolves around a message-passing architecture, the prototype foll
 This enables to run the various modules as separate processes on possibly different machines, as every message exchange is done via the message-broker and historical data can be queried directly form the database.
 As a side effect the possible restrictions introduced by \gls{py}s \glsfirst{gil} are circumvented.
 Even though each module is capsuled in an own process, all of them can be started using an unified \gls{cli}, which abstracts things like configuration and logging, as well as connection management for the \gls{amqp} message-broker and the database.
+For interacting with the \gls{rabbitmq} message-broker \gls{lib-pika} 0.11 is used. To query from and push values to the \gls{influxdb} time series database the official \gls{py} client side library is used.
 The implementation details of each module are described in-depth in the following sections.
 
 \section{The Command Line Interface}
@@ -51,9 +52,12 @@ Additionally to starting modules, the \gls{cli} implementation also takes care o
 Despite being not critical for demonstrating the performance of the implemented concept, a consistent, easy, and documented mechanism for running modules eases development and hopefully will increase the reuse-ability of the source code.
 A feature that deliberately was left out were configuration files. For the purpose of showcasing the concept it did not seem necessary and comes with the risk of hiding configuration parameter out of sight, which possibly increases the risk of mistakes made just because a changed parameter was forgotten. By plainly relying on command line parameters for configuration, the configuration is always in plain sight, when invoking a command.
 
+\todo{explain 'project' notion}
+
 \section{The Collector Module}
 \label{sec:impl:collector}
 
+\begin{comment}
 \begin{itemize}
 	\item central hub for relaying information
 	\item receives agent windows via \gls{amqp} message broker (cf. Figure~\ref{fig:concept:architecture})
@@ -68,8 +72,23 @@ A feature that deliberately was left out were configuration files. For the purpo
 		\subitem so analysers receive a snapshot of the network
 		\subitem allows them to analyse world-view without the need to compensate time-difference
 \end{itemize}
+\end{comment}
 
+The central hub for relaying and transforming information is implemented in the Collector module.
+It receives \gls{json}-encoded windows with statistical data from Agents by subscribing to an \gls{amqp} topic on the message-broker. Each incoming window is parsed, checked for format errors, and then immediately converted into a format suitable for \gls{influxdb} and pushed to the database. Only then the processing of the window is acknowledged to the message-broker, which ensures that no windows is dropped in cases Collector implementation crashes. This is archived by relying on retry functionality of message queues in the \gls{rabbitmq} broker and only requesting one message at a time.
 
+Additionally, the Collector relays all windows belonging to one time slot to the Analyser modules, once one window from each Agent is written to the database.
+For this a callback is invoked every $4$ seconds, which queries the $50$ latest, not relayed windows from the database. Whereby only the management measurement is queried, to reduce the size of data that needs to be handled.
+These windows are then sorted into a hash-map of time slots, where the key is the averaged timestamp of all windows in this slot. The idea is to allow a certain degree (up to $2$ seconds) of clock drift in the Agents. 
+So, if a window is added to the hash-map, a loop iterates over all existing keys and returns the key closest to the timestamp of the window, but with a maximum delta of $2$ seconds.
+The window is then added to that timeslot and the key is recalculated as the average of all window timestamps in this slot, including the newly added one.
+If no timeslot within $2$ seconds around the window exists, a new one will be created with the window's timestamp as key.
+
+Once all queried windows are sorted into the hash-map, the Collector checks if a time slot contains windows from all Agents, by validating against a configurable list of Agent-ids.
+When the time slot is complete, the windows are enriched by querying all remaining measurements from the database and then relayed to the Analyser modules via an \gls{amqp} message exchange, which distributes it into multiple message queues.
+Only if the windows were successfully passed into to the message-broker, they are marked as relayed in the database. This ensures, that every window is processed. However, this way can not prevent time slots to send repeatedly to the Analyser modules, if the Collector crashes right before marking them as relayed in the database. In contrast to receiving windows form Agents and initially writing them to the database, this does no harm, since the analytical algorithms are deterministic and therefore produce the same results for the same data input. Therefore only computational resources would be wasted, as \gls{influxdb} automatically filters redundant time series entries.
+
+In the case one Agent's window is never received by the Collector, it waits a configurable timeout of about 60 seconds before relaying a window anyway. This ensures that a time slot is analyses even when an Agent fails, regardless of the failure mode. As this is an anomaly, which can be easily queried in the monitoring and alerting system, it is also detected there and consequently not handled in the Collector apart from a warning in the log.
 
 \section{The Agent Simulator}
 \label{sec:impl:agent}
