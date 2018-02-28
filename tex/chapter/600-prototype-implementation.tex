@@ -48,6 +48,7 @@ Same applies for the operation mode, where, however, the start and end date can 
 
 Additionally to starting modules, the \gls{cli} implementation also takes care of configuration management and logging.
 Despite being not critical for demonstrating the performance of the implemented concept, a consistent, easy, and documented mechanism for running modules eases development and hopefully will increase the reuse-ability of the source code.
+A feature that deliberately was left out were configuration files. For the purpose of showcasing the concept it did not seem necessary and comes with the risk of hiding configuration parameter out of sight, which possibly increases the risk of mistakes made just because a changed parameter was forgotten. By plainly relying on command line parameters for configuration, the configuration is always in plain sight, when invoking a command.
 
 \section{The Collector Module}
 \label{sec:impl:collector}
@@ -66,6 +67,7 @@ Despite being not critical for demonstrating the performance of the implemented 
 		\subitem so analysers receive a snapshot of the network
 		\subitem allows them to analyse world-view without the need to compensate time-difference
 \end{itemize}
+
 
 \section{The Agent Simulator}
 \label{sec:impl:agent}
