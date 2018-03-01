@@ -116,10 +116,13 @@ Further, the test environment can only kept stable with enormous effort, due to 
 Also there is no guarantee, that a test network will resemble an actual \gls{knx} network.
 
 All this led to the decision to not implement a real operation Agent, but rather an Agent Simulator, which can emulate the behaviour of multiple Agents.
-For this it reads a tab separated log dump containing a timestamp and raw \gls{knx} telegrams, encoded in the \gls{baos} format.
+For this it reads a tab separated \gls{knx} dump containing a timestamp and raw \gls{knx} telegrams, encoded in the \gls{baos} format.
 These dump files were easy to produce out of a database, containing a significant large recording of the \gls{knx} traffic of one line if the computer science building.
 
-Since the module used to capture... baos format... parser... etc...
+Since the module used to capture the line traffic, exports not normal \gls{knx} telegrams, but rather a proprietary format resembling an extended data telegram (cf. Section~\ref{sec:background:bas:knx:proto:data}), a custom parser is required and is integrated into the prototype implementation as \gls{py} library.
+It takes the tab separated log \gls{knx} dump as input, assuming it is in chronological order, parses the packets and updates multiple statistical windows, one for each simulated Agent. Whereby the traffic the different simulated Agents can is distinguished by address filter rules, which work similar to \gls{ip} subnets masks. 
+After the window length exceeded in log time, they are encode in \gls{json} and send to the collector via the message-broker.
+... baos format... parser... etc...
 
 \section{The Analyser Base Module}
 \label{sec:impl:base}
