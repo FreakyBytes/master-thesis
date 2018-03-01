@@ -78,7 +78,7 @@ The central hub for relaying and transforming information is implemented in the 
 It receives \gls{json}-encoded windows with statistical data from Agents by subscribing to an \gls{amqp} topic on the message-broker. Each incoming window is parsed, checked for format errors, and then immediately converted into a format suitable for \gls{influxdb} and pushed to the database. Only then the processing of the window is acknowledged to the message-broker, which ensures that no windows is dropped in cases Collector implementation crashes. This is archived by relying on retry functionality of message queues in the \gls{rabbitmq} broker and only requesting one message at a time.
 
 Additionally, the Collector relays all windows belonging to one time slot to the Analyser modules, once one window from each Agent is written to the database.
-For this a callback is invoked every $4$ seconds, which queries the $50$ latest, not relayed windows from the database. Whereby only the management measurement is queried, to reduce the size of data that needs to be handled.
+For this a callback is invoked every $4$ seconds, which queries the $50$ latest, not relayed windows from the database. Whereby only the management measurement is queried containing the window length, star and end time, and relayed status, to reduce the size of data that needs to be handled.
 These windows are then sorted into a hash-map of time slots, where the key is the averaged timestamp of all windows in this slot. The idea is to allow a certain degree (up to $2$ seconds) of clock drift in the Agents. 
 So, if a window is added to the hash-map, a loop iterates over all existing keys and returns the key closest to the timestamp of the window, but with a maximum delta of $2$ seconds.
 The window is then added to that timeslot and the key is recalculated as the average of all window timestamps in this slot, including the newly added one.
@@ -93,22 +93,24 @@ In the case one Agent's window is never received by the Collector, it waits a co
 \section{The Agent Simulator}
 \label{sec:impl:agent}
 
+\begin{comment}
 \begin{itemize}
 	\item simulates multiple agents based of one log containing telegram in raw \gls{baos} format. cf. Appendix~\todo{add log sample in appendix}
 	\item log must be in chronological order
 	\item utilizes own parser implementation \url{https://github.com/FreakyBytes/BaosKnxParser}
 	\item different agents can be simulated by applying filter rules to log stream, defining, what each agent "can see"
 	\item is supposed to replace actual agents during development
-	\subitem repeatable data
-	\subitem easy/fast setup
-	\subitem log-time much faster than real-time
-	\subitem load testing possible
+		\subitem repeatable data
+		\subitem easy/fast setup
+		\subitem log-time much faster than real-time
+		\subitem load testing possible
 	\item reads in individual pack
 	\item filters according to agent filter rules
 	\item updates agent-specific window data model
 	\item if window length/timeout (cf. Section~\ref{sec:concept:agent}) is exceeded in log-time, windows are submitted to \gls{amqp} message broker (cf. Figure~\ref{fig:concept:architecture})
 	\item runs until log is fully red, or maximum packets to parse are exceeded, or defined end timestamp is reached
 \end{itemize}
+\end{comment}
 
 The original idea and concept describes multiple Agents, possibly in custom hardware, listening to lines, aggregating traffic, and sending statistical windows to the collector.
 In the sense of developing, testing, and benchmarking the concept and prototype implementation this does not seem appealing. Primarily, because by using actual \gls{knx} hardware in a test network would unnecessarily increase complexity and introduce more error sources, since an actual operational Agent has to be developed.
@@ -119,14 +121,17 @@ All this led to the decision to not implement a real operation Agent, but rather
 For this it reads a tab separated \gls{knx} dump containing a timestamp and raw \gls{knx} telegrams, encoded in the \gls{baos} format.
 These dump files were easy to produce out of a database, containing a significant large recording of the \gls{knx} traffic of one line if the computer science building.
 
-Since the module used to capture the line traffic, exports not normal \gls{knx} telegrams, but rather a proprietary format resembling an extended data telegram (cf. Section~\ref{sec:background:bas:knx:proto:data}), a custom parser is required and is integrated into the prototype implementation as \gls{py} library.
-It takes the tab separated log \gls{knx} dump as input, assuming it is in chronological order, parses the packets and updates multiple statistical windows, one for each simulated Agent. Whereby the traffic the different simulated Agents can is distinguished by address filter rules, which work similar to \gls{ip} subnets masks. 
+Since the module used to capture the actual line traffic initially, exports not normal \gls{knx} telegrams, but rather a proprietary format resembling an extended data telegram called \gls{baos}, the \gls{knx} dump is also encoded in this format.
+Therefore a custom parser is required and was integrated into the prototype implementation as \gls{py} library.
+The parser takes the tab separated log \gls{knx} dump as input, assuming chronological order, parses the packets and updates multiple statistical windows, one for each simulated Agent. Whereby the traffic the different simulated Agents can is distinguished by address filter rules, which work similar to \gls{ip} subnets masks. 
 After the window length exceeded in log time, they are encode in \gls{json} and send to the collector via the message-broker.
-... baos format... parser... etc...
+The statistical window is not based on the feature vector (see Section~\ref{sec:concept:anal:feature-vector}). Instead the appearance of certain features are count, e.g. the source address \code{1.1.15} appeared $15$ times.
+Every further processing, like normalisation and vectorising is done by the Collector. 
 
 \section{The Analyser Base Module}
 \label{sec:impl:base}
 
+\begin{comment}
 \begin{itemize}
 	\item non functional base class, unifying commonly used functions for analyser modules, including
 		\subitem logging and config setup
@@ -140,6 +145,21 @@ After the window length exceeded in log time, they are encode in \gls{json} and 
 	\item once the grouping is finished the remaining metrics are queried for all windows in a time slots
 	\item reduced RAM overhead during the querying and enables better (fuzzy) grouping, mitigating shortcoming in the \gls{influxdb} query language
 \end{itemize}
+\end{comment}
+
+Once statistical windows are gathered by the Agent simulator and aggregated by the Collector they are passed on the several Analyser modules.
+Since the handling of persist models, receiving of statistical windows, and querying of training data are tasks common to all Analyser and contain a significant amount of boilerplate code it was abstracted in a base class.
+This base class also exposes a set of methods to invoke any Analyser via an standardised interface.
+
+Besides a common interface and initialisation code providing access to configuration and logging utilities, the base class implements a methods to acquire training data and handle persistence of trained models.
+The training data is queried from the \gls{influxdb} by resembling the behaviour of the Collector when grouping Agent windows together.
+Similar to the Collector only the management measurement is queried initially, which is used to sort all windows into time slots, but allowing for up to $2$ seconds of jitter within the windows' timestamps to accommodate for clock drift or similar effects.
+Once a window is assigned to a time slot the remaining measurements are queried and stored in memory. It was found during test runs, that using multiple precise queries instead of one large one significantly improves the performance, resource consumption, and response rate of the \gls{influxdb}.
+When the requested time span of training data is gathered it is passed back to actual training function, implemented in the specific Analyser modules.
+
+Another important task handled within the base class is the persistence of models, meaning saving and loading trained base-line models to disk.
+In case the base-line model only consists of standard \gls{py} object, these are simply serialised into \gls{json} and stored in the file system, like it is done for the address Analyser described in Section~\ref{sec:impl:addr}.
+However, if the base-line model is trained using \gls{sklearn}, it can often not be stored as a \gls{json} representation. Therefore the in \gls{sklearn} integrated binary serialiser is used. Since one base-line model consists actually of many sub-models to account for world-view and Agent specific models (cf. Section~\ref{sec:concept:anal:lof}), multiple files are written to the file system. To keep track of all those sub-models, the mapping between the Agent ID or the world-view model and the file name for their binary representation are stored in an central \gls{json} file. This \gls{json} file is used to point to for configuration purposes, so the user does not have to supply the Agent ID to file mapping by hand.
 
 \section{The Address Analyser Module}
 \label{sec:impl:addr}
@@ -154,6 +174,7 @@ After the window length exceeded in log time, they are encode in \gls{json} and 
 	\item \todo{and list of unknown addresses is exported}
 	\item exported metrics: \code{unknown\_src\_addr}, \code{unknown\_src\_telegrams}, \code{unknown\_dest\_addr}, \code{unknown\_dest\_telegrams}, \code{unknown\_addr}, \code{unknown\_telegrams}
 \end{itemize}
+
 
 \section{The Local Outlier Factor Analyser Module}
 \label{sec:impl:lof}
