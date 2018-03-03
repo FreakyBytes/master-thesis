@@ -418,14 +418,14 @@ The result is stored in the database regardless of the outcome, from where the m
 
 The Entropy Analyser, relies less on the spatial properties of the vector space, but rather on the statistical.
 It uses the information theorem by \textcite{Shannon1948} to calculate the information gain or entropy a new incoming window would provide to a base-model.
-The base-model is generated during a dedicated training phase and contains a \glsfirst{pmf} for every dimension of the feature vector. Only the time dimension is excluded, since it is discrete.
+The base-model is generated during a dedicated training phase and contains a \glsfirst{pmf} for every dimension of the feature vector. Only the time dimension is excluded, since it is continuous.
 Seasonal sensitivity is instead archived, as described in Section~\ref{sec:background:network:features:time}, by diving one period into multiple time chunks. Each of these chunks equates to one sub-model, which represents the activity during this time slot. To reduce hard breaks at the end of each chunk, another set chunks is used shifted by half the chunk length. Hence every point of time with in the season period is within two chunks. (see Figure~\ref{fig:concept:time-slots})
 
 Further, two types of base-line models will be trained: One general world-view and many Agent specific models.
 The world-view model is used to identify general abnormal behaviour in the network and can be seen as a general-purpose, less sensitive model.
 The Agent specific models, on the other hand, are specialised on the traffic and behaviour unique for one Agent. Therefore, they are able to identify local anomalies, which might be completely normal when seen by another Agent.
 Opposed to the proximity based \gls{lof} approach, this could not be modelled as additional dimension in the feature vector.
-Even though the Agent is an discrete feature, it is assumed to be totally equal distributed, since all Agents report in the same interval.
+Even though the Agent is an categorical feature, it is assumed to be totally equal distributed, since all Agents report in the same interval.
 Consequently, this feature does not add any additional value to the model and certainly is not able to separate behaviour for different Agents.
 
 During normal operation the entropy is calculated for the feature vector of incoming windows compared to the respectively applying chunks of world-view and the specific Agent model.
