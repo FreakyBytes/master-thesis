@@ -16,7 +16,7 @@ The working name for the prototype is \emph{BAS Observe}, or short \emph{BOb}.
 As the concept evolves around a message-passing architecture, the prototype follow this approach as well by using \gls{amqp} with \gls{rabbitmq} as message-broker. As central data storage the time-series database \gls{influxdb} is used, since it provides good querying capabilities and excellent integration with existing third-party solutions like \gls{grafana}, which will be used as monitoring and alerting solution.
 
 This enables to run the various modules as separate processes on possibly different machines, as every message exchange is done via the message-broker and historical data can be queried directly form the database.
-As a side effect the possible restrictions introduced by \gls{py}s \glsfirst{gil} are circumvented.
+As a side effect the possible restrictions introduced by \gls{py}'s \glsfirst{gil} are circumvented.
 Even though each module is capsuled in an own process, all of them can be started using an unified \gls{cli}, which abstracts things like configuration and logging, as well as connection management for the \gls{amqp} message-broker and the database.
 For interacting with the \gls{rabbitmq} message-broker \gls{lib-pika} 0.11 is used. To query from and push values to the \gls{influxdb} time series database the official \gls{py} client side library is used.
 The implementation details of each module are described in-depth in the following sections.
@@ -147,7 +147,7 @@ Every further processing, like normalisation and vectorising is done by the Coll
 \end{itemize}
 \end{comment}
 
-Once statistical windows are gathered by the Agent simulator and aggregated by the Collector they are passed on the several Analyser modules.
+Once the statistical windows are gathered by the Agent simulator and aggregated by the Collector they are passed on the several Analyser modules.
 Since the handling of persist models, receiving of statistical windows, and querying of training data are tasks common to all Analyser and contain a significant amount of boilerplate code it was abstracted in a base class.
 This base class also exposes a set of methods to invoke any Analyser via an standardised interface.
 
@@ -253,6 +253,7 @@ To form the final feature vector all vectors produces by encoding the single fea
 \section{The Local Outlier Factor Analyser Module}
 \label{sec:impl:lof}
 
+\begin{comment}
 \begin{itemize}
 	\item purpose is to detect uncommon bus activity
 	\item world view as well as agent based
@@ -297,7 +298,25 @@ To form the final feature vector all vectors produces by encoding the single fea
 		\subitem threshold is decided in analyser
 		\subitem easier monitoring, but data get mangled doing this
 		\subitem better might be to store the relative distance (output of \gls{lof}) as well
-	
 \end{itemize}
+\end{comment}
 
-To detect abnormal behaviour in the network 
+A more sophisticated Analyser modules uses the \gls{lof} algorithm, an proximity based approach to outlier or anomaly detection.
+The main idea is outlined in Section~\ref{sec:concept:anal:lof}. The general concept is to detect uncommon or abnormal behaviour by comparing the current observation to prior observations and determine if it is significantly further away within the feature space.
+To determine theses distances the \glsfirst{lof} implementation of \gls{sklearn} library is used with the feature vector as input, which is constructed as described in Section~\ref{sec:impl:vectoriser}.
+The main advantage of the \gls{lof} algorithm consists in its ability to cope with unclean data, this means that the training data set can contain a small portion of malicious traffic without affecting the performance.
+
+During the training phase the module may create a new base-line model or further train an existing one, whereby the construct of the base-line model consists for multiple sub-models. First there is a general world-view model used to compared to traffic from all Agents to. Second there are multiple Agent specific models, each for every Agent. All of these sub-models is managed using functions provided by the Base Module described in Section~\ref{sec:impl:base}.
+The differentiation between the general world-view model and the individual Agent specific models is important to maintain a general overview of activities which are normal in the general context of the \gls{bas} network in question and simultaneously being able to identify minor changes of the activities in individual network segments.
+Basically by having a general model and multiple highly specific ones a balance between low and high sensitivity is archived. 
+The world-view model is less likely to react to small derivations and therefore reduce false positives. The Agent specific models, however, enable the system to detect anomalies caused by activities which are normal for one line, but extremely rare on another line.
+
+To train these different models first data from \gls{influxdb} is queries for a chosen training period using the functions provided by the Base Module, then this data is grouped in the same way as the Collector would do and passed into the Vectoriser.
+Finally, the resulting feature vectors are used to train the respective (sub-)models with \gls{sklearn}.
+
+During the operational phase the module analyses incoming windows, by first passing them through the Vectoriser and then comparing them to two models: the world-view model and the respective Agent specific model for the Agent that captured that window.
+For this the vector of the to-be-analysed window is compared to its \emph{MinPts} 20 nearest neighbours using the Minkowski distance with $p=2$, which equals to the Euclidean distance, according to the \gls{lof} algorithm as introduced by \textcite{Breunig2000}.
+The resulting factor is then compared to a threshold, which is derived from the assume contamination of the training data and the training data itself. For the purpose of demonstration the contamination is assumed to be $10\%$.
+Finally, the \gls{lof} and the result after comparing it to the threshold are pushed to the \gls{influxdb} database for both models.
+The actual binary decision is important for alerting and can not be easily archived within the monitoring and alerting solution, as the threshold is not fixed.
+However, the factor of \enquote{oulier-ness} is provided as well to allow for better over time monitoring of the abnormal activities within the network and to provide more insides.
