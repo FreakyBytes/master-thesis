@@ -271,10 +271,6 @@ Data points with in denser area, representing normality, will have shorter dista
 	\end{itemize}
 \end{comment}
 
-Another proximity based approach to outlier detection is the \glsfirst{lof}, introduced by \textcite{Breunig2000}. It is based on the \gls{knn} problem, but accounts for locality and is specifically designed for outlier detection.
-With \gls{lof} an outlier is a data point which \emph{MinPts} nearest neighbours are further away then these neighbours from each other. 
-Using this lemma, For each data point the degree of \enquote{outlier-ness}, or local outlier factor, is determined.
-
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\centering
 	\includegraphics[width=0.48\textwidth,trim={12mm 5mm 15mm 10mm},keepaspectratio,clip]{figures/200-background-lof.pdf}
@@ -282,9 +278,15 @@ Using this lemma, For each data point the degree of \enquote{outlier-ness}, or l
 	\label{fig:background:network:novelty:lof}
 \end{wrapfigure}
 
+Another proximity based approach to outlier detection is the \glsfirst{lof}, introduced by \textcite{Breunig2000}. It is based on the \gls{knn} problem, but accounts for locality and is specifically designed for outlier detection.
+With \gls{lof} an outlier is a data point which \emph{MinPts} nearest neighbours are further away then these neighbours from each other. 
+Using this lemma, For each data point the degree of \enquote{outlier-ness}, or local outlier factor, is determined.
+
 By not relying on a global threshold, the \gls{lof} can account for clusters of different density. Therefore, one could argue, that the \gls{lof} is not only proximity based, but rather density based. Further by not treating the classification of an outlying observation as a binary property, analysis made on top of the outlier classification can be more precise. \parencite[cf.][]{Breunig2000}
 
 Moreover, the ability of \gls{lof} to work on unclean data and account for different density in clusters through locality, making it a good match for \gls{ids} solutions, as \textcite{Lazarevic2003} shows. Also \textcite{Zanero2004} conducted an experiment on using unsupervised learning algorithms for intrusion detection and found, that the problem of locality with \gls{knn} has to be addressed in order to be more precise in predictions, what \gls{lof} archives.
+
+\todo{ref to fig}
 
 \clearpage
 \subsection{Support Vector Machines}
@@ -322,6 +324,8 @@ They classify data points by defining decision surfaces within the feature space
 In case of one-class \gls{svm}, which are predominantly used for outlier detection, there is only one category resembling \emph{normality}. Hence the training data must contain the full gamut of normal data points, without any contamination introduced by anomalies. \parencite[cf.][]{Muller2001,Scholkopf2001a}
 
 As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable techniques to be used in anomaly-based \glspl{ids}. However, since the way this model is trained requires for clean training data, it is increasingly hard to fit it into new networks and changing environments. (cf. Section~\ref{sec:background:network:ids:anomaly})
+
+\todo{ref to fig}
 	
 \subsection{Isolation Forest}
 \label{sec:background:network:novelty:isoforest}
