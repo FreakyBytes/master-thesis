@@ -301,7 +301,7 @@ To form the final feature vector all vectors produces by encoding the single fea
 \end{itemize}
 \end{comment}
 
-A more sophisticated Analyser modules uses the \gls{lof} algorithm, an proximity based approach to outlier or anomaly detection.
+A more sophisticated Analyser modules uses the \gls{lof} algorithm, an proximity-based approach to outlier or anomaly detection.
 The main idea is outlined in Section~\ref{sec:concept:anal:lof}. The general concept is to detect uncommon or abnormal behaviour by comparing the current observation to prior observations and determine if it is significantly further away within the feature space.
 To determine theses distances the \glsfirst{lof} implementation of \gls{sklearn} library is used with the feature vector as input, which is constructed as described in Section~\ref{sec:impl:vectoriser}.
 The main advantage of the \gls{lof} algorithm consists in its ability to cope with unclean data, this means that the training data set can contain a small portion of malicious traffic without affecting the performance.
@@ -315,7 +315,7 @@ To train these different models first data from \gls{influxdb} is queries for a 
 Finally, the resulting feature vectors are used to train the respective (sub-)models with \gls{sklearn}.
 
 During the operational phase the module analyses incoming windows, by first passing them through the Vectoriser and then comparing them to two models: the world-view model and the respective Agent specific model for the Agent that captured that window.
-For this the vector of the to-be-analysed window is compared to its \emph{MinPts} 20 nearest neighbours using the Minkowski distance with $p=2$, which equals to the Euclidean distance, according to the \gls{lof} algorithm as introduced by \textcite{Breunig2000}.
+For this the vector of the to-be-analysed window is compared to its \emph{MinPts} $100$ nearest neighbours using the \emph{Minkowski} distance with $p=2$, which equals to the Euclidean distance, according to the \gls{lof} algorithm as introduced by \textcite{Breunig2000}.
 The resulting factor is then compared to a threshold, which is derived from the assume contamination of the training data and the training data itself. For the purpose of demonstration the contamination is assumed to be $10\%$.
 Finally, the \gls{lof} and the result after comparing it to the threshold are pushed to the \gls{influxdb} database for both models.
 The actual binary decision is important for alerting and can not be easily archived within the monitoring and alerting solution, as the threshold is not fixed.
@@ -323,6 +323,20 @@ However, the factor of \enquote{oulier-ness} is provided as well to allow for be
 
 \section{The Support Vector Machine Analyser Module}
 \label{sec:impl:svm}
+
+Another approach from the class of proximity-based approaches is the \gls{svm} Analyser module. It uses a special subclass of \glspl{svm}
+to separate observations belonging to the \emph{normality} from outliers.
+Whereby the concept of \gls{lof} is to determine outliers by comparing distances in the local cluster, \glspl{svm} define a border or decision surface of \emph{normality}. Every data point outside this border is considered an outlier.
+
+This decision surface is defined during the training period, where \gls{rbf} kernel is fitted to cover to training data as best as possible. For this multiple iterations of fitting and measuring the effect are performed, whereby the upper bound of training errors and the lower bound of support vectors $nu$ is set to $0.01$. The influence $\gamma$ each sample has on the shape of the \gls{rbf} is determined automatically as $\gamma = \frac{1}{number of features}$, which follows the recommendation for one-class \gls{svm} by \gls{sklearn}.
+The training data is acquired using the functions provided by the Base Module (see Section~\ref{sec:impl:base}) and then translated into the vector space using the Vectoriser.
+The algorithms provided by \gls{sklearn} are used to train to sets of models involving one world-view model and several Agent specific models.
+
+Once the training period is concluded the \gls{svm} models can be used in the operation phase to analyse incoming windows.
+These windows are first converted using the Vectoriser. With the resulting vector the distances to the closest decision surface are then calculated, using both the world-view model and the respective Agent specific model.
+A positive distance indicates a inlier, whereby a negative distance indicates an outlier.
+Both distances are considered separately. This division allows to get general less sensitive measurement of abnormality within the network, while simultaneously also having the result of a model specifically trained for one line segment. Later one is able to identify traffic, which is foreign to the observed segment. This may provide insights to traffic leaking between segments or generally behaviour which might seem normal, but is alien to the specific segment.
+Finally, both distances and the outlier or inlier decision for each distance are pushed to the \gls{influxdb}.
 
 \section{The Entropy Analyser Module}
 \label{sec:impl:entropy}
