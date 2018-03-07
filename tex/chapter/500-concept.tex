@@ -383,6 +383,32 @@ Within normal operations, all in coming windows will be matched against the worl
 Given the difference stays within certain limits, the window is considered part of normality. If not, the window does not reflect common behaviour and is therefore considered an outlier or anomaly.
 The result is stored in the database regardless of the outcome, from where the monitoring and alerting system can gather the measurements and raise and alert, if the amount of abnormal windows per time unit reaches a threshold.
 
+\subsection{The Support Vector Machine Analyser}
+\label{sec:concept:anal:svm}
+
+Another proximity-based algorithm which can be used for anomaly detection is the family of \glsfirst{svm}. Normally used for clustering data, the special kind of one-class \glspl{svm} is well suited for identifying anomalies, as described in Section~\ref{sec:background:network:novelty:svm}.
+In contrast to the \gls{lof}, it requires a clean set of data to be trained. Ideally this dataset also cover the full gamut of what is supposed to be considered \emph{normality}.
+Since \glspl{svm} use the training data to determine a decision plane, separating the \emph{normality} from \emph{outliers}, aspects of \emph{normality} which are only sparsely present in the training data might lead to a too narrow decision plane.
+In turn, each contamination of the training data leads a too wide decision plane.
+Unlike the \gls{lof} \glspl{svm} cannot reliably be trained with anomalies, e.g. malicious traffic, in the training data.
+
+In line with the other Analyser modules, two types of one-class \glspl{svm} are trained: a world-view model and Agent specific models.
+The world-view model is much more likely to have a decision plane containing the majority of traffic that might occur in \gls{bas} networks.
+This makes it very general and less sensitive.
+Contrasting this the Agent models are as specific as possible, resulting in a narrow decision plane and a much higher sensitivity.
+This separation allows an operator to distinguish, if an attacker uses artificially crafted packets to perform malicious activities in the network, but also if normal appearing packets are re-played or injected in a line where these packets are alien.
+
+During the training phase a regression algorithm is used to find one or multiple mathematical functions forming an decision surface, so all data points from the training set are contained.
+The seasonal sensitivity is hereby archived in same way as it is in the \gls{lof} Analyser module. The proximity-based nature allows to separate clusters just along one dimension, ideally. Therefore time can be encoded as relative time point within the chosen season period.
+
+Once the training is completed, the derived functions can be used during normal operations to identify outliers.
+For this the closest distance of a new data point to the decision surface, modelled by the decision functions, is calculated.
+Is the distance positive, i.e. the point lays within the boundaries of \emph{normality}, it is considered an inlier.
+In turn, if the distance is negative, i.e. the point is outside of the boundary, it is an outlier.
+The distance and the outlier or not decision is calculated using the world-view model as well as the respective Agent specific model.
+Both results along with the calculated distance are stored in the database.
+
+
 \subsection{The Entropy Analyser}
 \label{sec:concept:anal:entropy}
 
