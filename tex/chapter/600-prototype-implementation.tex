@@ -341,4 +341,15 @@ Finally, both distances and the outlier or inlier decision for each distance are
 \section{The Entropy Analyser Module}
 \label{sec:impl:entropy}
 
+Opposed to the proximity-based approaches of the \gls{lof} and \gls{svm}, the Entropy Analyser evaluates the statistical distribution using the Shannon entropy. \parencite[cf.][]{Shannon1948}
+For this it data is accumulated during the training period passed through the Vectoriser using the functions provided by the Base Module.
+Unlike the proximity-based approaches the time sensitivity cannot be archived by using one dimension to separate clusters by time. Therefore this dimension is stripped from the feature vector. Instead multiple time buckets are defined over the seasonal period, with a base-line model for each of them. The time dimension is then used to determine which time bucket to use.
+To smooth artefacts which might occur on the transition points from one bucket to another, the effective amount of buckets is doubled. Whereby the second half is shifted in time by half the bucket's length.
+Consequently every relative time point in the season falls in exactly two overlapping buckets.
+In the prototype implementation a seasonal period of one week is assumed and the bucket length is set to one hour. This results in $2 \cdot (7 \cdot 24) = 2 \cdot 168 = 336$ buckets. Each bucket contains the mean distribution per feature dimension.
 
+Additional to the separation by time buckets, the Entropy Analyser also separates between one world-view model and multiple Agent specific models. This separation allows for finer sensitivity adjustments and therefore might provide better insights into abnormal activities based on the behaviour specific for one network segment.
+
+During the operational phase the mean distribution stored in the base-line models is used to calculate the entropy when combined with the new incoming window for the world-view model and the respective Agent specific one.
+For the calculation of the entropy the statistical functions of the \gls{scipy} library are used.
+The resulting entropies is then pushed to the \gls{influxdb} as raw values. A threshold for the outlier/inlier decision is not applied.
