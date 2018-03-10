@@ -24,35 +24,38 @@
 
 \todo{better intro sentence?}
 The overall goal is to identify and react to threats and attacks within \gls{bas} networks, which are indicated by malicious traffic.
-This thesis attempts to solve on part of the problem by providing a framework to detect anomalies in those networks.
-However, it is not part of this concept to identify the kind of attack, nor to distinguish it from abnormal network activity, caused by a rapid change of user behaviour.
-Also it is to note, that the introduced system is merely a part in the defence line.
+This thesis attempts to solve one part of the problem by providing a framework to detect anomalies in those networks.
+It is not part of this concept to identify the kind of attack, nor to distinguish it from abnormal network activity, caused by a rapid change of user behaviour.
+Additionally, it is to note, that the introduced system is merely a part in the defence line.
+However, all further systems in a defence line require data and statistics about threats and attack vectors in real world scenarios.
+Since there is no to little work in this field at the moment, an anomaly-based \gls{ids} is a good tool to gather this required data and therefore a start point for future development.
 
 The architecture proposed in this section is inspired by \textcite{Pan2014}, with extensions made in regards for scalability and continuous use. (cf. Section~\ref{sec:concept:pipeline})
-Opposed to \textcite{Pan2014}, which are using an inductive rule learning algorithm (cf. Chapter~\ref{sec:background:prior-work}), this work employs anomaly detection algorithm, which are able to be trained with unlabelled data sets. (cf. Section~\ref{sec:background:network:novelty})
+Opposed to \textcite{Pan2014}, which are using an inductive rule learning algorithm (cf. Chapter~\ref{sec:background:prior-work}), this work employs anomaly detection algorithms, which are able to be trained with unlabelled data sets. (cf. Section~\ref{sec:background:network:novelty})
 This decision was made because \gls{bas} are mostly heterogeneous, since every building and its usage is different, compared to the fire detection system used by \textcite{Pan2014}.
-Therefore, either the baseline model has to reflect a very broad \emph{normality}, or attacks are modelled as signatures. Later option has the drawback of requiring constant updates. Also a sufficiently large database of common attacks is required in first place.
+Therefore, either the baseline model has to reflect a very broad \emph{normality}, or attacks need to be modelled as signatures. The later option has the drawback of requiring constant updates. Also a sufficiently large database of common attacks is required in first place.
 Neither of these options seemed feasible.
-Consequently, relying on anomaly detection algorithms made more sense in the provided context.
+Consequently, relying on anomaly detection algorithms makes more sense in the provided context.
 Despite anomaly based \glspl{ids} being highly useful in changing environments with possibly unknown threats (cf. Section~\ref{sec:background:network:ids:anomaly}), it is to note that they \enquote{are based on the beliefs that an intruder's behavior will be noticeably different from that of a legitimate user and that many unauthorized actions are detectable}. \parencite{Mukherjee1994,Yang2006}
 
 \todo{better transition}
 Further, to enable scalability and on-line detection, the proposed framework was designed around the message-passing design principle.
 This allows for an easily scalable deployment, strongly capsules application modules, and handles recovery after crashes without data-loss.
-Especially later two are not only desired characteristics of an production system, but also speed up development and testing rapidly.
+Especially the later two are not only desired characteristics of an production system, but also speed up development and testing rapidly.
 
 Another novelty, compared to prior examples in literature (cf. Chapter~\ref{sec:background:prior-work}), is the focus of passing the flow-data from the Agent to the collector in-band. By doing so, there is no requirement for additional network wiring, which results in easier and possibly cheaper deployment for Agents across the network.
 However, this also introduces new challenges, as the aggregated flow data needs to fit within a relatively small data package, in case of \gls{knx} 255 Bytes. (cf. Section~\ref{sec:background:bas:knx:proto:data})
-Also, the collector and the analytical modules need to account for the fact, that no traffic from the Agents can pass the network, e.g. due to \gls{dos} attacks.
+Also, the collector and the analytical modules need to account for the possibility, that traffic from the Agents could be blocked or suppressed in certain situations, e.g. due to \gls{dos} attacks.
 
 \todo{challenge, since there are no real flows.}
-Another challenge arises from the nature of \gls{bas} itself. Unlike \gls{scada} networks, where actions follow strict rules and orders and are therefore highly predictable or \gls{ip} networks, which mostly transport connection based traffic. The communication in \gls{bas} networks consists of many short self-contained commands, which occur in seemingly random fashion, since they are mainly triggered by human behaviour. This includes (light) switches, \gls{pir} motion detectors, or door sensors.
+Another challenge arises from the nature of \gls{bas} itself. In \gls{scada} networks ,for instance, actions follow strict rules and orders and are therefore highly predictable. % or \gls{ip} networks, which mostly transport connection based traffic.
+Unlike \gls{scada} networks, the communication in \gls{bas} networks consists of many short self-contained commands, which occur in seemingly random fashion, since they are mainly triggered by human behaviour. This includes (light) switches, \gls{pir} motion detectors, or door sensors.
 Due to the fact, that most telegrams are short commands or status reports from sensors, there are no elaborative connection based communication flows in \gls{bas} networks, thus rendering flow-monitoring less useful.
-To counteract this \hint{somewhat special} characteristic, the idea of flow-monitoring is interpreter rather liberal. 
+To accommodate for this special characteristic, the idea of flow-monitoring is interpreter rather liberal. 
 Namely, by focussing more statistics of all telegrams or packets during a specific synchronised time window, instead of tracking individual flows, which also requires less resources on the Agent.
-\todo{mention, that also rapid change in user behaviour will trigger anomaly detection}
 
-As already mentioned, this system can merely be a part of comprehensive security system. Acknowledging this fact, the outlier detection algorithms focus mainly on high level anomaly detection, as simpler measurements, like a change in telegrams per seconds, can be simply evaluated in a monitoring and alerting frontend like \gls{grafana}.
+As already mentioned, this system can merely be a part of a comprehensive security system. Acknowledging this fact, the outlier detection algorithms focus mainly on high level anomaly detection. % Features measured on these higher levels
+In contrast, simpler measurements, like the change in telegrams per seconds, can be simply evaluated in a monitoring and alerting frontend like \gls{grafana}. Consequently a dedicated Analyser module is not required for such.
 
 \section{Monitoring Pipeline}
 \label{sec:concept:pipeline}
@@ -76,7 +79,7 @@ As already mentioned, this system can merely be a part of comprehensive security
 \end{itemize}
 \end{comment}
 
-For the overall goal to identify threats and attacks within \gls{bas} networks by detecting anomalies, a reliable way to monitor packets or telegrams within said networks is required. Further, this data needs to be processed and analysed, for which a data-pipeline seems well suited.
+For the overall goal to identify threats and attacks within \gls{bas} networks by detecting anomalies, a reliable way to monitor packets or telegrams within those networks is required. Further, this data needs to be processed and analysed, for which a data-pipeline seems well suited.
 In this section the general structure and flow within this pipeline is presented. (cf. Figure~\ref{fig:concept:architecture})
 
 \begin{figure}[h]
@@ -92,27 +95,28 @@ Further, all exchanged messages are buffered in queues, to enable easy scaling a
 %To further improve use in production, as well as ease of development, ... (RabbitMQ, but this a detail for impl sec)
 
 Following concepts in literature \parencite[cf.][]{Celeda2012,Pan2014} the pipeline is not build around analysing a full-take of traffic within a \gls{bas}, but rather follows the flow monitoring idea. (cf. Section~\ref{sec:background:network:netflow})
-However, as stated above (cf. Chapter~\ref{sec:methods},~\ref{sec:concept}), traditional flow monitoring is well suited for \glspl{bas} like \gls{knx}. Therefore, the focus is on general statistical data of all packets or telegrams passing by an Agent within a specific time window.
+As stated above (cf. Chapter~\ref{sec:methods},~\ref{sec:concept}) traditional flow monitoring introduces certain problems due to the nature of the traffic within \glspl{bas} networks like \gls{knx}. However, the general idea of condensing traffic suits the resource restrictions very well.
+Therefore, the focus is on general statistical data of all packets or telegrams passing by an Agent within a specific time window.
 
-Since one of the requirements for sufficiently efficient flow-monitoring is to obtain world view (cf. Section~\ref{sec:background:network:netflow},~\ref{sec:methods}), multiple flow monitoring Agents need to be distributed across the \gls{bas} network. Otherwise, network segmentation would be required to be switched off, so a central tapping point could be used for data acquisition.
+Since one of the requirements for sufficiently efficient flow-monitoring is to obtain world-view (cf. Section~\ref{sec:background:network:netflow},~\ref{sec:methods}), multiple flow monitoring Agents need to be distributed across the \gls{bas} network. Otherwise, network segmentation would be required to be switched off, so a central tapping point could be used for data acquisition.
 Whereas this would decrease complexity, it is not advisable since segmentation is one of the fundamental security concepts e.g. in \gls{knx}. (cf. Section~\ref{sec:background:bas:knx:security})
-Consequently, a number of Agents, distributed over the whole network, will gather statistical data and send it of to central service -- the Collector.
+Consequently, a number of Agents, distributed over the whole network, will gather statistical data and send it of to central service -- the Collector, which thereby obtains world-view
 
-The Collector is not only responsible for receiving data from Agents and storing them in a database, but also synchronises these windows. Synchronising the windows simplifies the implementation of the analytical modules (cf. Section~\ref{sec:concept:anal}), since they do not need to account for distorted weights, introduced by changing overlaps or lengths of windows sent by the Agents.
+The Collector is not only responsible for receiving data from Agents and storing them in a database, but also synchronises these windows. Synchronising the windows simplifies the implementation of the analytical modules (cf. Section~\ref{sec:concept:anal}), since they do not need to account for distorted weights introduced by changing overlaps or lengths of windows sent by the Agents.
 This is archived, first of all by waiting until all windows from all Agents have been send to the Collector. Only then they are relayed to the analytical modules as one unit.
-However, this only works reliable if the Agents are in sync with each other. If not the Collector would need to compensate for different, changing overlaps. Therefore another task of the Collector service is to ensure the Agents are synchronised, meaning the Agents capture the same length of the of statistical data in the same rhythm without shifting. \alert{rhythm is quite the right thing here, it's more a shift of the length...}
+However, this only works reliable if the Agents are in sync with each other. If not, the Collector would need to compensate for different, changing overlaps. Therefore another task of the Collector service is to ensure the Agents are synchronised, meaning the Agents capture the same length of the of statistical data in the same clock cycle without shifting.
 This is archived by communicating back to the Agent modules, regularly updating the \gls{rtc} and important settings like window length and a time point for starting new windows. (shift in time)
 
-Regular two-way communication between Agents and Collector also has the benefit of identifying simple replay attacks (cf. Section~\ref{sec:methods}), since not or wrongly reacting to configuration requests can be detected.
-Further, accounting for dynamic configuration of the agents allows for adjusting parameters based on the general network load.
-E.g. the Collector could prolong the window length, when the \gls{bas} network is under heavy load to reduce additional traffic. Or the Collector could do the exact opposite to receive more detailed information on heavy resource utilisation.
+Recurring two-way communication between Agents and Collector in regular time intervals also provides the benefit of identifying simple replay attacks (cf. Section~\ref{sec:methods}), since not or wrongly reacting to configuration requests can be detected.
+Further, by accounting for dynamic configuration of the agents, the Collector can adjust parameters based on the world-view.
+The Collector could, for instance, prolong the window length, when the \gls{bas} network is under heavy load to reduce additional traffic. It could also do the exact opposite to receive more detailed information on heavy resource utilisation.
 
 Finally, the analytical modules receive the bundled statistical windows from the Agents via the Collector. They compare this data to baseline models using different techniques and algorithms. (cf. Section~\ref{sec:concept:anal})
 The results are then again stored in a database, from which they can be queried by a standard graphing and alerting tool, e.g. \gls{grafana}. (cf. Section~\ref{sec:concept:mon})
 
 \todo{figure, that shows how Agents are distributed in the bas network?}
 
-\section{Design of the Flow Monitoring Agent}
+\section{Design of the Flow Monitoring Agents}
 \label{sec:concept:agent}
 
 \begin{comment}
@@ -144,18 +148,18 @@ The results are then again stored in a database, from which they can be queried 
 \end{itemize}
 \end{comment}
 
-The concept of flow based network monitoring defines a separation of the an Agent, which captures bypassing traffic and aggregates it into flows, and the Collector, receiving the flow data from the Agents and analysing it further.
-This separation holds the fundamental benefit of employing flow monitoring: Since sensible pre-processing of the data to be analysed can already performed in the sensor itself, the required data to be send to the Collector is minimized and does not require for additional out-of-band transport. (cf. Section~\ref{sec:background:network:netflow})
+The concept of flow based network monitoring defines a separation of the Agents, which captures bypassing traffic and aggregates it into flows, and the Collector, receiving the flow data from the Agents and analysing it further.
+This separation holds the fundamental benefit of employing flow monitoring: Since sensible pre-processing of the data to be analysed can already performed in the sensor itself, the required data to be send to the Collector is minimized and does not require additional out-of-band transport. (cf. Section~\ref{sec:background:network:netflow})
 In this adaption of the flow monitoring idea, the concept of this separation is kept for this very reason. In the following the concept of the Agent module is further described.
 
-The Agent, in the context of \glsfirst{bas}, could be physically implemented in various ways.
-The 2 predominant ones seemed to be as an implementation as dedicated appliance, which can installed directly in the network without any additional requirements, or as software agent accessing the \gls{bas} network via an \gls{ip}-gateway.
+The Agent, in the context of \gls{bas}, could be physically implemented in various ways.
+The two predominant ones seemed to be as an implementation as dedicated appliance, which can be installed directly in the network without any additional requirements, or as software agent accessing the \gls{bas} network via an \gls{ip}-gateway.
 However, the later solution would neglect any advantages gained by passing the flow data in-band to the Collector. This includes ease of installation, no requirement for an \gls{ip} network connection, and also no additional exposure of the \gls{bas} network via \gls{ip}.
 Therefore, the deployment as dedicated appliance is to be preferred.
 
 Regardless of the kind of implementation, the general task of the Agent is to analyse bypassing traffic and to generate statistical data over it.
-Basically this means, that not flows are the subject of interest but the general network activity and the statistical distribution of specific features appearing in packets over a given timespan (window).
-These features might include hop count, payload length, source and destination addresses, as well as higher level attributes like the application layer protocol. (cf. Section~\ref{sec:background:bas:knx:communication}) Alongside meta information like timestamps for begin and end of the time window, and a unique Agent name.
+This basically means, that not flows are the subject of interest but the general network activity and the statistical distribution of specific features appearing in packets over a given timespan (window).
+Such features might include hop count, payload length, source and destination addresses, as well as higher level attributes like the application layer protocol. (cf. Section~\ref{sec:background:bas:knx:communication}) Alongside meta information like timestamps for begin and end of the time window, and a unique Agent name.
 The time span or time windows, however, is defined and synchronised by the Collector via configuration commands. This allows to adjust the timeout, when new aggregated windows are send to the Collector, e.g. according to the utilization of the \gls{bas} network.
 However, this adjustment can not be made by the Agent itself, since the statistical data from all Agents must be timely aligned. (cf. Section~\ref{sec:concept:pipeline},~\ref{sec:concept:collector})
 
@@ -163,8 +167,8 @@ As already outlined earlier, the design decision to only collect statistical dat
 However, this decision was made due to the fact, that most traffic in \gls{bas} networks consist of short, self-contained commands, which are triggered or at least influenced by human behaviour. This has multiple implications:
 First of all, aggregating packets or telegrams to flows would have negligible resource benefits. Since a flow is defined as a set of packets with common properties bypassing an observation point, there would a many rather short flows, because the majority of packets contain only commands or status updates, which are then simply acknowledge by the receiving party. \parencite[cf.][]{Claise2013} (cf. Section~\ref{sec:background:network:netflow}) \todo{this is ugly af.}
 Consequently, the Agent would be required to report many short flows to the Collector. This would, however, consume a lot of time on the \gls{bas} network, since e.g. in \gls{knx} only a maximum of 255 Byte per telegram can be send. (cf. Section~\ref{sec:background:bas:knx:proto:data})
-Further, it would be of limited use and have higher resource utilization compared to a full-take of the traffic.
-Secondly, keeping state in minimal Agent appliances might be difficult, due to resource constrains induce by cost reduction, as well as limited space and power.
+Further, it would be of limited use and have higher resource utilization than a full-take of the traffic.
+Additionally, keeping state in minimal Agent appliances might be difficult, due to resource constrains induce by cost reduction, as well as limited space and power.
 Therefore, a less resource intensive way of aggregation is desirable, if it is aspired to follow the idea of deploying minimal agent appliances.
 Also considering the limited space available in one \gls{knx} telegram.
 
@@ -192,13 +196,13 @@ Also considering the limited space available in one \gls{knx} telegram.
 \end{itemize}
 \end{comment}
 
-Eventually, when the length of a time window exceeds, the Agents will send of their gathered statistical data to the central Collector service.
+Eventually, when the length of a time window is reaches the configured length, the Agents will send of their gathered statistical data to the central Collector service.
 As the name implies, the foremost task of it is to collect data from the various Agents (cf. Section~\ref{sec:background:network:netflow}) and stores them immediately in a database to ensure persistence of data, tagged with the unique Agent name, project id, and timestamps.
 
 Also the Collector aligns the individual windows to each other. This is accomplished by regularly configuring the Agents via management commands, so all Agents within one network are fully synchronised, which improves data quality for the analytical modules. To account for clock drift, changing transmission times, and general imprecisions in date calculation, the alignment allows for a divergence in time. However, the maximum divergence has to be carefully considered, based on the jitter to be expected in the network.
-A too high tolerance can lead to grouping unrelated time windows together. Whereby, a too tight tolerance might result in fragmented windows, due to small inaccuracies in time measurement.
+A too high tolerance can lead to grouping unrelated time windows together. Whereby a too tight tolerance might result in fragmented windows, due to small inaccuracies in time measurement.
 
-When all windows for a specific aligned time period are received by the Collector, the statistical data from the windows is bundled and relayed to the Analyser modules as one block and marks this specific time block as relayed.
+When all windows for a specific aligned time period are received by the Collector, the statistical data from the windows is bundled and dispatched to the Analyser modules as one block and marks this specific time block as relayed.
 In case the Collector fails to receive all windows for a time window within a certain timeout, it may forward them to the Analysers anyway.
 Doing otherwise would results in huge backlog and therefore missing analysis, in case an Agent is offline or any other reason the transmission of data might be disrupted.
 
@@ -335,7 +339,7 @@ Due to the simplicity it does not rely on the feature vector generation as descr
 During the learning phase the module gathers all occurring source and destination addresses per Agent and stores them in separated sets, forming the base-line model.
 These sets are then queried during the actual operational phase. Every address that is not know will be reported and statistics about the observations will be stored in the database.
 The output of this module is therefore the number of observed unknown source or destination addresses and the number of packets using having unknown source or destination addresses.
-Accordingly the monitoring should report an alert, in case any of these measurements raise above 0.
+Accordingly the monitoring should report an alert, in case any of these measurements raise above zero.
 
 \subsection{The Local Outlier Factor Analyser}
 \label{sec:concept:anal:lof}

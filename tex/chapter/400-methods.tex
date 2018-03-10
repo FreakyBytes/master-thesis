@@ -33,14 +33,15 @@
 \end{itemize}
 \end{comment}
 
-The objective of this thesis is to investigate, whether anomaly based \glsfirst{ids} can provide additional security benefits for \glsfirst{bas} in the same they does for \gls{scada} networks. (cf. Section~\ref{sec:intro})
-Given the assumption, that every malicious activity or attack within a network induces noticeable different characteristics and behaviour, these deviations should be also identifiable in aggregated flow-data of this network. \parencite[cf.][]{Mukherjee1994,Yang2006,Pan2014}
+\glsreset{ids}
+The objective of this thesis is to investigate, whether anomaly based \glspl{ids} can provide additional security benefits for \glsfirst{bas} in the same they do for \gls{scada} networks. (cf. Section~\ref{sec:intro})
+Given the assumption, that every malicious activity or attack within a network induces noticeable different characteristics and behaviour, these deviations might also be identifiable in aggregated flow-data of this network. \parencite[cf.][]{Mukherjee1994,Yang2006,Pan2014}
 For this I designed a message-passing architecture to test different established algorithms for anomaly detection using flow-data from \gls{bas} networks.
 
 The test will be conducted as an experiment with data captured in a floor segment of the computer science building over the course of one month from 2017-01-21 to 2017-02-21. It is assumed, that this data set does not contain any malicious activities.
 This test data set is divided into three parts:
 The first two weeks of the data set will be used to train multiple models using different algorithms.
-Then the following third week is used as validation data set is to ensure that the models are not over-fitted and do not raise alarms during normal operations.
+Then the following third week is used as validation data set is to ensure that the models are not over-fitted and raise as few false-positives as possible.
 Finally, the last week of the data set is used as test data set and is modified with malicious activities, which might resemble a range of plausible attacks scenarios.
 This, in turn, is done to ensure that the models and algorithms are not under-fitted and are suitable to detect anomalies, which might be induced by malicious activities.
 However, the experiment will not focus on determining, if the system can distinguish between malicious abnormal activities and legit abnormal activities, which might be caused by a rapid change of user behaviour. In this thesis both are considered worth reporting.
@@ -48,20 +49,17 @@ However, the experiment will not focus on determining, if the system can disting
 Mostly since rapidly changed user behaviour is difficult to simulate in our test case, the actual test and benchmarking will be done using a selection of plausible attacks.
 Since real observations of attacks are not reported in literature and penetration testing tools targeting \gls{knx} or \gls{bas} in general are only sparsely available, the malicious traffic has to be simulated and artificially injecting packets into the traffic dumps used. This process is described in more detail in Section~\ref{sec:methods:gen-test}
 
-Plausible attacks include \emph{\glsfirst{dos} attacks}, which can be induced by multiple action: First of all shorting the line circuit would effectively causing a communication blackout on the entire line. Also flooding \code{A\_Restart} telegrams to all devices, would render the devices useless, since they would be stuck in a restart loop. As last scenario of \gls{dos} attacks, flooding the line with non-sense telegrams on high priority (cf. Section~\ref{sec:background:bas:knx:proto}) would cause at least heavily delayed, if not entirely blocked, normal communication on the line, since no time window would be left open for normal priority telegrams.
+Plausible attacks include \emph{\glsfirst{dos} attacks}, which can be induced by multiple actions: First of all shorting the line circuit would effectively causing a communication blackout on the entire line. Also flooding \code{A\_Restart} telegrams to all devices, would render them useless, since they would be stuck in a restart loop. As last scenario of \gls{dos} attacks, flooding the line with non-sense telegrams on high priority (cf. Section~\ref{sec:background:bas:knx:proto}) would cause at least heavily delayed, if not entirely blocked, normal communication on the line, since no time window would be left open for normal priority telegrams.
 
-Another plausible attack scenario would be replay attacks, where 3 flavours might be imaginable.
+Another plausible attack scenario would be replay attacks, where three flavours might be imaginable.
 In the first case an attacker would captures traffic for a determined time span and then replays it on the network, possibly to mimic normal behaviour while breaking into the building.
-Secondly, an attacker could capture an specific event and replay it on will, which could the command to open an security door for instance.
+Secondly, an attacker could capture an specific event and replay it on will, which could contain the command to open an security door for instance.
 As a third option, the traffic could be monitored and for every action an reverse action could be invoked, effectively keeping the \gls{bas} in one state. The simplest example would be, to turn off the lights every time somebody tries to turn them on.
 
 The next category of attacks can be classified as manipulation or reconfigure attacks. This includes attacks which might modify telegrams while they are send, to either render them invalid and therefore preventing communication. Or it would be conceivable to reconfigure devices, i.e. to trigger different actions, report false measurements etc. A specialisation of this attack focusses on line couplers and breaking the network segmentation by disabling any routing functions.
 
-Finally, the last category describes reconnaissance attacks, which focus on unauthorised detection and mapping of the network. Here only active sweeping approaches are considered, since passive eavesdropping can not be detected on higher protocol level due to the bus character of the network. (cf. Section~\ref{sec:background:bas:knx:topo})
-
-\hint{check plausibility of this}
-\todo{write more about evaluating the results?}
-
+Finally, the last category describes reconnaissance attacks. These attacks conclude unauthorised detection and mapping of the network. Here only active sweeping approaches are considered, where an attacker probes each individual device in an address range.
+Passive eavesdropping is not considered as it can not be detected on higher protocol level due to the bus character of the network. (cf. Section~\ref{sec:background:bas:knx:topo})
 
 \section{Generating a Test Data Set including malicious activities}
 \label{sec:methods:gen-test}
