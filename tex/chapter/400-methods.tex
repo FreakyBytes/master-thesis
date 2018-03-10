@@ -61,7 +61,7 @@ Finally, the last category describes reconnaissance attacks, which focus on unau
 
 \hint{check plausibility of this}
 \todo{write more about evaluating the results?}
-For each category of attacks, the different anomaly detection algorithms are benchmarked with regards to their detection rate.
+
 
 \section{Generating a Test Data Set including malicious activities}
 \label{sec:methods:gen-test}
@@ -91,6 +91,25 @@ The scripts to generate the malicious traffic and the datasets itself can be fou
 
 \section{Evaluating the Detection Results}
 \label{sec:methods:eval}
+
+For each crafted attack, the different anomaly detection algorithms are benchmarked with regards to their ability to detect those.
+This ability is classified by following criteria:
+
+\begin{enumerate}
+	\item General ability to the detect the attack
+	\item Differentiation from background noise of the detection results
+		\begin{enumerate}
+			\item Average difference in detected outliers
+			\item Average difference in underlying decision metric
+		\end{enumerate}
+	\item Response time 
+	\item Persistence of detection
+\end{enumerate}
+
+The first criteria describes, if the attack was detected at all by the respective anomaly detection algorithm.
+However, the second criteria is meant to distinguish how well or clear the algorithm might distinguish abnormal from normal behaviour. For this both the actual inlier or outlier result as well as the underlying metric are considered. Only exception is the Entropy Analyser, since no threshold is predefined.
+Third, the response time is measured from beginning of the attack to when an significant change in the measurements are shown.
+Finally, the persistence of the detection is rated by determining the percentage of the time in which the activities are identified as abnormal by the algorithm.
 
 
 \begin{comment}
