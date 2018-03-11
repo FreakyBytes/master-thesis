@@ -53,7 +53,7 @@ The absence of unknown addresses, either as source or as destination, is also cl
 
 Surprisingly, there is also no significant increase in the number of detected outliers neither by the \gls{svm}, nor using the \gls{lof}, as shown in Figure~\ref{fig:results:unusual:outlier}.
 Even though the \gls{lof} shows an average of $0.77$ outliers, it can hardly be considered an significant increase when compared to the surrounding unmodified data and to the validation data set in Appendix~\ref{app:metrics:validation}.
-However, the spread of the Local Outlier Factor depicted in Figure~\ref{fig:results:unusual:lof} shows a small change downwards, which indicates less normal behaviour -- it is arguably not significant enough.
+However, the spread of the \gls{lof} depicted in Figure~\ref{fig:results:unusual:lof} shows a small change downwards, which indicates less normal behaviour -- it is arguably not significant enough.
 
 In contrast, Figure~\ref{fig:results:unusual:svm} even shows that the distance to the decision function of the \gls{svm} even increases positively, which means the analysed points are considered to represent the normality stronger. This is also reflected in the detection of no outliers with the exception of two small peaks.
 
@@ -128,6 +128,14 @@ The Entropy Analyser mostly calculates a entropy of infinity, which is here enco
 \subsection{Detection of a DoS Attack}
 \label{sec:results:results:dos}
 
+The second modification applied to the test dataset, included a \gls{dos} attack, which flooded the entire line \code{3.4} with \code{A\_Restart} telegrams. As to expect the amount of telegrams with unknown addresses and count of unknown addresses jump right up, as shown in Figure~\ref{fig:results:dos:tc} and~\ref{fig:results:dos:addr}. This clearly indicates an anomaly, since the threshold for unknown addresses within the network should be set to zero.
+
+Figure~\ref{fig:results:dos:outlier} illustrates, that the \gls{lof} and \gls{svm} outlier detection reacted equally prompt, by both classifying the entire period of the attack as outlier.
+This is also reflected by the underlying metrics. The maximum of the \gls{lof} in Figure~\ref{fig:results:dos:lof} stays low during the entire attack. Similarly, the distance to the decision surface of the \gls{svm} resides in the high negatives implying a huge divergence from the normality.
+Especially noteworthy is that the spread between minimum and maximum of the Local Outlier Factor as well as the distance to the decision surface falls close to zero during the attack, which indicates a high certainty of the classification.
+
+The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at all, neither during the modification nor outside of it.
+
 \begin{figure}[H]
 	\newcommand{\figwith}{0.49\textwidth}
 	\newcommand{\figprefix}{dos}
@@ -185,10 +193,10 @@ The Entropy Analyser mostly calculates a entropy of infinity, which is here enco
 		\toprule
 		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
 		1. Attack detected & yes & yes & yes & no \\\midrule
-		2.a) Avg. difference in outliers  & n/a & n/a & n/a & n/a \\\midrule
-		2.b) Avg. difference in metric & n/a & n/a & n/a & n/a \\\midrule
-		3. Response time & n/a & n/a & n/a & n/a \\\midrule
-		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
+		2.a) Avg. difference in outliers  & $0.549$ & $0.997$ & $254$ & n/a \\\midrule
+		2.b) Avg. difference in metric & $-1.730$ & $-39.46$ & n/a & n/a \\\midrule
+		3. Response time & 0s & 0s & 0s & n/a \\\midrule
+		4. Persistence & 100\% & 100\% & 100\% & n/a \\\bottomrule
 	\end{tabularx}
 	\caption[Detection results of the DoS attack]{Detection results of the \gls{dos} attack.}
 	\label{tab:results:dos}
