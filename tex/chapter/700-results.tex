@@ -33,8 +33,8 @@ Finally, in this section the detection results of the proposed algorithms are ex
 	\item General ability to the detect the attack
 	\item Differentiation from background noise of the detection results
 	\begin{enumerate}
-		\item Average difference in detected outliers
-		\item Average difference in underlying decision metric
+		\item Average difference in detected outliers compared to the validation dataset
+		\item Average difference in underlying decision metric compared to the validation dataset
 	\end{enumerate}
 	\item Response time 
 	\item Persistence of detection
@@ -133,6 +133,7 @@ The second modification applied to the test dataset, included a \gls{dos} attack
 Figure~\ref{fig:results:dos:outlier} illustrates, that the \gls{lof} and \gls{svm} outlier detection reacted equally prompt, by both classifying the entire period of the attack as outlier.
 This is also reflected by the underlying metrics. The maximum of the \gls{lof} in Figure~\ref{fig:results:dos:lof} stays low during the entire attack. Similarly, the distance to the decision surface of the \gls{svm} resides in the high negatives implying a huge divergence from the normality.
 Especially noteworthy is that the spread between minimum and maximum of the Local Outlier Factor as well as the distance to the decision surface falls close to zero during the attack, which indicates a high certainty of the classification.
+The premature identification of the anomalies visible in Figure~\ref{fig:results:dos:outliers} could be caused by misalignment and small inaccuracies in the time windowing processes performed by the Collector.
 
 The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at all, neither during the modification nor outside of it.
 
@@ -205,6 +206,17 @@ The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at
 \subsection{Detection of a Network Scan}
 \label{sec:results:results:scan}
 
+The third modification to be applied to the test dataset was a network scan where the entire \gls{knx} address space was scanned using a management routine every \gls{knx} device must implement. Every present device will respond with an appropriator answer.
+
+Similar to the \gls{dos} attack produces a scan of the entire network significant more traffic than normal operation, which is indicated by Figure~\ref{fig:results:scan:tc}. Further a lot of traffic targeting prior unknown addresses is inevitable, causing the Address Analyser to detect such behaviour. (see Figure~\ref{fig:results:scan:addr})
+
+In contrast to the clear identification by the Address Analyser stands the \gls{lof} Analyser, which identifies the attack but as outlier in Figure~\ref{fig:results:scan:outlier}, but the separation from the background noise is not significant. Similar is to observe in the underlying \gls{lof} metric depicted in Figure~\ref{fig:results:scan:lof}. However, it is curious that even though the average of the \gls{lof} is stable compared with the surrounding background noise, the spread decreases drastically.
+
+On the other hand, the \gls{svm} identifies the threat flawless. The low background noise and the clear detection as outlier in Figure~\ref{fig:results:scan:outlier} allows for a certain identification. This is supported by a sharp drop into the negative of the distance to the decision surface as shown in Figure~\ref{fig:results:scan:svm}, distinctly indicating an outlier.
+
+The calculated entropy compared to the training data is continuously infinite, making it unfit to draw any conclusions from.
+
+
 \begin{figure}[H]
 	\newcommand{\figwith}{0.49\textwidth}
 	\newcommand{\figprefix}{scan}
@@ -261,11 +273,11 @@ The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at
 	\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
 		\toprule
 		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
-		1. Attack detected & yes & yes & yes & no \\\midrule
-		2.a) Avg. difference in outliers  & n/a & n/a & n/a & n/a \\\midrule
-		2.b) Avg. difference in metric & n/a & n/a & n/a & n/a \\\midrule
-		3. Response time & n/a & n/a & n/a & n/a \\\midrule
-		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
+		1. Attack detected & no & yes & yes & no \\\midrule
+		2.a) Avg. difference in outliers  & $0.029$ & $0.549$ & $5 \cdot 10^{3}$ & n/a \\\midrule
+		2.b) Avg. difference in metric & $-2.10$ & $-32.97$ & n/a & n/a \\\midrule
+		3. Response time & n/a & 0s & 0s & n/a \\\midrule
+		4. Persistence & n/a & 100\% & 100\% & n/a \\\bottomrule
 	\end{tabularx}
 	\caption[Detection results of the network scan]{Detection results of the network scan.}
 	\label{tab:results:scan}
