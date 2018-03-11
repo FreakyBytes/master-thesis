@@ -47,8 +47,12 @@ The first modification applied to the test data set was the injection of unusual
 For this a time span of five hours was replaced with traffic from the same line, but from different weekday and time of the day.
 This effectively aims to test the seasonal- or time-sensitivity of the models.
 
+Figure~\ref{fig:results:unusual} shows several metrics from the four different anomaly detection methods.
+In \ref{fig:results:unusual:tc} a sudden increase in the observed amounts of telegrams per window is to observe, whereby telegrams with using unknown addresses were observed. This is to be expected since the five hours which replaced the original traffic were taken from the same line but from a more busy point of the week, hence the increase of transmitted telegrams.
+The absence of unknown addresses, either as source or as destination, is also clearly indicated by Figure~\ref{fig:results:unusual:addr}.
 
-\ref{fig:results:unusual:tc}
+
+
 
 \begin{figure}[H]
 	\newcommand{\figwith}{0.49\textwidth}
@@ -91,7 +95,7 @@ This effectively aims to test the seasonal- or time-sensitivity of the models.
 		\label{fig:results:\figprefix:svm}
 	\end{subfigure}
 	
-	\caption[Detection Results of Unusual Network Traffic]{Detection Results of Unusual Network Traffic from 2017-01-12 02:00 to 09:00 with a minimal time resolution of 2 minutes. The modified time range is marked as a grey box.}
+	\caption[Detection Results of Unusual Network Traffic]{Detection Results of Unusual Network Traffic from 2017-02-12 02:00 to 09:00 with a minimal time resolution of 2 minutes. The modified time range is marked as a grey box.}
 	\label{fig:results:\figprefix}
 	
 \end{figure}
@@ -160,7 +164,7 @@ This effectively aims to test the seasonal- or time-sensitivity of the models.
 		\label{fig:results:\figprefix:svm}
 	\end{subfigure}
 	
-	\caption[Detection Results of a DoS]{Detection Results DoS attack from 2017-01-13 08:40 to 09:50 with a minimal time resolution of 2 minutes. The time range of the attack is marked as a grey box.}
+	\caption[Detection Results of a DoS]{Detection Results DoS attack from 2017-02-13 08:40 to 09:50 with a minimal time resolution of 2 minutes. The time range of the attack is marked as a grey box.}
 	\label{fig:results:\figprefix}
 	
 \end{figure}
@@ -229,7 +233,7 @@ This effectively aims to test the seasonal- or time-sensitivity of the models.
 		\label{fig:results:\figprefix:svm}
 	\end{subfigure}
 	
-	\caption[Detection Results of a Network Scan]{Detection Results of Network Scan from 2017-01-13 20:45 to 21:17 with a minimal time resolution of 30 seconds. The time range of the attack is marked as a grey box.}
+	\caption[Detection Results of a Network Scan]{Detection Results of Network Scan from 2017-02-13 20:45 to 21:17 with a minimal time resolution of 30 seconds. The time range of the attack is marked as a grey box.}
 	\label{fig:results:\figprefix}
 	
 \end{figure}
