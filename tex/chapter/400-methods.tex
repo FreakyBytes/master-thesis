@@ -73,7 +73,7 @@ However, to test the performance of the anomaly detection algorithms with regard
 Therefore, packets which imitate these activities are artificially crafted and then injected into the traffic and later to be imported using a Simulated Agent. (cf. Section~\ref{sec:impl:agent})
 These activities follow the idea of the attack classes introduced above and are injected in the last week of the of the data set.
 
-First, unusual behaviour is injected at 2017-02-12 from 02:00 to 07:00, replacing this entire segment with traffic from 2017-02-06 09:00 to 14:00. In absence of data more foreign to the observed line the data was simply taken from the same line, but at a different weekday and day time.
+First, unusual behaviour is injected at 2017-02-12 from 02:00 to 07:00, replacing this entire segment with traffic from 2017-02-06 09:00 to 14:00. In absence of data more foreign to the observed line the data was simply taken from the same line, but at a different weekday and day time. Effectively this data does not contain any new devices or severe unusual traffic, this modification rather aims to test the time sensitivity.
 
 Second, an \gls{dos} attack is performed starting at 2017-02-13 08:00 and targeting the entire line \code{3.4}. The attack is performed in 3 bursts of 15 minutes with five minutes break in between. In the \gls{dos} attack a flooding of \code{A\_Restart} telegrams with \code{SYSTEM} are send, which in reality would cause all targeted devices to restart continuously and block all other traffic, since the \code{SYSTEM} priority is the highest specified. During the attack the telegrams were injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
 

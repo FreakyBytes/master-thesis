@@ -21,7 +21,8 @@ These modifications are meant to resemble plausible attacks on \gls{bas} network
 	\item Introducing two new devices
 \end{enumerate}
 
-All three parts of data set were imported via the Simulated Agent and processed into statistical windows, these were then processed by the Collector, and relayed to the analytical modules. Finally, the Analyser compare the incoming windows to the base-line model and store the result in the \gls{influxdb}. From there the monitoring and alerting software \gls{grafana} can query the results and plot them into dynamic graphs, as well as send alerts based on predefined thresholds or rules.
+First, only the training data was imported via the Simulated Agent and pushed to the \gls{influxdb} by the Collector. This data was then used to train the different algorithms.
+Then the remaining two parts of data set were imported via the Simulated Agent and processed into statistical windows, these were then processed by the Collector, and relayed to the analytical modules. Finally, the Analyser compare the incoming windows to the base-line model and store the result in the \gls{influxdb}. From there the monitoring and alerting software \gls{grafana} can query the results and plot them into dynamic graphs, as well as send alerts based on predefined thresholds or rules.
 
 \section{Experiment Results}
 \label{sec:results:results}
@@ -42,7 +43,58 @@ Finally, in this section the detection results of the proposed algorithms are ex
 \subsection{Detection of Unusual Network Traffic}
 \label{sec:results:results:unusual}
 
+The first modification applied to the test data set was the injection of unusual traffic. 
+For this a time span of five hours was replaced with traffic from the same line, but from different weekday and time of the day.
+This effectively aims to test the seasonal- or time-sensitivity of the models.
 
+
+\ref{fig:results:unusual:tc}
+
+\begin{figure}[H]
+	\newcommand{\figwith}{0.49\textwidth}
+	\newcommand{\figprefix}{unusual}
+	\centering
+	
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-tc.png}
+		\caption{Telegrams (green) and telegrams with unknown addresses (yellow) over time}
+		\label{fig:results:\figprefix:tc}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-unknown-addr.png}
+		\caption{Amount of observed unknown source (green) and destination (yellow) addresses}
+		\label{fig:results:\figprefix:addr}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-num-outliers.png}
+		\caption{Number of detected outliers via SVM (red) and LOF (blue).}
+		\label{fig:results:\figprefix:outlier}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-entropy.png}
+		\caption{Calculated Entropy over time, infinity is encoded as $100 000$}
+		\label{fig:results:\figprefix:entropy}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-lof-spread.png}
+		\caption{Spread and average of the Local Outlier Factor, smaller numbers indicate outlier}
+		\label{fig:results:\figprefix:lof}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-svm-spread.png}
+		\caption{Spread and average of the distance to decision surface, negative distances are outlier}
+		\label{fig:results:\figprefix:svm}
+	\end{subfigure}
+	
+	\caption[Detection Results of Unusual Network Traffic]{Detection Results of Unusual Network Traffic from 2017-01-12 02:00 to 09:00 with a minimal time resolution of 2 minutes. The modified time range is marked as a grey box.}
+	\label{fig:results:\figprefix}
+	
+\end{figure}
 
 \begin{table}[H]
 	\aboverulesep=0ex
@@ -67,6 +119,52 @@ Finally, in this section the detection results of the proposed algorithms are ex
 \subsection{Detection of a DoS Attack}
 \label{sec:results:results:dos}
 
+\begin{figure}[H]
+	\newcommand{\figwith}{0.49\textwidth}
+	\newcommand{\figprefix}{dos}
+	\centering
+	
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-tc.png}
+		\caption{Telegrams (green) and telegrams with unknown addresses (yellow) over time}
+		\label{fig:results:\figprefix:tc}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-unknown-addr.png}
+		\caption{Amount of observed unknown source (green) and destination (yellow) addresses}
+		\label{fig:results:\figprefix:addr}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-num-outliers.png}
+		\caption{Number of detected outliers via SVM (red) and LOF (blue).}
+		\label{fig:results:\figprefix:outlier}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-entropy.png}
+		\caption{Calculated Entropy over time, infinity is encoded as $100 000$}
+		\label{fig:results:\figprefix:entropy}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-lof-spread.png}
+		\caption{Spread and average of the Local Outlier Factor, smaller numbers indicate outlier}
+		\label{fig:results:\figprefix:lof}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-svm-spread.png}
+		\caption{Spread and average of the distance to decision surface, negative distances are outlier}
+		\label{fig:results:\figprefix:svm}
+	\end{subfigure}
+	
+	\caption[Detection Results of a DoS]{Detection Results DoS attack from 2017-01-13 08:40 to 09:50 with a minimal time resolution of 2 minutes. The time range of the attack is marked as a grey box.}
+	\label{fig:results:\figprefix}
+	
+\end{figure}
+
 \begin{table}[H]
 	\aboverulesep=0ex
 	\belowrulesep=0ex
@@ -89,6 +187,52 @@ Finally, in this section the detection results of the proposed algorithms are ex
 
 \subsection{Detection of a Network Scan}
 \label{sec:results:results:scan}
+
+\begin{figure}[H]
+	\newcommand{\figwith}{0.49\textwidth}
+	\newcommand{\figprefix}{scan}
+	\centering
+	
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-tc.png}
+		\caption{Telegrams (green) and telegrams with unknown addresses (yellow) over time}
+		\label{fig:results:\figprefix:tc}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-unknown-addr.png}
+		\caption{Amount of observed unknown source (green) and destination (yellow) addresses}
+		\label{fig:results:\figprefix:addr}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-num-outliers.png}
+		\caption{Number of detected outliers via SVM (red) and LOF (blue).}
+		\label{fig:results:\figprefix:outlier}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-entropy.png}
+		\caption{Calculated Entropy over time, infinity is encoded as $100 000$}
+		\label{fig:results:\figprefix:entropy}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-lof-spread.png}
+		\caption{Spread and average of the Local Outlier Factor, smaller numbers indicate outlier}
+		\label{fig:results:\figprefix:lof}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-svm-spread.png}
+		\caption{Spread and average of the distance to decision surface, negative distances are outlier}
+		\label{fig:results:\figprefix:svm}
+	\end{subfigure}
+	
+	\caption[Detection Results of a Network Scan]{Detection Results of Network Scan from 2017-01-13 20:45 to 21:17 with a minimal time resolution of 30 seconds. The time range of the attack is marked as a grey box.}
+	\label{fig:results:\figprefix}
+	
+\end{figure}
 
 \begin{table}[H]
 	\aboverulesep=0ex
@@ -113,6 +257,52 @@ Finally, in this section the detection results of the proposed algorithms are ex
 \subsection{Detection of New Devices}
 \label{sec:results:results:newdevice}
 
+\begin{figure}[H]
+	\newcommand{\figwith}{0.49\textwidth}
+	\newcommand{\figprefix}{newdevice}
+	\centering
+	
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-tc.png}
+		\caption{Telegrams (green) and telegrams with unknown addresses (yellow) over time}
+		\label{fig:results:\figprefix:tc}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-unknown-addr.png}
+		\caption{Amount of observed unknown source (green) and destination (yellow) addresses}
+		\label{fig:results:\figprefix:addr}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-num-outliers.png}
+		\caption{Number of detected outliers via SVM (red) and LOF (blue).}
+		\label{fig:results:\figprefix:outlier}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-entropy.png}
+		\caption{Calculated Entropy over time, infinity is encoded as $100 000$}
+		\label{fig:results:\figprefix:entropy}
+	\end{subfigure}
+	\\[1.5mm]
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-lof-spread.png}
+		\caption{Spread and average of the Local Outlier Factor, smaller numbers indicate outlier}
+		\label{fig:results:\figprefix:lof}
+	\end{subfigure}
+	\hfil
+	\begin{subfigure}[b]{\figwith}
+		\includegraphics[width=\textwidth]{figures/700-results/\figprefix-svm-spread.png}
+		\caption{Spread and average of the distance to decision surface, negative distances are outlier}
+		\label{fig:results:\figprefix:svm}
+	\end{subfigure}
+	
+	\caption[Detection Results of New Devices]{Detection Results of New Devices from 2017-02-13 23:00 to 2017-02-15 01:00 with a minimal time resolution of 10 minutes. The time range of the modification is marked as a grey box.}
+	\label{fig:results:\figprefix}
+	
+\end{figure}
+
 \begin{table}[H]
 	\aboverulesep=0ex
 	\belowrulesep=0ex
@@ -131,4 +321,26 @@ Finally, in this section the detection results of the proposed algorithms are ex
 	\end{tabularx}
 	\caption[Detection results of new devices]{Detection results of two new devices in the network.}
 	\label{tab:results:newdevice}
+\end{table}
+
+\section{Conclusion}
+\label{sec:results:conclusion}
+
+\begin{table}[H]
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
+		\toprule
+		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
+		Unusual traffic & no & no & no & no \\\midrule
+		\gls{dos} attack & yes & yes & yes & no \\\midrule
+		Network Scan & yes & yes & yes & no \\\midrule
+		New Devices &  &  &  & no \\\midrule
+	\end{tabularx}
+	\caption[Detection results of new devices]{Detection results of two new devices in the network.}
+	\label{tab:results:conclusion}
 \end{table}
