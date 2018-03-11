@@ -6,7 +6,127 @@ For which first the experiment setup is described.
 \section{Conducting the Performance Experiment}
 \label{sec:results:experiment}
 
+The in this thesis proposed concept for an online anomaly-based \gls{ids} tailored to \glspl{bas} was implemented as prototype, as described in Chapter~\ref{sec:impl}.
+Using this prototype a full analysis pipeline was setup, which included the Collector, all four Analyser modules, and the Simulated Agent, as well as \gls{rabbitmq} as message broker and \gls{influxdb} as persistent data storage.
+The Simulated Agent was used to inject prior recorded traffic into the system faster than real time.
+The data was originally recorded between 2017-01-21 and 2017-02-21 on the third floor of the computer science building of the University Rostock.
+Before injecting and analysing the data, it was then split into three parts. The first two weeks are dedicated to train the base-line models for the Analyser modules. The following week was used as validation, to ensure the algorithms are properly fitted to the data. Finally, the last week was modified to contain four scenarios which alter the behaviour of the line, as described in Section~\ref{sec:methods:gen-test}.
+\newpage
+These modifications are meant to resemble plausible attacks on \gls{bas} networks and therefore include:
 
+\begin{enumerate}
+	\item Injecting unusual network traffic by copying traffic from another day and time
+	\item Performing a \gls{dos} attack
+	\item Scanning all addresses of the network
+	\item Introducing two new devices
+\end{enumerate}
+
+All three parts of data set were imported via the Simulated Agent and processed into statistical windows, these were then processed by the Collector, and relayed to the analytical modules. Finally, the Analyser compare the incoming windows to the base-line model and store the result in the \gls{influxdb}. From there the monitoring and alerting software \gls{grafana} can query the results and plot them into dynamic graphs, as well as send alerts based on predefined thresholds or rules.
 
 \section{Experiment Results}
 \label{sec:results:results}
+
+Finally, in this section the detection results of the proposed algorithms are examined using the graphs generated with \gls{grafana}. They will be used to determine the quality of the detection results based on five criteria:
+
+\begin{enumerate}
+	\item General ability to the detect the attack
+	\item Differentiation from background noise of the detection results
+	\begin{enumerate}
+		\item Average difference in detected outliers
+		\item Average difference in underlying decision metric
+	\end{enumerate}
+	\item Response time 
+	\item Persistence of detection
+\end{enumerate}
+
+\subsection{Detection of Unusual Network Traffic}
+\label{sec:results:results:unusual}
+
+\begin{table}[H]
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
+		\toprule
+		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
+		1. Attack detected & no & no & no & no \\\midrule
+		2.a) Avg. difference in outliers  & n/a & n/a & n/a & n/a \\\midrule
+		2.b) Avg. difference in metric & n/a & n/a & n/a & n/a \\\midrule
+		3. Response time & n/a & n/a & n/a & n/a \\\midrule
+		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
+	\end{tabularx}
+	\caption[Detection results of unusual traffic]{Detection results of unusual traffic.}
+	\label{tab:results:unusual}
+\end{table}
+
+\subsection{Detection of a DoS Attack}
+\label{sec:results:results:dos}
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
+		\toprule
+		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
+		1. Attack detected & yes & yes & yes & no \\\midrule
+		2.a) Avg. difference in outliers  & n/a & n/a & n/a & n/a \\\midrule
+		2.b) Avg. difference in metric & n/a & n/a & n/a & n/a \\\midrule
+		3. Response time & n/a & n/a & n/a & n/a \\\midrule
+		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
+	\end{tabularx}
+	\caption[Detection results of the DoS attack]{Detection results of the \gls{dos} attack.}
+	\label{tab:results:dos}
+\end{table}
+
+\subsection{Detection of a Network Scan}
+\label{sec:results:results:scan}
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
+		\toprule
+		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
+		1. Attack detected & yes & yes & yes & no \\\midrule
+		2.a) Avg. difference in outliers  & n/a & n/a & n/a & n/a \\\midrule
+		2.b) Avg. difference in metric & n/a & n/a & n/a & n/a \\\midrule
+		3. Response time & n/a & n/a & n/a & n/a \\\midrule
+		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
+	\end{tabularx}
+	\caption[Detection results of the network scan]{Detection results of the network scan.}
+	\label{tab:results:scan}
+\end{table}
+
+\subsection{Detection of New Devices}
+\label{sec:results:results:newdevice}
+
+\begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	\newcolumntype{Y}{>{\centering\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
+		\toprule
+		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
+		1. Attack detected &  &  &  & no \\\midrule
+		2.a) Avg. difference in outliers  & n/a & n/a & n/a & n/a \\\midrule
+		2.b) Avg. difference in metric & n/a & n/a & n/a & n/a \\\midrule
+		3. Response time & n/a & n/a & n/a & n/a \\\midrule
+		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
+	\end{tabularx}
+	\caption[Detection results of new devices]{Detection results of two new devices in the network.}
+	\label{tab:results:newdevice}
+\end{table}
