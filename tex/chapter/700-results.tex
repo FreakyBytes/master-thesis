@@ -197,7 +197,7 @@ The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at
 		2.a) Avg. difference in outliers  & $0.549$ & $0.997$ & $254$ & n/a \\\midrule
 		2.b) Avg. difference in metric & $-1.730$ & $-39.46$ & n/a & n/a \\\midrule
 		3. Response time & 0s & 0s & 0s & n/a \\\midrule
-		4. Persistence & 100\% & 100\% & 100\% & n/a \\\bottomrule
+		4. Persistence & $100$\% & $100$\% & $100$\% & n/a \\\bottomrule
 	\end{tabularx}
 	\caption[Detection results of the DoS attack]{Detection results of the \gls{dos} attack.}
 	\label{tab:results:dos}
@@ -277,7 +277,7 @@ The calculated entropy compared to the training data is continuously infinite, m
 		2.a) Avg. difference in outliers  & $0.029$ & $0.549$ & $5 \cdot 10^{3}$ & n/a \\\midrule
 		2.b) Avg. difference in metric & $-2.10$ & $-32.97$ & n/a & n/a \\\midrule
 		3. Response time & n/a & 0s & 0s & n/a \\\midrule
-		4. Persistence & n/a & 100\% & 100\% & n/a \\\bottomrule
+		4. Persistence & n/a & $100$\% & $100$\% & n/a \\\bottomrule
 	\end{tabularx}
 	\caption[Detection results of the network scan]{Detection results of the network scan.}
 	\label{tab:results:scan}
@@ -292,8 +292,16 @@ As traffic resembling an actual \gls{knx} device was injected using prior not us
 However, Figure~\ref{fig:results:newdevice:addr} illustrates clearly activity with of unknown devices.
 Since the alert threshold for both metrics is zero, an alert would be raised.
 
-Opposed to that, is the outlier detection using \gls{lof} and the \gls{svm}.
+Opposed to that are the results of the outlier detection using \gls{lof} and the \gls{svm}, as shown in Figure~\ref{fig:results:newdevice:outlier}.
+With only a difference of $0.055$ compared to the validation data set no significant increase in outliers was detected by the \gls{lof} Analyser.
+Similarly, the \gls{svm} identified on average $0.005$ outliers over the period of modification, which resembles a drop of $0.002$ when compared to the validation dataset.
+Additionally, the spread for both the \gls{lof} and the distance to the decision surface in Figure~\ref{fig:results:newdevice:lof} and~\ref{fig:results:newdevice:svm} is considerably moderate, not indicating a strong tendency to either outlier or inlier.
+Therefore, it is to conclude that neither the \gls{lof} nor the \gls{svm} detected this modification.
+Although the occurrence of unknown addresses and outliers detected by the \gls{svm} show some timely correlation.
 
+As in the previous modifications, no conclusion can be drawn from the Entropy Analyser as it is continuously detecting an infinite value.
+
+The persistence and response time can not be taken into account for this modification. Even though the modification was applied over the course of the whole day, the device were not sending traffic right from the beginning of the day, therefore not being detectable on any layer above the physical.
 
 \begin{figure}[H]
 	\newcommand{\figwith}{0.49\textwidth}
@@ -352,10 +360,10 @@ Opposed to that, is the outlier detection using \gls{lof} and the \gls{svm}.
 		\toprule
 		& \gls{lof} & \gls{svm} & Address & Entropy \\\midrule
 		1. Attack detected & no & no & yes & no \\\midrule
-		2.a) Avg. difference in outliers  & n/a & n/a & n/a & n/a \\\midrule
-		2.b) Avg. difference in metric & n/a & n/a & n/a & n/a \\\midrule
-		3. Response time & n/a & n/a & n/a & n/a \\\midrule
-		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
+		2.a) Avg. difference in outliers  & $0.055$ & $-0.002$ & $0.03$ & n/a \\\midrule
+		2.b) Avg. difference in metric & $0.32$ & $-0.13$ & n/a & n/a \\\midrule
+		3. Response time & n/a & ($4.5$h) & ($6.83$h) & n/a \\\midrule
+		4. Persistence & n/a & ($0.54$\%) & ($3.23$\%) & n/a \\\bottomrule
 	\end{tabularx}
 	\caption[Detection results of new devices]{Detection results of two new devices in the network.}
 	\label{tab:results:newdevice}
