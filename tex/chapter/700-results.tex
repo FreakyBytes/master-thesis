@@ -22,9 +22,14 @@ These modifications are meant to resemble plausible attacks on \gls{bas} network
 \end{enumerate}
 
 First, only the training data was imported via the Simulated Agent and pushed to the \gls{influxdb} by the Collector. This data was then used to train the different algorithms.
-Then the remaining two parts of data set were imported via the Simulated Agent and processed into statistical windows, these were then processed by the Collector, and relayed to the analytical modules. Finally, the Analyser compare the incoming windows to the base-line model and store the result in the \gls{influxdb}. From there the monitoring and alerting software \gls{grafana} can query the results and plot them into dynamic graphs, as well as send alerts based on predefined thresholds or rules.
+Then the remaining two parts of dataset were imported via the Simulated Agent and processed into statistical windows, these were then processed by the Collector, and relayed to the analytical modules. Finally, the Analyser compare the incoming windows to the base-line model and store the result in the \gls{influxdb}. From there the monitoring and alerting software \gls{grafana} can query the results and plot them into dynamic graphs, as well as send alerts based on predefined thresholds or rules.
 
-In this experiment the feature to simulate multiple Agents, using filter rules, was not used due to the fact that the data set was merely recorded on one single line. Therefore, a further separation seemed unfeasible, as it would complicate the evaluation of the detection results without providing more insights.
+During the import of the test dataset an increasing delay of queries to the \gls{influxdb} were observed.
+\todo{...}
+
+\todo{clustering helpful for slow estimation results in lof}
+
+In this experiment the feature to simulate multiple Agents, using filter rules, was not used due to the fact that the dataset was merely recorded on one single line. Therefore, a further separation seemed unfeasible, as it would complicate the evaluation of the detection results without providing more insights.
 
 \section{Experiment Results}
 \label{sec:results:results}
@@ -56,7 +61,7 @@ The distinction by Agents can be ignored, as only one Agent was simulated in thi
 \subsection{Detection of Unusual Network Traffic}
 \label{sec:results:results:unusual}
 
-The first modification applied to the test data set was the injection of unusual traffic. 
+The first modification applied to the test dataset was the injection of unusual traffic. 
 For this a time span of five hours was replaced with traffic from the same line, but from different weekday and time of the day.
 This effectively aims to test the seasonal- or time-sensitivity of the models.
 
@@ -65,7 +70,7 @@ In \ref{fig:results:unusual:tc} a sudden increase in the observed amounts of tel
 The absence of unknown addresses, either as source or as destination, is also clearly indicated by Figure~\ref{fig:results:unusual:addr}.
 
 Surprisingly, there is also no significant increase in the number of detected outliers neither by the \gls{svm}, nor using the \gls{lof}, as shown in Figure~\ref{fig:results:unusual:outlier}.
-Even though the \gls{lof} shows an average of $0.77$ outliers, it can hardly be considered an significant increase when compared to the surrounding unmodified data and to the validation data set in Appendix~\ref{app:metrics:validation}.
+Even though the \gls{lof} shows an average of $0.77$ outliers, it can hardly be considered an significant increase when compared to the surrounding unmodified data and to the validation dataset in Appendix~\ref{app:metrics:validation}.
 However, the spread of the \gls{lof} depicted in Figure~\ref{fig:results:unusual:lof} shows a small change downwards, which indicates less normal behaviour -- it is arguably not significant enough.
 
 In contrast, Figure~\ref{fig:results:unusual:svm} even shows that the distance to the decision function of the \gls{svm} even increases positively, which means the analysed points are considered to represent the normality stronger. This is also reflected in the detection of no outliers with the exception of two small peaks.
@@ -306,7 +311,7 @@ However, Figure~\ref{fig:results:newdevice:addr} illustrates clearly activity wi
 Since the alert threshold for both metrics is zero, an alert would be raised.
 
 Opposed to that are the results of the outlier detection using \gls{lof} and the \gls{svm}, as shown in Figure~\ref{fig:results:newdevice:outlier}.
-With only a difference of $0.055$ compared to the validation data set no significant increase in outliers was detected by the \gls{lof} Analyser.
+With only a difference of $0.055$ compared to the validation dataset no significant increase in outliers was detected by the \gls{lof} Analyser.
 Similarly, the \gls{svm} identified on average $0.005$ outliers over the period of modification, which resembles a drop of $0.002$ when compared to the validation dataset.
 Additionally, the spread for both the \gls{lof} and the distance to the decision surface in Figure~\ref{fig:results:newdevice:lof} and~\ref{fig:results:newdevice:svm} is considerably moderate, not indicating a strong tendency to either outlier or inlier.
 Therefore, it is to conclude that neither the \gls{lof} nor the \gls{svm} detected this modification.
@@ -456,18 +461,44 @@ The persistence and response time can not be taken into account for this modific
 
 \begin{itemize}
 	\item In conclusion
+	\item a modular and extensible software architecture was proposed, which allows for...
 	\item The here proposed system and architecture allows for efficient and scalable online monitoring of \gls{bas}.
+	\item Its modularity allows it to be used as foundation for further investigation and implementation of different algorithms, not just limited to anomaly detection.
 	\item Along with the system and architecture a selection of machine learning algorithms were described, evaluated for the use in anomaly-based \glspl{ids}, and finally tested within a prototype of the proposed system.
 	\item The prototype was implemented showcasing the capabilities of the algorithms as well as the architecture at the example of a real world \gls{knx} installation.
-	\item Even though the not every here tested model was able to detect all modifications or attacks, it was shown that anomaly detection methods also work in areas were traffic is hugely impacted by human behaviour and object to fluctuations and changes.
+	\item Even though not every here tested model was able to detect all modifications or attacks, it was shown that anomaly detection methods also work in areas were traffic is hugely impacted by human behaviour and object to fluctuations and changes.
 	\item The sensitivity to different kinds of attacks was illustrated in Section~\ref{sec:results:results}.
 	
-	\item Seasonal-sensitivity was not testable due to limited test data.
+	\item Possible factor influencing the detection results include the parameters used for training the different models and the construction of the feature vector.
+	\item Especially the \gls{lof} seems to be rather sensitive to the number of neighbours an observation is compared to. This parameter need to be adjusted in accordance to the amount of training data and the contamination of it. Further, with an increased number of neighbours and an larger training set the precision may rise, but the time complexity is impacted directly by \(O(n)\) in the worst case.
+	\item For the \gls{svm} the predominantly important factor seems to be the type of function used to form the decision surface and how tight it is fit to the training data. Opposed to \gls{lof}, the performance is not influence by the size of the training data during operation, therefore a larger dataset can be used without considering performance issues.
+	\item However, the most influential factor for all algorithms is the feature vector. Its construction and the projection of features to dimensions heavily impacts the way observations can be compared.
+	\item In this work the focus was to emphasise critical \gls{knx} features. For this dimensionality was reduced using common methods. (see Section~\ref{sec:impl:vectoriser}) In hindsight these methods should have also been applied to the \gls{apci} feature of \gls{knx}
+	
+	\item Unfortunately, the seasonal-sensitivity was not testable due to limited test data.
 		\subitem the part of the building the test data was acquired from was not subject to dramatic changes in usage during the examined test period.
 		\subitem therefore a qualified answer for the requirement of strong seasonal sensitivity cannot be given at this point and would require extensive testing on a larger dataset.
 		\subitem However, the introduction of a time-dependent dimension in the feature vector, will allow the base-line model to be fit tighter to what the \emph{normality} might be. Consequently, considering such a dimension in the models might be advised, in case such sensitivity might be required.
 		
-	\item 
+	\item Given the detection rate, the applied data reduction down to windows containing only statistical distribution seem to be sufficient for detection changes in the composition of the network traffic.
+	\item By normalising all dimensions of the feature vector to their respective maximum within the currently observed window, the models could be trained independent from the length of the window. On the one hand, this allows the window length to be adjusted dynamically.
+	On the other hand, the absolute values are lost and do not allow to detect changes of a general increase or decrease of traffic. 
+	\item To a certain extend this might prevent the system from detecting failure of large portions of a line in a way were the composition of the traffic is not noticeably influence.
+	\item Although this can introduce a blind spot within the observation capabilities, the change of the absolute of traffic should be monitored using existing monitoring and alerting solutions, as already mentioned.
 	
-	\item Given the detection rate, the applied data reduction down to windows containing only statistical distribution seem to be sufficient for detection changes in the composition of the network traffic. However, it is to consider if the limitation to in-band monitoring messages is feasible. As it is not uncommon in \gls{knx} installations to use \gls{ip} gateways to bridge line-segments, a full-take of the traffic would be available via high-speed backbones. Thus, allowing the Collector easily to tap into this stream and use it directly for further analysis.
+	\item However, it is to consider if the limitation to in-band monitoring messages is feasible. As it is not uncommon in \gls{knx} installations to use \gls{ip} gateways to bridge line-segments, a full-take of the traffic would be available via high-speed backbones. Thus, allowing the Collector easily to tap into this stream and use it directly for further analysis.
+		
+	\item Since the tests in this thesis were not conducted within a real \gls{knx} installation, a comprehensive estimation on how regular traffic is influenced cannot be given
+	% \item Then again, the general observed bandwidth utilisation in the available datasets was perceived to be relatively low.
+	\item Complementary to the here introduced system, \textcite{Jung2018} developed and tested an Agent capable of observing live traffic and aggregating the gathered data to statistical windows or flows.
+	\item He shows that the additional load produced by exporting flow records can be kept relatively low around 20\%, when window length and export timeout are chosen according to the network utilisation.
+	\item For this it needs to be considered, if a constant relative low bus utilisation is desirable, or if the flow exports should be buffered and then burst-transmitted to the Collector. Later one adds the risk of small delays in the network during transmission of the flows.
+	
+	\item Another important topic to consider is the additional security risk introduced by exporting statistical windows or flows in-band to a Collector.
+	\item As shown by \textcite{Mundt2012}, \gls{bas} like \gls{knx} networks can be exploited to harness sensitive user and behavioural data.
+	\item before used in production system, encryption should be implemented.
+	
+	\item Finally, ...
+	
+	
 \end{itemize}
