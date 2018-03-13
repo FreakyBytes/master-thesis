@@ -382,8 +382,40 @@ The persistence and response time can not be taken into account for this modific
 	\label{tab:results:newdevice}
 \end{table}
 
-\section{Conclusion}
-\label{sec:results:conclusion}
+\section{Summary of the Detection Results}
+\label{sec:results:summary}
+
+\begin{itemize}
+	\item 3 out of 4 attacks were successfully detected
+	\item 2 of those by machine learning algorithms
+	\item to note, that lof and svm were trained with normalised data
+		\subitem traffic rates not into account
+		\subitem only change in composition/structure can be recognised
+		\subitem changes in transmission rate should be monitored in Grafana
+		
+	\item \gls{svm} is the best performing algo
+		\subitem low background noise
+		\subitem detected both direct attacks
+		\subitem sharp decision surface
+		\subitem small model, quick detection/estimation
+		\subitem model training is computational intensive
+				
+	\item \gls{lof} does not perform well
+		\subitem requires at least further tuning
+		\subitem detected only \gls{dos} reliably
+		\subitem almost detected scan, but was not clear distinguishable from background noise
+		\subitem large model, longer computation time for detection
+		\subitem nearest neighbour search is perform every time -> computational heavy, especially for large datasets
+		
+	\item addr analyser
+		\subitem simple method to any drastic change involving unknown addresses in the network
+		\subitem good supplement
+		\subitem low resource overhead: small model, quick detection, fast training
+	
+	\item entropy was useless
+		\subitem mostly entropy of inf calculated
+		
+\end{itemize}
 
 \begin{table}[H]
 	\aboverulesep=0ex
@@ -403,3 +435,39 @@ The persistence and response time can not be taken into account for this modific
 	\caption[Summary of detection results]{Summary of detection results.}
 	\label{tab:results:conclusion}
 \end{table}
+
+\section{Conclusion}
+\label{sec:results:conclusion}
+
+\begin{enumerate}
+	\item \enquote{[...] anomaly detection methods seem especially applicable to SCADA system security which are characterized by routine and repetitious activities.} \parencite{Yang2006} Is it also a good fit for BAS? Does it make sense?
+	\item How can anomaly detection identify different attack vectors in BAS:
+		\subitem new devices
+		\subitem (high) traffic load
+		\subitem network problems
+		\subitem configuration changes
+		\subitem reconnaissance (network scan) 
+	\item In which way does anomaly detection need to account for different seasons? And how high is the precision improvement compared to a model that is not season-sensible?
+	\item Does the additional in-band traffic influences normal operations?
+	\item Does the additional in-band traffic produces new attack surfaces?
+	\item Which anomaly detection/evaluation method îs the best for BAS?
+	\item Which data reduction is feasible and in which part of the system does it makes sense? (in the data collection agent)
+\end{enumerate}
+
+\begin{itemize}
+	\item In conclusion
+	\item The here proposed system and architecture allows for efficient and scalable online monitoring of \gls{bas}.
+	\item Along with the system and architecture a selection of machine learning algorithms were described, evaluated for the use in anomaly-based \glspl{ids}, and finally tested within a prototype of the proposed system.
+	\item The prototype was implemented showcasing the capabilities of the algorithms as well as the architecture at the example of a real world \gls{knx} installation.
+	\item Even though the not every here tested model was able to detect all modifications or attacks, it was shown that anomaly detection methods also work in areas were traffic is hugely impacted by human behaviour and object to fluctuations and changes.
+	\item The sensitivity to different kinds of attacks was illustrated in Section~\ref{sec:results:results}.
+	
+	\item Seasonal-sensitivity was not testable due to limited test data.
+		\subitem the part of the building the test data was acquired from was not subject to dramatic changes in usage during the examined test period.
+		\subitem therefore a qualified answer for the requirement of strong seasonal sensitivity cannot be given at this point and would require extensive testing on a larger dataset.
+		\subitem However, the introduction of a time-dependent dimension in the feature vector, will allow the base-line model to be fit tighter to what the \emph{normality} might be. Consequently, considering such a dimension in the models might be advised, in case such sensitivity might be required.
+		
+	\item 
+	
+	\item Given the detection rate, the applied data reduction down to windows containing only statistical distribution seem to be sufficient for detection changes in the composition of the network traffic. However, it is to consider if the limitation to in-band monitoring messages is feasible. As it is not uncommon in \gls{knx} installations to use \gls{ip} gateways to bridge line-segments, a full-take of the traffic would be available via high-speed backbones. Thus, allowing the Collector easily to tap into this stream and use it directly for further analysis.
+\end{itemize}
