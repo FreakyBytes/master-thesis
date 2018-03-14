@@ -81,8 +81,10 @@ As a result any device on the bus can listen all traffic transmitted on this lin
 Consequently, attacker are not able to gain additional insights from listening to flow or window exports, if they are eaves dropping a single network segment like a line.
 The only additional potentially introduced security vulnerability lies by the Collector and the backbone lines. In the case attacker would gain access to these recordings or lines, they would gain insights of the general activity and the installed device of the building.
 Under those circumstances, the computer system running the Collector and analytical modules, as well as the backbone lines require particular well designed security mechanisms.
-The most recommended would be to implement proper encryption and signatures for the communication between the Agents and the Collector, before implementing the concept in production systems,
+Even though the risks for security and privacy are recognised in this thesis, there were not subject to this thesis and need to be investigated in future work.
+Before deploying the here proposed concept to a production system, it would be highly recommended to implement proper encryption and signatures for the communication between the Agents and the Collector, before implementing the concept in production systems.
+%Even though the risks for security and privacy are recognised in this work, it ..
 
-Even though the risks for security and privacy are recognised in this work, it 
-
-Finally, ...
+In this thesis a concept for a software architecture based on anomaly detection algorithms is proposed to monitor \glspl{bas} using distributed Agents, communication in-band. This concept was implemented into a prototype, which was then tested using real world data of a \gls{knx} network.
+In this test the different anomaly detection algorithms were evaluated with regard to their suitability for \glspl{bas}.
+In conclusion, the system has proven to be able to detect significant changes within the traffic of network, which indicate malicious behaviour.
