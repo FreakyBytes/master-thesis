@@ -288,7 +288,6 @@ Moreover, the ability of \gls{lof} to work on unclean data and account for diffe
 
 \todo{ref to fig}
 
-\clearpage
 \subsubsection{Support Vector Machines}
 \label{sec:background:network:novelty:svm}
 
@@ -326,7 +325,8 @@ In case of one-class \gls{svm}, which are predominantly used for outlier detecti
 As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable techniques to be used in anomaly-based \glspl{ids}. However, since the way this model is trained requires for clean training data, it is increasingly hard to fit it into new networks and changing environments. (cf. Section~\ref{sec:background:network:ids:anomaly})
 
 \todo{ref to fig}
-	
+
+\begin{comment}
 \subsubsection{Isolation Forest}
 \label{sec:background:network:novelty:isoforest}
 	
@@ -336,8 +336,9 @@ As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable te
 			\subitem \enquote{they are the minority}
 			\subitem \enquote{have attribute-values that are very different}
 	\end{itemize}
+\end{comment}
 
-\subsubsection{Entropy based Outlier detection}
+\subsubsection{Entropy-based Outlier Detection}
 \label{sec:background:network:novelty:entropy}
 
 The information entropy, introduced by \textcite{Shannon1948}, provides an effective way to determine the uncertainty of a given system or the information content of a variable. It is further also referred to as measurement for randomness. Especially later one is intuitively related to outlier detection.
@@ -389,7 +390,7 @@ Most algorithms and techniques for Outlier Detection (cf. Section~\ref{sec:backg
 Problematic cases included when the possible expressions of a feature need to be model as equidistant to each other.
 Alternatively, in certain cases it is necessary to reduce the amount of dimension a feature would add, because otherwise the resource utilisation would exceed sane boundaries.
 
-\subsubsection{One-Hot encoding}
+\subsubsection{One-Hot Encoding}
 \label{sec:background:network:features:onehot}
 
 Certain features in a dataset can represent markers or flags. In traditional data processing flags are often encoded as bit-field, where each bit represents one specific flag or marker, or as numerical value, where each number represents a state.
