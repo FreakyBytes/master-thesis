@@ -433,18 +433,7 @@ Another module relying on the feature vector and normalised data is the Entropy 
 In contrast to the \gls{lof} and \gls{svm} it was not able any of the four modifications. Moreover, it calculated an infinite entropy for almost the entire dataset, which would represent an infinite information gain. (cf. Figure~\ref{fig:results:validation:entropy})
 This behaviour might be caused by a high sensitivity, but renders the results of this Analyser modules useless.
 
-On the other end of the spectrum resides the \gls{svm} Analyser. It detected both direct attacks reliably and outputs relatively low background noise and false-positives, therefore providing a sharp decision surface.
-The trained model consumes with $504 KiB$ comparably less disk space and shows fast classification results. Although, the training process proved to be computational more intensive.
-
-Proceeding, the \gls{lof} Analyser required further adjustments as it only detected on attack reliably.
-It shows high amount of background noise and false-positives. (cf. Figure~\ref{fig:results:validation:outlier}) The detection \gls{dos} was clearly identifiable and also for the network scan a change in pattern of the \gls{lof} output could be observed, but was not explicitly distinguishable from the background noise.
-Further, during the experiment it was observed that the classification with \gls{lof} takes the longest among all algorithms, which was counteracted by scaling this Analyser Module.
-Moreover, the trained model requires the most disk space with $151 MiB$, even though the training process is not computational intensive.
-
-Lastly, the Address Analyser does not rely on the feature vector, it rather compares the observed addresses to a pre-trained list of known addresses. This is a good supplement and an easy way to discover new unknown devices and also to recognise attacks like network scans, which relies on probing all address within a specific range.
-By relying on this simple working principle it only requires a small model with $1.4 KiB$ and is not computational intensive, neither during training nor operation.
-
-\begin{table}[H]
+\begin{table}[h]
 	\aboverulesep=0ex
 	\belowrulesep=0ex
 	\renewcommand{\arraystretch}{1.2}
@@ -462,3 +451,16 @@ By relying on this simple working principle it only requires a small model with 
 	\caption[Summary of detection results]{Summary of detection results.}
 	\label{tab:results:conclusion}
 \end{table}
+
+On the other end of the spectrum resides the \gls{svm} Analyser. It detected both direct attacks reliably and outputs relatively low background noise and false-positives, therefore providing a sharp decision surface.
+The trained model consumes with $504 KiB$ comparably less disk space and shows fast classification results. Although, the training process proved to be computational more intensive.
+
+Proceeding, the \gls{lof} Analyser required further adjustments as it only detected on attack reliably.
+It shows high amount of background noise and false-positives. (cf. Figure~\ref{fig:results:validation:outlier}) The detection \gls{dos} was clearly identifiable and also for the network scan a change in pattern of the \gls{lof} output could be observed, but was not explicitly distinguishable from the background noise.
+Further, during the experiment it was observed that the classification with \gls{lof} takes the longest among all algorithms, which was counteracted by scaling this Analyser Module.
+Moreover, the trained model requires the most disk space with $151 MiB$, even though the training process is not computational intensive.
+
+Lastly, the Address Analyser does not rely on the feature vector, it rather compares the observed addresses to a pre-trained list of known addresses. This is a good supplement and an easy way to discover new unknown devices and also to recognise attacks like network scans, which relies on probing all address within a specific range.
+By relying on this simple working principle it only requires a small model with $1.4 KiB$ and is not computational intensive, neither during training nor operation.
+
+
