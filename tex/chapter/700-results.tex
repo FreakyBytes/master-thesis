@@ -390,6 +390,7 @@ The persistence and response time can not be taken into account for this modific
 \section{Summary of the Detection Results}
 \label{sec:results:summary}
 
+\begin{comment}
 \begin{itemize}
 	\item 3 out of 4 attacks were successfully detected
 	\item 2 of those by machine learning algorithms
@@ -407,6 +408,7 @@ The persistence and response time can not be taken into account for this modific
 				
 	\item \gls{lof} does not perform well
 		\subitem requires at least further tuning
+		\subitem high background noise (cf. Figure~\ref{fig:results:validation:outlier})
 		\subitem detected only \gls{dos} reliably
 		\subitem almost detected scan, but was not clear distinguishable from background noise
 		\subitem large model, longer computation time for detection
@@ -419,8 +421,28 @@ The persistence and response time can not be taken into account for this modific
 	
 	\item entropy was useless
 		\subitem mostly entropy of inf calculated
-		
 \end{itemize}
+\end{comment}
+
+Altogether, three out of four attack scenarios could be detected using a variety of algorithms, as summarised in Table~\ref{tab:results:conclusion}. Two of those would have been detected using the unsupervised machine learning algorithms \gls{lof} and \gls{svm}.
+It is to note that both rely on the feature vector and operated on normalised data, which correspondingly does not account for absolute rates.
+Under those circumstances only the change in composition or structure of the traffic can be recognised by these algorithms. As effect they can handle changing window lengths without requiring re-training.
+Also, as stated earlier absolute changes in e.g. transmission rate can be monitored easily in exiting monitoring and alerting solutions.
+
+Another module relying on the feature vector and normalised data is the Entropy Analyser.
+In contrast to the \gls{lof} and \gls{svm} it was not able any of the four modifications. Moreover, it calculated an infinite entropy for almost the entire dataset, which would represent an infinite information gain. (cf. Figure~\ref{fig:results:validation:entropy})
+This behaviour might be caused by a high sensitivity, but renders the results of this Analyser modules useless.
+
+On the other end of the spectrum resides the \gls{svm} Analyser. It detected both direct attacks reliably and outputs relatively low background noise and false-positives, therefore providing a sharp decision surface.
+The trained model consumes with $504 KiB$ comparably less disk space and shows fast classification results. Although, the training process proved to be computational more intensive.
+
+Proceeding, the \gls{lof} Analyser required further adjustments as it only detected on attack reliably.
+It shows high amount of background noise and false-positives. (cf. Figure~\ref{fig:results:validation:outlier}) The detection \gls{dos} was clearly identifiable and also for the network scan a change in pattern of the \gls{lof} output could be observed, but was not explicitly distinguishable from the background noise.
+Further, during the experiment it was observed that the classification with \gls{lof} takes the longest among all algorithms, which was counteracted by scaling this Analyser Module.
+Moreover, the trained model requires the most disk space with $151 MiB$, even though the training process is not computational intensive.
+
+Lastly, the Address Analyser does not rely on the feature vector, it rather compares the observed addresses to a pre-trained list of known addresses. This is a good supplement and an easy way to discover new unknown devices and also to recognise attacks like network scans, which relies on probing all address within a specific range.
+By relying on this simple working principle it only requires a small model with $1.4 KiB$ and is not computational intensive, neither during training nor operation.
 
 \begin{table}[H]
 	\aboverulesep=0ex
@@ -468,12 +490,19 @@ The persistence and response time can not be taken into account for this modific
 	\item The prototype was implemented showcasing the capabilities of the algorithms as well as the architecture at the example of a real world \gls{knx} installation.
 	\item Even though not every here tested model was able to detect all modifications or attacks, it was shown that anomaly detection methods also work in areas were traffic is hugely impacted by human behaviour and object to fluctuations and changes.
 	\item The sensitivity to different kinds of attacks was illustrated in Section~\ref{sec:results:results}.
+	\item In this overview it is to note, that the Entropy Analyser did not detect any of the scenarios. Further when looking into the corresponding graphs of this module in Section~\ref{sec:results:results} and Appendix~\ref{app:metrics}, it becomes evident that the calculated entropy is nearly always infinite. (Encoded as \(100 000\)) 
+	\item This leads to the assumption that either the method is too sensitive to changes in the statistical distribution, or the implementation is erroneous. Given the result data from the experiment both possibilities need to be considered, since spikes of assumedly correct calculated entropy exist.
+	
+	\item Corresponding to the summary in Table~\ref{tab:results:conclusion}, it is to note, that modifications that do not alter the network traffic dramatically were less likely to be detected. This includes the \emph{unusual traffic} and \emph{new device} attack, which are rather shifting and copying records.
+	\item Reason for this could be, that the network traffic in the dataset does not vary to much over time, but rather stays constant.
+	\item Meaning, that the traffic used as source for the destination does not differ too much from the targeted time frame of the modification.
+	\item Another explanation could be, that the ...
 	
 	\item Possible factor influencing the detection results include the parameters used for training the different models and the construction of the feature vector.
 	\item Especially the \gls{lof} seems to be rather sensitive to the number of neighbours an observation is compared to. This parameter need to be adjusted in accordance to the amount of training data and the contamination of it. Further, with an increased number of neighbours and an larger training set the precision may rise, but the time complexity is impacted directly by \(O(n)\) in the worst case.
 	\item For the \gls{svm} the predominantly important factor seems to be the type of function used to form the decision surface and how tight it is fit to the training data. Opposed to \gls{lof}, the performance is not influence by the size of the training data during operation, therefore a larger dataset can be used without considering performance issues.
 	\item However, the most influential factor for all algorithms is the feature vector. Its construction and the projection of features to dimensions heavily impacts the way observations can be compared.
-	\item In this work the focus was to emphasise critical \gls{knx} features. For this dimensionality was reduced using common methods. (see Section~\ref{sec:impl:vectoriser}) In hindsight these methods should have also been applied to the \gls{apci} feature of \gls{knx}
+	\item In this work the focus was to emphasise critical \gls{knx} features. For this dimensionality was reduced using common methods. (see Section~\ref{sec:impl:vectoriser}) In hindsight these methods should have also been applied to the \gls{apci} feature of \gls{knx}, as it is the most dominant one with regards to occupied dimensions. Not only does this unnecessarily increase the required compute time, but can shift weights towards this single feature and therefore reduce the sensitivity to changes in other features.	
 	
 	\item Unfortunately, the seasonal-sensitivity was not testable due to limited test data.
 		\subitem the part of the building the test data was acquired from was not subject to dramatic changes in usage during the examined test period.
@@ -496,7 +525,10 @@ The persistence and response time can not be taken into account for this modific
 	
 	\item Another important topic to consider is the additional security risk introduced by exporting statistical windows or flows in-band to a Collector.
 	\item As shown by \textcite{Mundt2012}, \gls{bas} like \gls{knx} networks can be exploited to harness sensitive user and behavioural data.
+	\item At the time of this thesis, it is not common to deploy encryption in \gls{knx} networks. As a result attacker are not able to gain more insights from listening to flow or window exports, if they are eaves dropping a single network segment like a line, since this traffic is unprotected anyway. The only additional potentially introduced security vulnerability lies by the Collector and the backbone lines. In case attacker would gain access to these recordings or lines, they would gain insights to the general activity and the installed device of the building.
+	\item Consequently, the computer system running the Collector and analytical modules, as well as the backbone lines require particular well considered security mechanisms.
 	\item before used in production system, encryption should be implemented.
+	\item Even though the risks for security and privacy are recognised in this work, it 
 	
 	\item Finally, ...
 	
