@@ -2,7 +2,7 @@
 
 \todo{general introductory sentence about network mon}
 
-\section{Intrusion Detection Systems (IDS)}
+\subsection{Intrusion Detection Systems (IDS)}
 \label{sec:background:network:ids}
 
 \begin{comment}
@@ -25,7 +25,7 @@ Further, \gls{ids} may also identify attack attempts and probing, allowing to fu
 
 Nowadays \glspl{ids} are a commonly deployed in \gls{ip} networks. There are different kinds of \glspl{ids}, which can be discriminated by working principle. The following section is giving an overview of the most common technologies. \parencite[cf.][pp.~201-202]{Northcutt2005}
 
-\subsection{Signature-based Intrusion Detection Systems (SIDS)}
+\subsubsection{Signature-based Intrusion Detection Systems (SIDS)}
 \label{sec:background:network:ids:sig}
 
 \begin{comment}
@@ -56,7 +56,7 @@ However, it is to note, that every \gls{ids} will produce false positives. This 
 
 Other than false positives, there might be legitimate alerts that are of no interest. These unwanted alerts should be blocked, to not numb \alert{(is this the right word here?)} the system administrator. \parencite[cf.][pp.~205-206]{Northcutt2005}
 	
-\subsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
+\subsubsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
 \label{sec:background:network:ids:anomaly}
 	
 \begin{comment}
@@ -94,15 +94,15 @@ All in all, anomaly-based \glspl{ids} are ideal to identify prior unknown threat
 As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} technologies, when used to protect production systems.
 \parencite[cf.][pp.~203-204]{Northcutt2005} \todo{check pages}
 	
-	\subsection{State-based Intrusion Detection Systems\hint{??}}
-	\label{sec:background:network:ids:state}
-	
-	\begin{itemize}
-		\item cf. \textcite{Whitman2009} page 306 
-	\end{itemize}
+\subsubsection{State-based Intrusion Detection Systems\hint{??}}
+\label{sec:background:network:ids:state}
+
+\begin{itemize}
+	\item cf. \textcite{Whitman2009} page 306 
+\end{itemize}
 
 % ------------------------------------------------------------------------------
-\section{Flow Monitoring}
+\subsection{Flow Monitoring}
 \label{sec:background:network:netflow}
 
 \begin{comment}
@@ -165,7 +165,7 @@ The aim of this section is to provide a classification of these algorithms with 
 Further, an overview of the working principle is provided for a small selection of them.
 
 % ------------------------------------------------------------------------------
-\subsection{Classification of Anomaly, Outlier, and Novelty Detection Approaches}
+\subsection[Classification of Anomaly, Outlier, and Novelty Detection]{Classification of Anomaly, Outlier, and Novelty Detection Approaches}
 \label{sec:background:network:novelty:class}
 
 \begin{comment}
@@ -228,7 +228,7 @@ Generally the aim of this approach is to establish a tight boundary around norma
 If a new data point lies outside of the this boundary it is considered an \emph{outlier}, if not it is part of the \emph{normal} data.
 
 % ------------------------------------------------------------------------------
-\subsection{k-Nearest Neighbour}
+\subsubsection{k-Nearest Neighbour}
 \label{sec:background:network:novelty:knn}
 
 \begin{comment}
@@ -247,7 +247,7 @@ It consequently uses the proximity of data points within the feature space, allo
 To determine if the query point is located in an sparse area, meaning it is an outlying observation, the sum of the distance to the k-nearest neighbours is calculated.
 Data points with in denser area, representing normality, will have shorter distances to their neighbours. \parencite{Eskin2002}
 
-\subsection{Local Outlier Factor}
+\subsubsection{Local Outlier Factor}
 \label{sec:background:network:novelty:lof}
 
 \begin{comment}
@@ -289,7 +289,7 @@ Moreover, the ability of \gls{lof} to work on unclean data and account for diffe
 \todo{ref to fig}
 
 \clearpage
-\subsection{Support Vector Machines}
+\subsubsection{Support Vector Machines}
 \label{sec:background:network:novelty:svm}
 
 \begin{comment}
@@ -327,7 +327,7 @@ As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable te
 
 \todo{ref to fig}
 	
-\subsection{Isolation Forest}
+\subsubsection{Isolation Forest}
 \label{sec:background:network:novelty:isoforest}
 	
 	\begin{itemize}
@@ -337,7 +337,7 @@ As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable te
 			\subitem \enquote{have attribute-values that are very different}
 	\end{itemize}
 
-\subsection{Entropy based Outlier detection}
+\subsubsection{Entropy based Outlier detection}
 \label{sec:background:network:novelty:entropy}
 
 The information entropy, introduced by \textcite{Shannon1948}, provides an effective way to determine the uncertainty of a given system or the information content of a variable. It is further also referred to as measurement for randomness. Especially later one is intuitively related to outlier detection.
@@ -346,8 +346,6 @@ The information entropy, introduced by \textcite{Shannon1948}, provides an effec
 The basic principle is to try to fit every occurring data point to every existing cluster. The data point is then finally assigned to the cluster, where it produces the least increase of entropy. Finally, the relative change of entropy for assigning a data point to the nearest cluster (\emph{PCE}) is calculated. If this \emph{PCE} is higher than a prior defined threshold, the data point is considered an outlier.
 However, this method requires access to all previous data points, which implies a high resource utilisation. To increase performance \textcite{Toshniwal2014} are only keeping a window of data in memory.
 Further, it might be to consider to determine a kernel function, fitted to the individual dimensions. The entropy could then be calculated against the distribution function, rather than raw data.
-
-
 
 \begin{comment}
 \subsection{Elliptical Envelope}
@@ -384,14 +382,14 @@ Further, it might be to consider to determine a kernel function, fitted to the i
 
 %\section{Time-based Anomaly Detection}
 
-\section{Methods of Feature Encoding}
+\subsection{Methods of Feature Encoding}
 \label{sec:background:network:features}
 
 Most algorithms and techniques for Outlier Detection (cf. Section~\ref{sec:background:network:novelty}) work within a multi-dimensional vector space or feature space. Often it is not straight forward to map specific features of a data set into a vector space.
 Problematic cases included when the possible expressions of a feature need to be model as equidistant to each other.
 Alternatively, in certain cases it is necessary to reduce the amount of dimension a feature would add, because otherwise the resource utilisation would exceed sane boundaries.
 
-\subsection{One-Hot encoding}
+\subsubsection{One-Hot encoding}
 \label{sec:background:network:features:onehot}
 
 Certain features in a dataset can represent markers or flags. In traditional data processing flags are often encoded as bit-field, where each bit represents one specific flag or marker, or as numerical value, where each number represents a state.
@@ -406,7 +404,7 @@ In other words the different expressions of this feature must be kept equidistan
 
 To archive this, it is suggested in literature, to encode each expression as own dimension and only setting the expressed one to 1, leaving the rest at 0. This is referred to as \emph{one-hot} encoding. \parencite[cf.][]{Coates2011}
 
-\subsection{Feature Hashing}
+\subsubsection{Feature Hashing}
 \label{sec:background:network:features:hashing}
 
 When introducing multiple features in the vector space, the  amount of dimensions can increase rapidly, especially when using techniques like one-hot encoding (cf. Section~\ref{sec:background:network:features:onehot}).
@@ -419,7 +417,7 @@ This process is non reversible, which might have implications for further proces
 Further, feature hashing introduces the possibility of hash collisions, especially when the targeted dimension number is low. Therefore the reduction needs to be considered carefully.
 However, when compared to a random projection, to reduce dimensionality, the hashing-trick preserves the density and introduces no additional overhead. \parencite{Weinberger2009,Shi2009}
 
-\subsection{Encoding Time}
+\subsubsection{Encoding Time}
 \label{sec:background:network:features:time}
 
 Encoding time in machine learning and in the context of anomaly detection has to be considered carefully.

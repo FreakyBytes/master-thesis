@@ -1,6 +1,6 @@
 % !TeX spellcheck = en_GB
 
-\section{Introduction into Building Automation}
+\subsection{Introduction into Building Automation}
 \label{sec:background:bas:intro}
 
 \begin{comment}
@@ -23,10 +23,10 @@ This solutions is offered by modern building automation systems and networks. Es
 \todo{more?}
 
 % ------------------------------------------------------------------------------
-\section{KNX}
+\subsection{KNX as Example}
 \label{sec:background:bas:knx}
 
-\alert{telegram vs frame. frame is used in the english standard document -> will use telegram}
+%\alert{telegram vs frame. frame is used in the english standard document -> will use telegram}
 \begin{comment}
 	\begin{itemize}
 		\item \knx or Konnex
@@ -65,7 +65,7 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 \todo{mention, that knx is only one example for bas. here used...}
 
 % ------------------------------------------------------------------------------
-\subsection{Bus Topology of KNX Networks}
+\subsubsection{Bus Topology of KNX Networks}
 \label{sec:background:bas:knx:topo}
 
 \begin{comment}
@@ -136,7 +136,7 @@ Whereby physical addresses are used to communicate with one specific device, whi
 \input{tables/100-knx-segments.tex}
 
 % ------------------------------------------------------------------------------	
-\subsection{KNX Protocol}
+\subsubsection{KNX Protocol}
 \label{sec:background:bas:knx:proto}
 
 \begin{comment}
@@ -164,7 +164,8 @@ Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegr
 
 \input{tables/100-knx-prio.tex}
 
-\subsubsection{Data Telegram}
+%\subsubsection{Data Telegram}
+\paragraph{Data Telegram}
 \label{sec:background:bas:knx:proto:data}
 
 The data telegram being utilised the most and used for transferring commands, state, and value changes, comes in 2 flavours.
@@ -177,7 +178,8 @@ The recipient answers then with an acknowledge telegram. \parencite{Merz2009,Sok
 \input{tables/100-knx-ctrl.tex}
 \input{tables/100-knx-ctrle.tex}
 
-\subsubsection{Acknowledge Telegram}
+%\subsubsection{Acknowledge Telegram}
+\paragraph{Acknowledge Telegram}
 \label{sec:background:bas:knx:proto:ack}
 
 The acknowledge telegram can indicate the correct reception (\code{ACK}, positive acknowledge), faulty reception (\code{NACK}, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
@@ -189,7 +191,8 @@ In case the sender addressed the original telegram to multiple devices by using 
 
 \input{tables/100-knx-ack.tex}
 
-\subsubsection{Poll Telegram}
+%\subsubsection{Poll Telegram}
+\paragraph{Poll Telegram}
 \label{sec:background:bas:knx:proto:poll}
 
 The poll telegram allows to poll 1 byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks. It consists of a poll data request frame (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}) and a poll data response frame. Former starts the poll telegram and sets the group address to query, also it defines how many bytes to receive.
@@ -197,7 +200,7 @@ The poll data response consists of each device sending one byte on the bus witho
 
 \input{tables/100-knx-poll.tex}
 
-\subsection{KNX Communication}
+\subsubsection{KNX Communication}
 \label{sec:background:bas:knx:communication}
 
 \begin{comment}
@@ -242,7 +245,7 @@ Each \gls{dpt} is identified by an 16 bit main number and an 16 bit sub-number, 
 
 \input{tables/100-knx-tpci-apci.tex}
 	
-\subsection{KNX Management Procedures}
+\subsubsection{KNX Management Procedures}
 \label{sec:background:bas:knx:management}
 
 \begin{comment}
@@ -266,7 +269,7 @@ They mainly provide routines to configure addresses, read serial numbers, get fu
 Secondly, there are device management procedures, which require in depth knowledge of the devices. \parencite[pp.~30~ff.]{DIN_EN_50090-7-1}
 These are used to i.e. configure devices, restart them, and verify the configuration.
 
-\subsection{Security in KNX}
+\subsubsection{Security in KNX}
 \label{sec:background:bas:knx:security}
 
 \begin{comment}
