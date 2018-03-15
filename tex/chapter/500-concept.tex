@@ -36,7 +36,8 @@ This decision was made because \gls{bas} are mostly heterogeneous, since every b
 Therefore, either the baseline model has to reflect a very broad \emph{normality}, or attacks need to be modelled as signatures. The later option has the drawback of requiring constant updates. Also a sufficiently large database of common attacks is required in first place.
 Neither of these options seemed feasible.
 Consequently, relying on anomaly detection algorithms makes more sense in the provided context.
-Despite anomaly based \glspl{ids} being highly useful in changing environments with possibly unknown threats (cf. Section~\ref{sec:background:network:ids:anomaly}), it is to note that they \enquote{are based on the beliefs that an intruder's behavior will be noticeably different from that of a legitimate user and that many unauthorized actions are detectable}. \parencite{Mukherjee1994,Yang2006}
+Despite anomaly based \glspl{ids} being highly useful in changing environments with possibly unknown threats (cf. Section~\ref{sec:background:network:ids:anomaly}), it is to note that they \enquote{are based on the beliefs that an intruder's behaviour will be noticeably different from that of a legitimate user and that many unauthorized actions are detectable}. \parencite{Mukherjee1994,Yang2006}
+A decision is made deliberately against using a state-based \gls{ids} approach, as the protocols used in \gls{bas} often do not specify long, complex command sequences. And opposed to \gls{scada} networks, the higher level activity of network devices in \gls{bas} is not dictated by routine as it would be in machine park. Rather it is strongly shaped and influenced by human behaviour. (cf. Section~\ref{sec:background:network:ids:state})
 
 \todo{better transition}
 Further, to enable scalability and on-line detection, the proposed framework was designed around the message-passing design principle.

@@ -25,7 +25,7 @@ Further, \gls{ids} may also identify attack attempts and probing, allowing to fu
 
 Nowadays \glspl{ids} are a commonly deployed in \gls{ip} networks. There are different kinds of \glspl{ids}, which can be discriminated by working principle. The following section is giving an overview of the most common technologies. \parencite[cf.][pp.~201-202]{Northcutt2005}
 
-\subsubsection{Signature-based Intrusion Detection Systems (SIDS)}
+\subsubsection{Signature-based Intrusion Detection Systems (S-IDS)}
 \label{sec:background:network:ids:sig}
 
 \begin{comment}
@@ -55,8 +55,35 @@ As a result, a valuable \gls{ids} solution is characterised by an balanced preci
 However, it is to note, that every \gls{ids} will produce false positives. This derives out of the consideration, that each false negative is an legitimate attack, which was not detected. Therefore a slight tendency to (over) sensitivity is sensible.
 
 Other than false positives, there might be legitimate alerts that are of no interest. These unwanted alerts should be blocked, to not numb \alert{(is this the right word here?)} the system administrator. \parencite[cf.][pp.~205-206]{Northcutt2005}
+
+\subsubsection{State-based Intrusion Detection Systems}
+\label{sec:background:network:ids:state}
+
+\begin{comment}
+\begin{itemize}
+	\item \enquote{track each network connection [...] using a state table to record which station sent which packet and when}
+	\item \enquote{process of comparing predetermined profiles of generally accepted definitions of benign activity for each protocol state against observed events to identify deviations. Stateful protocol analysis relies on vendor-developed universal profiles that specify how particular protocols should and should not be used.}
+	\item \enquote{essentially knows how a protocol works} and can compare the observations to the expected behaviour to detect deviations
+	\item \enquote{By storing relevant data detected in a session and then using that data to identify intrusions that involve multiple requests and responses, the IDPS can better detect specialized, multisession attacks. This process is sometimes called \emph{deep packet inspection} [...]}
+	\item \enquote{Stateful protocol analysis can also examine authentication sessions for suspicious activity as well as for attacks that incorporate \enquote{unexpected sequences of commands, such as issuing the same command repeatedly or issuing a command without first issuing a command upon which it is dependent, as well as \emph{reasonableness} for commands such as minimum and maximum lengths for arguments.}}
+	\item models are based on common industry standards, like the ones defined by the IETF
+	\item \enquote{Unfortunately, the analytical complexity of session-based assessments is the principal drawback to this type of IDPS method, which also requires heavy processing overhead to track multiple simultaneous connections. Additionally, unless a protocol violates its fundamental behavior, this IDPS may completely fail to detect an intrusion.}
 	
-\subsubsection{Anomaly-based Intrusion Detection Systems (ABIDS)}
+	\item cf. \textcite{Whitman2009} page 306 
+\end{itemize}
+\end{comment}
+
+State-based \gls{ids} can be seen as another development iteration originating from S-IDS. Opposed to identifying attacks based on signatures, they track each connection using a state table. Further state-based \gls{ids} essentially implement common protocols and store the issued commands and relevant data defined in those protocols in the state table.
+Combined with a vendor-provided profile of this protocol and the implemented parser, the system can compared the observations to the expected behaviour and so detect deviations. \parencite[p.~306]{Whitman2009}
+
+Using this stateful protocol analysis the \gls{ids} is able to examine the different stages of communication for suspicious activities including \enquote{unexpected sequences of commands, such as issuing the same command repeatedly or issuing a command without first issuing a command upon which it is dependent, as well as \enquote{reasonableness} for commands such as minimum and maximum lengths for arguments}. \parencite{Scarfone2007}
+For instance a state-based \gls{ids} can detect if resources are requested from a server without previous authentication. \parencite[p.~306]{Whitman2009}
+
+Unfortunately, the high complexity of tracking the state of each and every connection while simultaneously verifying against a profile is a major drawback of this approach. It requires a lot of processing resources and memory capacity.
+Further, this method is only able to detect violations against a protocol's fundamental behaviour.
+Additionally, the state-based analysis works the best with stateful, connection-oriented protocols, this does not include protocols relying on short, broadcasted, and self-containing commands as they can be found in \gls{bas}. \parencite[p.~306]{Whitman2009}
+	
+\subsubsection{Anomaly-based Intrusion Detection Systems (A-IDS)}
 \label{sec:background:network:ids:anomaly}
 	
 \begin{comment}
@@ -93,13 +120,6 @@ This means, the decision if the baseline model should be trained continuously ha
 All in all, anomaly-based \glspl{ids} are ideal to identify prior unknown threats and attacks in relatively stable environments. However, it might also identify (legitimate) changes in the environment as anomaly. Additionally it might be unable to detect attacks which mimic regular behaviour and only deviate slightly from legitimate traffic.
 As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} technologies, when used to protect production systems.
 \parencite[cf.][pp.~203-204]{Northcutt2005} \todo{check pages}
-	
-\subsubsection{State-based Intrusion Detection Systems\hint{??}}
-\label{sec:background:network:ids:state}
-
-\begin{itemize}
-	\item cf. \textcite{Whitman2009} page 306 
-\end{itemize}
 
 % ------------------------------------------------------------------------------
 \subsection{Flow Monitoring}
