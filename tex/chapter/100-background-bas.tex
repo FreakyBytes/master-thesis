@@ -15,15 +15,12 @@
 	\end{itemize}
 \end{comment}
 
-With the ever increasing amount of requirements and complexity with regards to lighting, \gls{hvac} in private and commercial buildings, more versatile and flexible wiring and control solutions are required. 
-Additionally, more flexible solutions offers possibilities like comfort functions, increased energy efficiency, and ease of maintenance. \parencite{Merz2009}
-
-This solutions is offered by modern building automation systems and networks. Especially in commercial buildings requirements to rooms might change regularly, and hence they should be designed to accommodate these changes. \parencite{Merz2009}
-
-\todo{more?}
+With the ever increasing amount of requirements and complexity with regards to monitoring and controlling lights, \gls{hvac}, and other aspects in private and commercial buildings, more versatile and flexible wiring and control solutions are required. 
+Additionally, more flexible solutions offer possibilities like comfort functions, increased energy efficiency, and ease of maintenance. \parencite{Merz2009}
+This is provided by modern \glsfirst{bas} and networks. Especially in commercial buildings requirements to rooms might change regularly, and hence they should be designed to accommodate these changes. \parencite{Merz2009} \todo{more?}
 
 % ------------------------------------------------------------------------------
-\subsection{KNX as Example}
+\subsection{KNX as an Example}
 \label{sec:background:bas:knx}
 
 %\alert{telegram vs frame. frame is used in the english standard document -> will use telegram}
@@ -47,22 +44,22 @@ This solutions is offered by modern building automation systems and networks. Es
 	\end{itemize}
 \end{comment}
 
-One of most commonly used systems for building automation systems in Germany and Europe is \Gls{knx} or Konnex. Formerly known as the \gls{eib}, \gls{knx} is a \alert{conglomerate} of multiple building automation vendors, co-operating in the KNX Association. \todo{link as footnote?}
+One of the most commonly used systems for building automation systems in Germany and Europe is \Gls{knx} or Konnex. Formerly known as the \gls{eib}, \gls{knx} is ab association of multiple building automation vendors, co-operating in the KNX Association.\footnote{\url{https://www.knx.org/}}
 It was designed to substitute traditional electrical installations and to implement functions and processes in an automated fashion. \parencite{Merz2009}
 
-\Gls{knx} protocol is defined in the DIN EN 50090 family and can the transmitted over various physical media. Among those physical layers are \gls{knx} over twisted pair (KNX.TP), \gls{knx} over power line (KNX.PL) and \gls{knx} over radio (KNX.RF). Later 2 are intended for retrofitting older buildings. \parencite{Merz2009}
-\alert{forgot KNX/IP}
+The \gls{knx} protocol is defined in the DIN EN 50090 family and can the transmitted over various physical media. Among those physical layers are \gls{knx} over twisted pair (KNX.TP), \gls{knx} over power line (KNX.PL) and \gls{knx} over radio (KNX.RF). Especially, KNX.PL and KNX.RF are intended for retrofitting older buildings.
+Another more recent addition is KNX/IP, which transports the \gls{knx} physical layer over an \gls{ip} network and can be used to bridge multiple \gls{knx} lines, connect a central control unit, or to program \gls{knx} devices via the \gls{ets} software.
+\parencite{Merz2009}
 
-As a result, \gls{knx} twisted-pair is the most commonly used installation method and is defined in 2 flavours. \parencite{DIN_EN_50090-5-2}
+As a result, \gls{knx} twisted-pair is the most commonly used installation method and is defined in two flavours. \parencite{DIN_EN_50090-5-2}
 The older variant TP-0 was derived from the BatiBUS \todo{ref?} and operates at 2400 Baud. However, nowadays most \gls{knx} devices implement TP-1, operating at 9600 Baud, which is a direct successor of \gls{eib}.
 
 One of the most appealing benefits of using \gls{knx} is the ubiquitous availability as world wide accepted DIN standard, which was even amplified as large sections were included in ISO/IEC 14543.
 Following, more devices from multiple vendors are available with a large variety of sensors, actuators, control and regulation solutions, as well as operation and monitoring.
 
 From an academic point of view the easy availability of the standards, provides a good understanding of the protocol. Therefore allowing for analysis without prior reverse-engineering the protocol.
-Additionally the University of Rostock also uses \gls{knx} in some buildings \todo{ref to Thomas}, which provides an promising source of test and demo data.
-
-\todo{mention, that knx is only one example for bas. here used...}
+Additionally the University of Rostock also uses \gls{knx} in some buildings, which a provides an promising source of test and demo data. \parencite[cf.][]{Mundt2012}
+Due to the ease of accessibility it is therefore used as an example for \gls{bas} in this thesis without the limitation of generality.
 
 % ------------------------------------------------------------------------------
 \subsubsection{Bus Topology of KNX Networks}
@@ -102,28 +99,11 @@ Additionally the University of Rostock also uses \gls{knx} in some buildings \to
 	\end{itemize}
 \end{comment}
 
-To accommodate for the initially mentioned advanced features in building automation systems, like central control and management, improved energy efficiency, or other comfort functions \gls{knx} introduces an additional wiring installation (cf. Section~\ref{sec:background:bas:knx}) next to the conventional mains power line. Both of these installations are galvanically isolated and \gls{knx} merely use mains power for actuators e.g. lights or blinds, since the \gls{knx} devices are powered via the \gls{knx} bus from special \gls{knx} power supply units containing a choke. \hint{Maybe explain this?} Each power supply is able to power up to 32 or 64 devices, depending on the model.
-As a result, 2 separate cable installations are required.
-Besides the physical \gls{knx} wiring can be constructed in various forms, like star, tree, or mixed forms, it is strongly advised to ensure that the physical wiring resembles the logical structure of the network. \parencite{Sokollik2017,Merz2009}
-\todo{write about more about physical installation of knx?}
-
-The logical structure builds on top of the physical topology and is intended to remodel the functional structure of buildings in a logical tree topology. This tree topology is divided into 3 levels: areas, lines, and devices. Each device or node is assigned a physical address, defining area, line, and device number. (cf. Table~\ref{tab:background:bas:knx:topo:addr})
-Each device is directly connected to a line, which can accommodate up to 256 devices, if supported by all devices on the line. Alternatively, up to 64 devices can be in one line segment before line repeater is required. (cf. Table~\ref{tab:background:bas:knx:topo:tpsegments}
-Most \gls{knx} devices still follow the TP1-64 specification and due to the high market fragmentation devices are often not mark in regards of supporting either TP1-64 or TP1-256, therefore it is still recommended to only use 64 devices within a line segment. \alert{sentence too long?} Thus, a full logical line is advised to be build using 3 line repeater. \parencite{Sokollik2017,Merz2009}
-
-Usually a line coupler is installed as a line repeater. A line coupler is an active device to connect one logical level of the \gls{knx} network to another one, which can be one line segment to another line segment.
-However, their original purpose is to separate the different levels of the logical \gls{knx} topology, explicitly to attach a line to the main line of an area or to attach a main line to the backbone. (cf. Figure~\ref{fig:background:knx:topo})
-An area is formed by combining up to 16 lines: 1 main line and 15 sublines. All main lines are then connected to a backbone line, again via line couplers. \parencite{Sokollik2017}
-
-As an active device line couplers are assigned an address, and is able to filter traffic by addresses similar to IP router. %usually with device number 0 in case it connects a line to backbone line.
-Further couplers provide galvanic isolation, to mitigate damages by high voltages, shorts, etc. As a result multiple power supplies are required, basically one for each line segment.
-An important feature to be aware of, when using line couplers, is that a \gls{knx} telegram can only be routed over 6 hops. This was introduced to prevent high network load in case of cyclic routing, comparable to the time to live in IP based networks. \parencite{Sokollik2017}
-
-Additional to the physical address each devices is assigned, devices may listen to group addresses.
-\todo{describe layers/modes of group addresses?}
-Whereby physical addresses are used to communicate with one specific device, which is common during installation, throughout normal operation mostly group addresses are used. As the name implies multiple devices may listen to such an address, allowing one light switch to turn on or off multiple lights for instance.
-
-\hint{Move addressing into own subsection?}
+To accommodate for the initially mentioned advanced features in building automation systems, like central control and management, improved energy efficiency, or other comfort functions \gls{knx} introduces an additional wiring installation (cf. Section~\ref{sec:background:bas:knx}) next to the conventional mains power line. Both of these installations are galvanically isolated and \gls{knx} merely use mains power for actuators e.g. lights or blinds, since the \gls{knx} devices are powered via the \gls{knx} bus from special \gls{knx} power supply units.
+Each power supply is able to power up to 32 or 64 devices, depending on the model.
+As a result, two separate cable installations are required.
+Besides the physical \gls{knx} wiring can be constructed in various forms, like star, tree, or mixed forms, it is strongly advised to ensure that the physical wiring resembles the logical structure of the network. \parencite{Sokollik2017,Merz2009} \todo{visualise Data-Cables vs Topology}
+\todo{write about more about physical installation of knx? -- only if reffed later}
 
 \begin{figure}
 	\centering
@@ -132,8 +112,25 @@ Whereby physical addresses are used to communicate with one specific device, whi
 	\label{fig:background:knx:topo}
 \end{figure}
 
-\input{tables/100-knx-addr.tex}
+The logical structure builds on top of the physical topology and is intended to remodel the functional structure of buildings in a logical tree topology. This tree topology is divided into three levels: areas, lines, and devices. Each device or node is assigned a physical address, defining area, line, and device number. (cf. Table~\ref{tab:background:bas:knx:topo:addr})
+Each device is directly connected to a line, which can accommodate up to 256 devices, if supported by all devices on the line. Alternatively, up to 64 devices can be in one line segment before line repeater is required. (cf. Table~\ref{tab:background:bas:knx:topo:tpsegments})
+Most \gls{knx} devices still follow the TP1-64 specification. Due to the high market fragmentation devices are often not mark in regards of supporting either TP1-64 or TP1-256, therefore it is still recommended to only use 64 devices within a line segment. \alert{sentence too long?} Thus, a full logical line is advised to be build using three line repeater. \parencite{Sokollik2017,Merz2009}
+
 \input{tables/100-knx-segments.tex}
+
+Usually a line coupler is installed as a line repeater. A line coupler is an active device to connect one logical level of the \gls{knx} network to another one, which can be one line segment to another line segment.
+However, their original purpose is to separate the different levels of the logical \gls{knx} topology, explicitly to attach a line to the main line of an area or to attach a main line to the backbone. (cf. Figure~\ref{fig:background:knx:topo})
+An area is formed by combining up to 16 lines: one main line and 15 sub-lines. All main lines are then connected to a backbone line, again via area couplers. \parencite{Sokollik2017}
+
+As an active device line couplers are assigned an address, and are able to filter traffic by addresses similar to \gls{ip} router. %usually with device number 0 in case it connects a line to backbone line.
+Further couplers provide galvanic isolation to mitigate damages by high voltages, shorted circuits, etc. As a result multiple power supplies are required, basically one for each line segment.
+An important feature to be aware of, when using line couplers, is that a \gls{knx} telegram can only be routed over six hops. This was introduced to prevent high network load in case of cyclic routing, comparable to the time to live in IP based networks. \parencite{Sokollik2017}
+
+\input{tables/100-knx-addr.tex}
+
+Additional to the physical address each devices is assigned, devices may listen to group addresses.
+\todo{describe layers/modes of group addresses?}
+Whereby physical addresses are used to communicate with one specific device, which is common during installation, throughout normal operation mostly group addresses are used. As the name implies multiple devices may listen to such an address, allowing one light switch to turn on or off multiple lights for instance.
 
 % ------------------------------------------------------------------------------	
 \subsubsection{KNX Protocol}
@@ -158,9 +155,11 @@ Whereby physical addresses are used to communicate with one specific device, whi
 
 To communicate within a \gls{knx} network, devices send telegrams in their line. Due to the topology (cf. Section~\ref{sec:background:bas:knx:topo}) and technological nature of \gls{knx} these telegrams are always broadcasted within the respective line, only line couplers may narrow down the scope in which a specific telegram might be received. Telegrams are very comparable to packets in an IP network.
 
-Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegrams, Poll Telegrams, and Acknowledge Telegrams. (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard},~\ref{tab:background:bas:knx:proto:ctrle},~\ref{tab:background:bas:knx:proto:knx-poll}, and~\ref{tab:background:bas:knx:proto:ack})
-\todo{write about prio}
-\todo{write about \gls{csmaca}}
+Within the \gls{knx} specification three types of telegrams are defined: Data Telegrams, Poll Telegrams, and Acknowledge Telegrams. (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard},~\ref{tab:background:bas:knx:proto:ctrle},~\ref{tab:background:bas:knx:proto:knx-poll}, and~\ref{tab:background:bas:knx:proto:ack})
+Each of which can be transmitted using on of four priorities, which are show in Table~\ref{tab:background:bas:knx:proto:prio}. Hereby it is to note, that a logical 0 is the dominant symbol. Consequently, the priority encoding is designed in a way, that lower priority telegrams are overruled by telegram with higher priority.
+The bus devices detect these collisions and avoid them by following the \gls{csmaca} principle.
+
+The telegram type is encoded in the first two bit of the \gls{ctrl} byte, which functions as a header of a \gls{knx} telegram. Next to the type it also contains a repeat flag, an acknowledge flag, and the priority. (see Figure~\ref{tab:background:bas:knx:proto:ctrl})
 
 \input{tables/100-knx-prio.tex}
 
@@ -168,11 +167,12 @@ Within the \gls{knx} specification 3 types of telegrams are defined: Data Telegr
 \paragraph{Data Telegram}
 \label{sec:background:bas:knx:proto:data}
 
-The data telegram being utilised the most and used for transferring commands, state, and value changes, comes in 2 flavours.
+The data telegram being utilised the most and used for transferring commands, state, and value changes, comes in two flavours.
 The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
 Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
-The recipient answers then with an acknowledge telegram. \parencite{Merz2009,Sokollik2017}
-\todo{describe CTRL and CTRLE}
+Once received and successfully processed, the recipient replies then with an acknowledge telegram. \parencite{Merz2009,Sokollik2017}
+
+The extended data telegram introduces another header byte after \gls{ctrl}, the \gls{ctrle} header byte. It contains information otherwise encoded together with the payload length like the destination address type and the hop count, thus it allows the payload length to encoded as a full byte, ranging up to 255. (see Table~\ref{tab:background:bas:knx:proto:ctrle})
 
 \input{tables/100-knx-data.tex}
 \input{tables/100-knx-ctrl.tex}
@@ -183,10 +183,10 @@ The recipient answers then with an acknowledge telegram. \parencite{Merz2009,Sok
 \label{sec:background:bas:knx:proto:ack}
 
 The acknowledge telegram can indicate the correct reception (\code{ACK}, positive acknowledge), faulty reception (\code{NACK}, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
-It consists of 1 byte and is sent by the recipient after waiting 13 bit times.
-If the sender receives an positive acknowledge, the telegram was send successfully and no further action is required. However, if it detects an negative acknowledge or busy signal, the telegram is resend up to 3 times.
+It consists of one byte and is sent by the recipient after waiting 13 bit times.
+If the sender receives an positive acknowledge, the telegram was send successfully and no further action is required. However, if it detects an negative acknowledge or busy signal, the telegram is resend up to three times.
 Supposed a busy signal occurred, the sender adds a waiting period before attempting to resend the telegram.
-Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to 3 times.
+Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to three times.
 In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), an negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
 
 \input{tables/100-knx-ack.tex}
@@ -195,7 +195,7 @@ In case the sender addressed the original telegram to multiple devices by using 
 \paragraph{Poll Telegram}
 \label{sec:background:bas:knx:proto:poll}
 
-The poll telegram allows to poll 1 byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks. It consists of a poll data request frame (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}) and a poll data response frame. Former starts the poll telegram and sets the group address to query, also it defines how many bytes to receive.
+The poll telegram allows to poll one byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks. It consists of a poll data request frame (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}) and a poll data response frame. Former starts the poll telegram and sets the group address to query, also it defines how many bytes to receive.
 The poll data response consists of each device sending one byte on the bus without starting a new telegram. The responding devices are doing so in a prior configured time slot. \parencite{Hubner2009,DIN_EN_50090-5-2}
 
 \input{tables/100-knx-poll.tex}
@@ -220,7 +220,7 @@ The poll data response consists of each device sending one byte on the bus witho
 Apart from the basic \gls{knx} protocol (cf. Section~\ref{sec:background:bas:knx:proto}), which is comparable to the data link layer in the \gls{osi} model, the \textcite{DIN_EN_50090-4-1} describes two layers on top: a transport layer and an application layer.
 However, it is to note, that even when official \gls{knx} specification draws parallels to the \gls{osi} model, a direct comparison to the \gls{osi} model as seen in \gls{ip} networks is difficult, due to the reduced complexity of the protocol stack in \gls{knx}.
 
-The transport layer defines multiple transport layer services, which are encoded in the \gls{tpci} (cf. Table~\ref{tab:background:bas:knx:comm:tpci-apci}) and can be grouped into 5 categories or modes: \hint{grouped does not seems to be the right word here}
+The transport layer defines multiple transport layer services, which are encoded in the \gls{tpci} (cf. Table~\ref{tab:background:bas:knx:comm:tpci-apci}) and can be clustered into five categories or modes:
 
 \begin{enumerate}
 	\item point-to-multipoint, connection-less (multicast)
@@ -229,12 +229,12 @@ The transport layer defines multiple transport layer services, which are encoded
 	\item point-to-point, connection-less
 	\item point-to-point, connection-oriented
 \end{enumerate}
-\parencite[cf.][p.~30]{DIN_EN_50090-4-2}
+\parencite[p.~30]{DIN_EN_50090-4-2}
 
-Depending on the category, multiple telegrams might be send in order the establish a connection, e.g. point-to-point connection oriented.
-Further, these communication modes are used by the 54 different application layer services described in \textcite{DIN_EN_50090-4-1}.
+Depending on the category, multiple telegrams might be send in order to establish a connection, e.g. point-to-point, connection oriented.
+Further, these communication modes are used by the \alert{54} different application layer services described in \textcite{DIN_EN_50090-4-1}.
 These application layer service can be used to access and set device states, encoded in \glspl{dpt}, or to configure the device.
-Each response needs to match the requests \gls{apci} type and must be send on with the corresponding communication mode allowed for this telegram. \parencite[][pp.~9--10]{DIN_EN_50090-4-1}
+Each response needs to match the requests \gls{apci} type and must be send on with the corresponding communication mode allowed for this telegram. \parencite[pp.~9--10]{DIN_EN_50090-4-1}
 
 \glspl{dpt}, in turn, define the structure of the data, which is transported using the application layer services.
 They are defined to consist of a combination of a data type and a dimension. Whereby the former is required to specify format and encoding. The later, however, defines range and unit.
@@ -261,7 +261,7 @@ To ensure maximum compatibility among \gls{knx} devices of different vendors, it
 Moreover, it is also required to share a common set of management and configuration services.
 This is especially true in an environment like \gls{knx}, where devices need to be fully interchangeable and need to be configurable by a common tool used by electricians.
 
-Therefore the \gls{knx-assoc} specified 2 sets of management procedure.
+Therefore the \gls{knx-assoc} specified two sets of management procedure.
 For these procedures dedicated application layer services were defined in \textcite{DIN_EN_50090-4-1}. (cf. Section~\ref{sec:background:bas:knx:communication})
 The first, being called network management procedures, are device independent, which do not require any knowledge or insight of the devices and will work across all vendors and device types. \parencite[pp.~11~ff.]{DIN_EN_50090-7-1}
 They mainly provide routines to configure addresses, read serial numbers, get functions, or to find all devices in programming mode.
@@ -284,7 +284,7 @@ These are used to i.e. configure devices, restart them, and verify the configura
 	\end{itemize}
 \end{comment}
 
-With \gls{knx} being so widely used, it is also deployed in security sensitive areas like access control, ventilation, or \todo{something third}.
+With \gls{knx} being so widely used, it is also deployed in security sensitive areas like access control\footnote{\url{http://search-ext.abb.com/library/Download.aspx?DocumentID=2CDC500074M0201&LanguageCode=en&DocumentPartId=&Action=Launch}}, ventilation, or fire alarms\footnote{\url{https://www.knx.org/media/docs/downloads/Marketing/Flyers/KNX-Solutions/KNX-Solutions_en.pdf}}.
 As a consequence it is only sensible to consider not only the operational security, but also the information security of \gls{knx} networks. Meaning, it should not only be assured, that the network is operational at any time, but it needs to be protected against malicious usage or intrusion.
 
 By design \gls{knx} introduces a zone concept by distinguishing between lines and areas.
@@ -299,7 +299,7 @@ Another possibility to secure a \gls{knx} network is to enable \gls{s-al}, as de
 As encryption standard \textcite{DIN_EN_50090-3-4} defines \gls{aes}-128 in \gls{ctr} or \gls{ccm} mode.
 Later also functions as authentication. \todo{ensure short formes are used, at least for AES}
 
-Nonetheless it is to note, that \textcite{DIN_EN_50090-3-4} is merely a draft at the point of June 2017, therefore it is not to expect, that see available \gls{knx} devices with this capability on the market any time soon. This may also be caused by the comparably high life time of such devices.
+Nonetheless it is to note, that \textcite{DIN_EN_50090-3-4} is merely a draft at the point of June 2017, therefore it is not to expect, that available \gls{knx} devices with this capability will be on the market any time soon. This may also be caused by the relatively high life time of devices which are installed permanently in buildings.
 
 
 % ------------------------------------------------------------------------------

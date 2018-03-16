@@ -15,15 +15,15 @@
 	\end{itemize}
 \end{comment}
 
-Good network security consists of many parts, covering a huge variety of methods and functions. \hint{This sounds weird and artificial.}
+Comprehensive network security consists of many parts, covering a huge variety of methods and functions. \hint{This sounds weird and artificial.}
 As one of these parts \enquote{a good \gls{ids} can have an enormous positive impact on the overall security [...]}. \parencite{Northcutt2005}
 The basic idea is to monitor the network traffic passing by sensors and therefore be able to detect malicious activities.
-This allows the \gls{ids} to detect and identify threasts against the own environment or theats ones own hosts impose to other environments, due to an infection with malware.
+This allows the \gls{ids} to detect and identify threats against the own environment or threats ones own hosts impose to other environments, due to an infection with malware.
 Without intrusion detection one might never detect attacks, that do not influence normal operations but for instance extract information.
 
-Further, \gls{ids} may also identify attack attempts and probing, allowing to further harder the environment and take precautions.
+Further, \gls{ids} may also identify attack attempts and probing, allowing to further harden the environment and take precautions.
 
-Nowadays \glspl{ids} are a commonly deployed in \gls{ip} networks. There are different kinds of \glspl{ids}, which can be discriminated by working principle. The following section is giving an overview of the most common technologies. \parencite[cf.][pp.~201-202]{Northcutt2005}
+Nowadays \glspl{ids} are a commonly deployed in \gls{ip} networks. There are different kinds of \glspl{ids}, which can be discriminated by working principle. The following section is giving an overview of the most common technologies. \parencite[pp.~201-202]{Northcutt2005}
 
 \subsubsection{Signature-based Intrusion Detection Systems (S-IDS)}
 \label{sec:background:network:ids:sig}
@@ -54,7 +54,7 @@ In contrast, however, a signature which is too specific might suffer from a too 
 As a result, a valuable \gls{ids} solution is characterised by an balanced precision/recall ratio. This can be archived by using a good signature database and fine tuning the sensors.
 However, it is to note, that every \gls{ids} will produce false positives. This derives out of the consideration, that each false negative is an legitimate attack, which was not detected. Therefore a slight tendency to (over) sensitivity is sensible.
 
-Other than false positives, there might be legitimate alerts that are of no interest. These unwanted alerts should be blocked, to not numb \alert{(is this the right word here?)} the system administrator. \parencite[cf.][pp.~205-206]{Northcutt2005}
+Other than false positives, there might be legitimate alerts that are of no interest. These unwanted alerts should be blocked, to not numb the system administrator. \parencite[pp.~205-206]{Northcutt2005}
 
 \subsubsection{State-based Intrusion Detection Systems}
 \label{sec:background:network:ids:state}
@@ -99,27 +99,27 @@ Additionally, the state-based analysis works the best with stateful, connection-
 \end{comment}
 
 Another major technology used in \glspl{ids} is anomaly detection. (cf. Section~\ref{sec:background:network:novelty})
-Unlike signature based methods (cf. Section~\ref{sec:background:network:ids:sig}) it does not require an predefined set of rules, rather deploying anomaly detection it is able to auto-generate rules specific for the monitored network and then perform whitelisting using these rules.
+Unlike signature based methods (cf. Section~\ref{sec:background:network:ids:sig}) it does not require a predefined set of rules, rather simply by deploying anomaly detection the system is able to auto-generate rules specific for the monitored network. Using these rules the \gls{ids} can then perform whitelisting.
 
-This is archived by having a so called training phase before deploying the \gls{ids}. During the training phase a baseline model is established using the normal network activity over period of time. It is to note, that this period should be long enough to cover normally recurring usage cycles, e.g. day-time/night-time, weekday/weekends, etc.
+This is archived by having a so called training phase before deploying the \gls{ids}. During the training phase a baseline model is established using the normal network activity over a period of time. It is to note, that this period should be long enough to cover normally recurring usage cycles, e.g. day-time/night-time, weekday/weekends, etc.
 
 After an successful training phase the \gls{ids} uses the generated baseline model to compare bypassing traffic against it.
 If it detects a significant deviation from it, an alert is raise as it indicates unusual network activities.
-For instance, if an internal host in an \gls{ip} network, produces suddenly a lot of outbound traffic, which was not the case before, it might indicate an infection on this host.
+For instance if an internal host in an \gls{ip} network, suddenly produces a lot of outbound traffic, which was not the case before, it might indicate an infection on this host.
+This example illustrates two primary drawbacks of purely anomaly-based \glspl{ids}:
 
-This example illustrates 2 primary drawbacks of purely anomaly-based \glspl{ids}: 
 First, the system can not identify which kind of attack it detects, it merely identifies an anomaly. To identify the intention of the attack it would need to be combined with a rule system or signature-based approach.
 
 Second, the increased outbound traffic in the example could have been generated by a new legitimate software, i.e. a website crawler.
 Consequently, strictly separated training and operational phases lead to poor adaption of the \gls{ids} to a changing environment.
-This could be mitigated by updating the baseline model during normal operation, so t accommodates for changes.
+This could be mitigated by updating the baseline model during normal operation, so it accommodates for changes.
 However, by continuing the training phase, attacker might be able to reprogram the baseline in their favour by injecting malicious packets very rarely at the beginning, but then increase the amount steadily.
 By doing so the relative deviation from the continuing trained baseline model stays relatively low and will therefore not trigger an alert.
-This means, the decision if the baseline model should be trained continuously has to be made under careful consideration of the nature of the network to be monitored.
+This means, the decision whether the baseline model should be trained continuously has to be made by carefully considering the nature of the network to be monitored.
 
-All in all, anomaly-based \glspl{ids} are ideal to identify prior unknown threats and attacks in relatively stable environments. However, it might also identify (legitimate) changes in the environment as anomaly. Additionally it might be unable to detect attacks which mimic regular behaviour and only deviate slightly from legitimate traffic.
+All in all, anomaly-based \glspl{ids} are ideal to identify prior unknown threats and attacks in relatively stable environments. However, it might also identify (legitimate) changes in the environment as anomaly. Additionally it might be unable to detect  an attack which mimics regular behaviour and only deviate slightly from legitimate traffic.
 As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} technologies, when used to protect production systems.
-\parencite[cf.][pp.~203-204]{Northcutt2005} \todo{check pages}
+\parencite[cf.][pp.~203-204]{Northcutt2005}
 
 % ------------------------------------------------------------------------------
 \subsection{Flow Monitoring}
@@ -144,7 +144,7 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 \end{comment}
 
 Following the idea of network monitoring with \glspl{ids}, multiple method are being used. They can be roughly classified into active and passive. 
-Active approaches work by injecting additional traffic into the network to obtain certain measurements, like ping or traceroute.
+Active approaches work by injecting additional traffic into the network to obtain certain measurements, like ping or trace-route.
 Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problem within high-speed networks or if network bandwidth is highly limited, like it is in field bus networks. This is especially problematic if information are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth. \todo{relevant in already highly utilised networks, etc.}
 \parencite[cf.][]{Hofstede2014}
 Especially the additional high network utilisation is of notable concern in field bus networks used in \glspl{bas}. Effectively doubling the traffic in the sub-lines, as well as routing the monitoring traffic to central place would not only occupy a good portion of free bus capacity, but would also render network separation (cf. Section~\ref{sec:background:bas:knx:security}) useless. Consequently, soften the security in the network and possibly decreasing the responsiveness of commands dramatically.
@@ -164,7 +164,7 @@ Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise200
 	\label{fig:background:network:netflow:architecture}
 \end{figure}
 
-Typical flow monitoring architectures can be roughly separated into 3 stages. (cf. Figure~\ref{fig:background:network:netflow:architecture})
+Typical flow monitoring architectures can be roughly separated into three stages. (cf. Figure~\ref{fig:background:network:netflow:architecture})
 The first one, being Packet Observation and Flow Export, will observe bypassing traffic. Further the observed traffic is aggregated into flows, using common properties as selectors. (cf. above\alert{???}) After a flow is terminated, either by closing the underlying connection or by timeout, a record of it is exported and send of to the Flow Collector.
 This stage could be implemented by a stand-alone device or within an appliance like a router with flow export capability. \parencite[cf.][]{Hofstede2014}
 
@@ -227,12 +227,12 @@ Anomaly, Outlier, or Novelty Detection describes a class of algorithms to detect
 Or as defined by \textcite{Grubbs1969}, \enquote{an outlying observation, or outlier, is one that appears to deviate markedly from other members of the sample in which it occurs.}
 In the following this definition will be used as an understanding for outliers, which is exchangeable for anomaly or novelty. \alert{(think about this!)}
 
-The general class of algorithms for Anomaly, Outlier, and Novelty Detection can be divided into 3 sub-classes, based on which kind of data the algorithms require to be trained\alert{~and executed}.
+The general class of algorithms for Anomaly, Outlier, and Novelty Detection can be divided into three sub-classes, based on which kind of data the algorithms require to be trained\alert{~and executed}.
 The first sub-class describes algorithms, which are able detect outliers without prior knowledge of the data, also known as unsupervised clustering.
 This means, the data points in a training set are not require to be labelled as \emph{normal} or \emph{outlier}, which is archived by relying on the assumption, that non-normal data is separated from normal data, thus appearing as outlier.
 Accordingly, a substantial amount of data is required to begin with, since these kind of algorithms word \enquote{predominantly retrospective} \parencite{Hodge2004}.
 Thus requiring (all) data to be available before processing and assuming it to be static.
-Within this technique, 2 approaches  are used for training the model. 
+Within this technique, two approaches  are used for training the model. 
 The first identifies potential outliers and then continues to prune them from the original data set and fit the model to the remaining data points. This is iterated until no more outliers are detected. This non-robust method is well suited when only a few outliers are in the data set.
 The second approach, however, accommodates the outliers into the distribution model and then applies a robust classification method. This is a better suited for data sets with higher numbers of outliers, since a robust classification method can withstand outliers in the data set by inducing boundaries of normality around large portions of the data. \parencite[cf.][]{Hodge2004}
 
@@ -263,7 +263,7 @@ If a new data point lies outside of the this boundary it is considered an \emph{
 
 Among the techniques which can be used for clustering and hence for anomaly detection \gls{knn} is one of more established one, initially published by \textcite{Fix1951}.
 The problem is described, that for any given collection of data points in an m-dimensional metric feature space, to find the k nearest data points for an arbitrary query point. \parencite{Beyer1999}
-It consequently uses the proximity of data points within the feature space, allowing \gls{knn} to work with unlabelled unclean data, making it a class 1 technique according to \textcite{Hodge2004}. (cf. Section~\ref{sec:background:network:ids:anomaly})
+It consequently uses the proximity of data points within the feature space, allowing \gls{knn} to work with unlabelled unclean data, making it a class one technique according to \textcite{Hodge2004}. (cf. Section~\ref{sec:background:network:ids:anomaly})
 
 To determine if the query point is located in an sparse area, meaning it is an outlying observation, the sum of the distance to the k-nearest neighbours is calculated.
 Data points with in denser area, representing normality, will have shorter distances to their neighbours. \parencite{Eskin2002}
@@ -296,7 +296,7 @@ Data points with in denser area, representing normality, will have shorter dista
 	\centering
 	\vspace{-10pt}
 	\includegraphics[width=0.42\textwidth,keepaspectratio]{figures/200-breuning2000-figure3.pdf}
-	\caption[Visualisation of the LOF theorem 1]{Visualisation of the LOF theorem 1 \parencite[p.~97]{Breunig2000}}
+	\caption[Visualisation of the LOF theorem 1]{Visualisation of the Local Outlier Factor theorem 1 \parencite[p.~97]{Breunig2000}}
 	\label{fig:background:network:novelty:lof-theorem}
 \end{wrapfigure}
 
@@ -310,7 +310,7 @@ By not relying on a global threshold, the \gls{lof} can account for clusters of 
 \begin{wrapfigure}{l}{0.5\textwidth}
 	\centering
 	\includegraphics[width=0.5\textwidth,trim={12mm 5mm 15mm 10mm},keepaspectratio,clip]{figures/200-background-lof.pdf}
-	\caption[Visualisation of the Local Outlier Factor]{Visualisation of the \gls{lof} in a 2 dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the calculated \emph{LOF} value.}
+	\caption[Visualisation of the Local Outlier Factor]{Visualisation of the \gls{lof} in a two dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the calculated \emph{LOF} value.}
 	\label{fig:background:network:novelty:lof}
 	\vspace{-20pt}
 \end{wrapfigure}
@@ -343,7 +343,7 @@ Moreover, the ability of \gls{lof} to work on unclean data and account for diffe
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\centering
 	\includegraphics[width=0.5\textwidth,trim={12mm 5mm 15mm 10mm},keepaspectratio,clip]{figures/200-background-oneclass.pdf}
-	\caption[Visualisation of a Support Vector Machine]{Visualisation of a \gls{svm} in a 2 dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the distance from the decision surface.}
+	\caption[Visualisation of a Support Vector Machine]{Visualisation of a \gls{svm} in a two dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the distance from the decision surface.}
 	\label{fig:background:network:novelty:svm}
 \end{wrapfigure}
 
