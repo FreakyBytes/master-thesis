@@ -1,12 +1,17 @@
 \begin{table}
+	\aboverulesep=0ex
+	\belowrulesep=0ex
+	\renewcommand{\arraystretch}{1.2}
+	
 	\centering
-	\begin{tabular}{l r r }
-		& \textbf{TP1-64} & \textbf{TP1-256} \\\toprule
+	\begin{tabular}{|l|r|r|}
+		\toprule
+		& \textbf{TP1-64} & \textbf{TP1-256} \\\midrule
 		maximum devices per segment & 64 & 256 \\
 		maximum distance between 2 devices & 700m & 700m \\
 		maximum length of a physical line & 1000m & 1000m \\
 		\bottomrule
 	\end{tabular}
-	\caption[Segment properties for \knx.TP1-64 and \knx.TP1-256]{Segment properties for \knx.TP1-64 and \knx.TP1-256. cf. \textcite{Sokollik2017} \todo{adjust design of this table}}
+	\caption[Segment properties for \knx.TP1-64 and \knx.TP1-256]{Segment properties for \knx.TP1-64 and \knx.TP1-256. cf. \textcite{Sokollik2017}}
 	\label{tab:background:bas:knx:topo:tpsegments}
 \end{table}
