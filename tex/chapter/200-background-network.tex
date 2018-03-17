@@ -145,17 +145,16 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 
 Following the idea of network monitoring with \glspl{ids}, multiple method are being used. They can be roughly classified into active and passive. 
 Active approaches work by injecting additional traffic into the network to obtain certain measurements, like ping or trace-route.
-Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problem within high-speed networks or if network bandwidth is highly limited, like it is in field bus networks. This is especially problematic if information are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth. \todo{relevant in already highly utilised networks, etc.}
-\parencite[cf.][]{Hofstede2014}
-Especially the additional high network utilisation is of notable concern in field bus networks used in \glspl{bas}. Effectively doubling the traffic in the sub-lines, as well as routing the monitoring traffic to central place would not only occupy a good portion of free bus capacity, but would also render network separation (cf. Section~\ref{sec:background:bas:knx:security}) useless. Consequently, soften the security in the network and possibly decreasing the responsiveness of commands dramatically.
+Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problems within high-speed networks or if network bandwidth is highly limited, like it is in field bus networks. This is especially problematic if information are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth.
+\parencite{Hofstede2014}
+Especially the additional high network utilisation is of notable concern in field bus networks used in \glspl{bas}. Effectively doubling the traffic in the sub-lines, as well as routing the monitoring traffic to central place would not only at least half free bus capacity, but would also render network separation (cf. Section~\ref{sec:background:bas:knx:security}) useless. Consequently, soften the security in the network and possibly decreasing the responsiveness of commands dramatically.
 
-A another predominantly used passive approach is flow monitoring, which focusses on analysing flows within a network rather than analysing a full packet dump. Therefore archiving a significant data reduction and consequently requiring only a fraction of the bandwidth, while also keeping principles like network separation in tact, since only aggregated statistical data is transferred.
+Another predominantly used passive approach is \emph{flow monitoring}, which focusses on analysing flows within a network rather than analysing a full packet dump. Therefore archiving a significant data reduction and consequently requiring only a fraction of the bandwidth, while also keeping principles like network separation in tact, since only aggregated statistical data is transferred.
 A flow is defined by \textcite{Claise2013} as \enquote{a set of IP packets passing an observation point in the network during a certain time interval, such that all packets belonging to a particular flow have a set of common properties.}
 Mentioned common properties most commonly include various header fields, like port, source- and destination address, but also the used application layer protocol or metadata derived from the packet content.
-It is widely used for \enquote{security analysis, capacity planning, accounting, and profiling, among others.} \parencite{Hofstede2014}
+It is widely used for \enquote{security analysis, capacity planning, accounting, and profiling, among others} \parencite{Hofstede2014} like network congestion avoidance and mitigation.
 Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise2004} and \gls{ipfix} \parencite{Claise2013}.
-
-\todo{not predominantly used for security, but network congestion avoidance/mitigate.}
+%\todo{not predominantly used for security, but network congestion avoidance/mitigate.}
 
 \begin{figure}
 	\centering
@@ -165,11 +164,12 @@ Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise200
 \end{figure}
 
 Typical flow monitoring architectures can be roughly separated into three stages. (cf. Figure~\ref{fig:background:network:netflow:architecture})
-The first one, being Packet Observation and Flow Export, will observe bypassing traffic. Further the observed traffic is aggregated into flows, using common properties as selectors. (cf. above\alert{???}) After a flow is terminated, either by closing the underlying connection or by timeout, a record of it is exported and send of to the Flow Collector.
-This stage could be implemented by a stand-alone device or within an appliance like a router with flow export capability. \parencite[cf.][]{Hofstede2014}
+The first one, being Packet Observation and Flow Export, will observe bypassing traffic. Further the observed traffic is aggregated into flows, using common properties as selectors, as mentioned before.
+After a flow is terminated, either by closing the underlying connection or by timeout, a record of it is exported and send of to the Flow Collector.
+This stage could be implemented by a stand-alone device or within an appliance like a router with flow export capability. \parencite{Hofstede2014}
 
-The exported flow are then receive by the Data Collector, which main task are storage and processing.
-Exported flows contain \enquote{information about a specific flow that was observed at an observation point} \parencite{Claise2013}, which may include characteristic properties like \gls{ip} addresses and port number, as well as measured properties like packet count or overall flow size in bytes. \parencite[cf.][]{Hofstede2014}
+The exported flow are then received by the Data Collector, whose main tasks are storage and processing.
+Exported flows contain \enquote{information about a specific flow that was observed at an observation point} \parencite{Claise2013}, which may include characteristic properties like \gls{ip} addresses and port number, as well as measured properties like packet count or overall flow size in bytes. \parencite{Hofstede2014}
 In scope of \glspl{bas}, like \gls{knx}, characteristic properties could include source and destination address, and \gls{apci}. Hop count, payload length, and \gls{tpci} would then be used as measured properties.
 
 Finally the last stage is concerned with the data analysis. This can be done in a manual, exploratory way, which is often the case in research projects. In more production oriented setups the analysis is often automated and integrated into the Data Collector.
@@ -180,7 +180,7 @@ In this work mainly anomaly and intrusion detection is of interest.
 \section{Anomaly, Outlier, and Novelty Detection}
 \label{sec:background:network:novelty}
 
-The analysis of flows or general network traffic as describes in Section~\ref{sec:background:network:ids:anomaly}~and referenced in Section~\ref{sec:background:network:netflow}, relies on algorithm and techniques to detect data points which deviate from the normal expected behaviour. These algorithms and techniques can be found \alert{(better phrasing)} under the term Anomaly, Outlier, or Novelty Detection.
+The analysis of flows or general network traffic as describes in Section~\ref{sec:background:network:ids:anomaly}~and referenced in Section~\ref{sec:background:network:netflow}, relies on algorithms and techniques to detect data points which deviate from the expected behaviour or distribution. These algorithms and techniques are known as Anomaly, Outlier, or Novelty Detection.
 The aim of this section is to provide a classification of these algorithms with benefits and drawbacks.
 Further, an overview of the working principle is provided for a small selection of them.
 
@@ -223,28 +223,28 @@ Further, an overview of the working principle is provided for a small selection 
 	\end{itemize}
 \end{comment}
 
-Anomaly, Outlier, or Novelty Detection describes a class of algorithms to detect data points which deviate from the expected normal behaviour.
+Anomaly, Outlier, or Novelty Detection describes a class of algorithms to detect data points which deviate from the expected \enquote{normal} behaviour.
 Or as defined by \textcite{Grubbs1969}, \enquote{an outlying observation, or outlier, is one that appears to deviate markedly from other members of the sample in which it occurs.}
-In the following this definition will be used as an understanding for outliers, which is exchangeable for anomaly or novelty. \alert{(think about this!)}
+In the following this definition will be used as an understanding of outliers, which is exchangeable for anomaly or novelty.
 
-The general class of algorithms for Anomaly, Outlier, and Novelty Detection can be divided into three sub-classes, based on which kind of data the algorithms require to be trained\alert{~and executed}.
+The general class of algorithms for Anomaly, Outlier, and Novelty Detection can be divided into three sub-classes, based on which kind of data the algorithms require to be trained and operated.
 The first sub-class describes algorithms, which are able detect outliers without prior knowledge of the data, also known as unsupervised clustering.
 This means, the data points in a training set are not require to be labelled as \emph{normal} or \emph{outlier}, which is archived by relying on the assumption, that non-normal data is separated from normal data, thus appearing as outlier.
-Accordingly, a substantial amount of data is required to begin with, since these kind of algorithms word \enquote{predominantly retrospective} \parencite{Hodge2004}.
-Thus requiring (all) data to be available before processing and assuming it to be static.
-Within this technique, two approaches  are used for training the model. 
-The first identifies potential outliers and then continues to prune them from the original data set and fit the model to the remaining data points. This is iterated until no more outliers are detected. This non-robust method is well suited when only a few outliers are in the data set.
-The second approach, however, accommodates the outliers into the distribution model and then applies a robust classification method. This is a better suited for data sets with higher numbers of outliers, since a robust classification method can withstand outliers in the data set by inducing boundaries of normality around large portions of the data. \parencite[cf.][]{Hodge2004}
+Accordingly, a substantial amount of data is required to begin with, since these kind of algorithms work \enquote{predominantly retrospective} \parencite{Hodge2004}.
+Therefore, (all) the data is required to be available before processing and is assumed to be static.
+Within this technique, two approaches are used for training the model. 
+The first identifies potential outliers and then continues to prune them from the original data set and fits the model to the remaining data points. This is iterated until no more outliers are detected. This non-robust method is well suited when only a few outliers are in the data set.
+The second approach, however, accommodates the outliers into the distribution model and then applies a robust classification method. This is better suited for data sets with higher numbers of outliers, since a robust classification method can withstand outliers in the data set by inducing boundaries of normality around large portions of the data. \parencite{Hodge2004}
 
-The second sub-class within Outlier Detection techniques works by modelling both, normality and outliers, it is also known as supervised classification.
-Therefore it requires pre-labelled data in the training phase, labelled as \emph{normal} or \emph{outlier}. Since both are used to build the model, a good spread of \emph{normal} and \emph{outlying} data is required, which also limits the classification to the known distribution of such.
+The second sub-class within Outlier Detection techniques works by modelling both, \emph{normality} and \emph{outliers}, it is also known as supervised classification.
+Therefore it requires pre-labelled data in the training phase, labelled as \emph{normal} or \emph{outlier}. Since both are used to build the model, a good spread of \emph{normal} and \emph{outlying} data is required, which also limits the classification to the known distribution of them.
 As a result the whole classification model needs to be rebuild from ground up, as soon as the distribution shifts.
-However, a major benefit of this method is, that it is allows for training the model while new data points are being classified, which is also known as on-line classification. \parencite[cf.][]{Hodge2004}
+However, a major benefit of this method is, that it is allows to train the model while new data points are being classified, which is also known as on-line classification. \parencite{Hodge2004}
 
-The third and last sub-class in Outlier Detection techniques models only normality. These techniques are often described as novelty detection or semi-supervised recognition.
-It requires also pre-labelled data, but compared to the second type it only works with \emph{normal} labelled data points. Consequently the full gamut of normality is required to train an precise model. On the other hand no \emph{outlying} data points are required for training, which is highly beneficial in certain, data-sparse, scenarios, when abnormal data is difficult to obtain.
-However, the training data must not contain outliers, otherwise they will be assumed to be a part of normality.
-Generally the aim of this approach is to establish a tight boundary around normality and is therefore suitable for static as well as dynamic data.
+The third and last sub-class in Outlier Detection techniques models only the \emph{normality}. These techniques are often described as novelty detection or semi-supervised recognition.
+It requires also pre-labelled data, but compared to the second type it only works with \emph{normal} labelled data points. Consequently the full gamut of \emph{normality} is required to train a precise model. On the other hand no \emph{outlying} data points are required for training, which is highly beneficial in certain, data-sparse, scenarios, when abnormal data is difficult to obtain.
+However, the training data must not contain outliers, otherwise they will be assumed to be a part of \emph{normality}.
+Generally the aim of this approach is to establish a tight boundary around \emph{normality} and is therefore suitable for static as well as dynamic data.
 If a new data point lies outside of the this boundary it is considered an \emph{outlier}, if not it is part of the \emph{normal} data.
 
 % ------------------------------------------------------------------------------
@@ -261,12 +261,13 @@ If a new data point lies outside of the this boundary it is considered an \emph{
 	\end{itemize}
 \end{comment}
 
-Among the techniques which can be used for clustering and hence for anomaly detection \gls{knn} is one of more established one, initially published by \textcite{Fix1951}.
+Among the techniques which can be used for clustering and hence for anomaly detection \gls{knn} is one of the more established ones, initially published by \textcite{Fix1951}.
 The problem is described, that for any given collection of data points in an m-dimensional metric feature space, to find the k nearest data points for an arbitrary query point. \parencite{Beyer1999}
 It consequently uses the proximity of data points within the feature space, allowing \gls{knn} to work with unlabelled unclean data, making it a class one technique according to \textcite{Hodge2004}. (cf. Section~\ref{sec:background:network:ids:anomaly})
 
 To determine if the query point is located in an sparse area, meaning it is an outlying observation, the sum of the distance to the k-nearest neighbours is calculated.
-Data points with in denser area, representing normality, will have shorter distances to their neighbours. \parencite{Eskin2002}
+Data points with in denser area, representing \emph{normality}, will have shorter distances to their neighbours. 
+Whereas \emph{outliers} reside in sparse areas, and will consequently have larger distances to their neighbours. \parencite{Eskin2002}
 
 \subsubsection{Local Outlier Factor}
 \label{sec:background:network:novelty:lof}
@@ -296,26 +297,31 @@ Data points with in denser area, representing normality, will have shorter dista
 	\centering
 	\vspace{-10pt}
 	\includegraphics[width=0.42\textwidth,keepaspectratio]{figures/200-breuning2000-figure3.pdf}
-	\caption[Visualisation of the LOF theorem 1]{Visualisation of the Local Outlier Factor theorem 1 \parencite[p.~97]{Breunig2000}}
+	\caption[Visualisation of the LOF theorem 1]{Visualisation of the \gls{lof} theorem 1 \parencite[p.~97]{Breunig2000}}
 	\label{fig:background:network:novelty:lof-theorem}
 \end{wrapfigure}
 
-Another proximity based approach to outlier detection is the \glsfirst{lof}, introduced by \textcite{Breunig2000}. It is based on the \gls{knn} problem, but accounts for locality and is specifically designed for outlier detection.
-With \gls{lof} an outlier is a data point which \emph{MinPts} nearest neighbours are further away then these neighbours from each other. 
+Another proximity-based approach to outlier detection is the \glsfirst{lof}, introduced by \textcite{Breunig2000}. It is based on the \gls{knn} problem, but accounts for locality and is specifically designed for outlier detection.
+With \gls{lof} an outlier is a data point which \emph{MinPts} nearest neighbours are further away then these neighbours are from each other. 
 Using this lemma, For each data point the degree of \enquote{outlier-ness}, or local outlier factor, is determined. (cf. Figure~\ref{fig:background:network:novelty:lof-theorem})
 
-By not relying on a global threshold, the \gls{lof} can account for clusters of different density. Therefore, one could argue, that the \gls{lof} is not only proximity based, but rather density based. Further by not treating the classification of an outlying observation as a binary property, analysis made on top of the outlier classification can be more precise. \parencite[cf.][]{Breunig2000}
+By not relying on a global threshold, the \gls{lof} can account for clusters of different density. Therefore, one could argue, that the \gls{lof} is not only proximity based, but rather density based. Furthermore, by not treating the classification of an outlying observation as a binary property, analysis made on top of the outlier classification can be more precise. \parencite{Breunig2000}
 
 \newpage
 \begin{wrapfigure}{l}{0.5\textwidth}
 	\centering
 	\includegraphics[width=0.5\textwidth,trim={12mm 5mm 15mm 10mm},keepaspectratio,clip]{figures/200-background-lof.pdf}
-	\caption[Visualisation of the Local Outlier Factor]{Visualisation of the \gls{lof} in a two dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the calculated \emph{LOF} value.}
+	\caption[Example visualisation of the LOF]{Visualisation of the \gls{lof} in a two dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the calculated \emph{LOF} value.}
 	\label{fig:background:network:novelty:lof}
-	\vspace{-20pt}
+	\vspace{-25pt}
 \end{wrapfigure}
 
-Moreover, the ability of \gls{lof} to work on unclean data and account for different density in clusters through locality, making it a good match for \gls{ids} solutions, as \textcite{Lazarevic2003} shows. (cf. Figure~\ref{fig:background:network:novelty:lof}) Also \textcite{Zanero2004} conducted an experiment on using unsupervised learning algorithms for intrusion detection and found, that the problem of locality with \gls{knn} has to be addressed in order to be more precise in predictions, what \gls{lof} archives.
+For a productive use, however, a threshold should be determined based on the sample size and \emph{MinPts}, to provide some decision surface.
+An example of the \gls{lof} calculation in a two dimensional vector space containing random test data is illustrated in Figure~\ref{fig:background:network:novelty:lof}.
+The background in this figure indicates the \gls{lof} values for every possible point, whereby a blue background indicates values outside of the threshold for \emph{normality} and a red one marks values within those borders.
+
+Moreover, the ability of \gls{lof} to work on unclean data and account for different densities in clusters through locality, makes it a good fit for \gls{ids} solutions, as \textcite{Lazarevic2003} shows.
+Also \textcite{Zanero2004} conducted an experiment on using unsupervised learning algorithms for intrusion detection. They found, that proximity-based approaches like \gls{knn} need to address the problem of locality for some observations, in order to archive more precise predictions. The \gls{lof}, as presented by \textcite{Breunig2000}, focusses on this aspect.
 
 %~\\
 \subsubsection{Support Vector Machines}
@@ -340,21 +346,25 @@ Moreover, the ability of \gls{lof} to work on unclean data and account for diffe
 	\end{itemize}
 \end{comment}
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-	\centering
-	\includegraphics[width=0.5\textwidth,trim={12mm 5mm 15mm 10mm},keepaspectratio,clip]{figures/200-background-oneclass.pdf}
-	\caption[Visualisation of a Support Vector Machine]{Visualisation of a \gls{svm} in a two dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the distance from the decision surface.}
-	\label{fig:background:network:novelty:svm}
-\end{wrapfigure}
-
-Another technique to discriminate outliers from \emph{normality} is to precisely model \emph{normality}, as \textcite{Hodge2004} described as third class of outlier detection algorithms. (cf. Section~\ref{sec:background:network:novelty:class})
+Another technique to discriminate \emph{outliers} from \emph{normality} is to precisely model the normality, which \textcite{Hodge2004} describes as third class of outlier detection algorithms. (cf. Section~\ref{sec:background:network:novelty:class})
 \glspl{svm} are a widely used technique in this field. Especially one-class \glspl{svm} are applied in outlier and intrusion detection. \parencite[cf.][]{Lazarevic2003,Eskin2002}
-They classify data points by defining decision surfaces within the feature space, which separate categories. A learning algorithm fits these hyperplanes to prior labelled data, basically finding a rule to separate data points into different classes. 
+They classify data points by defining a decision surfaces within the feature space, which separate categories. A learning algorithm fits these hyperplanes to prior labelled data, basically finding a rule to separate data points into different classes. 
 In case of one-class \gls{svm}, which are predominantly used for outlier detection, there is only one category resembling \emph{normality}. Hence the training data must contain the full gamut of normal data points, without any contamination introduced by anomalies. \parencite[cf.][]{Muller2001,Scholkopf2001a}
 
 As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable techniques to be used in anomaly-based \glspl{ids}. However, since the way this model is trained requires for clean training data, it is increasingly hard to fit it into new networks and changing environments. (cf. Section~\ref{sec:background:network:ids:anomaly})
 
-\todo{ref to fig}
+\begin{wrapfigure}{r}{0.5\textwidth}
+	\centering
+	\vspace{-18pt}
+	\includegraphics[width=0.5\textwidth,trim={12mm 5mm 15mm 10mm},keepaspectratio,clip]{figures/200-background-oneclass.pdf}
+	\caption[Example visualisation of a Support Vector Machine]{Visualisation of a \gls{svm} in a two dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the distance from the decision surface.}
+	\label{fig:background:network:novelty:svm}
+	\vspace{-20pt}
+\end{wrapfigure}
+
+In Figure \ref{fig:background:network:novelty:svm} the training with and the classification of a test data within a two dimensional vector space is visualised. The \gls{svm} was trained with the green data points, which formed the decision surface illustrated as red line. The background of the plot shows the distance from this decision surface, whereby blue indicates a negative distance and red indicates a positive distance.
+Data points with a negative distance are considered outliers, in the figure visualised as red points. Consequently, data points with a positive distance belong to the normality, those are visualised as white points.
+The further away the data points are from the decision surface, the more distinct is the decision whether it is an outlying observation or not. In the figure this is illustrated by a more saturated background colour.
 
 \begin{comment}
 \subsubsection{Isolation Forest}
@@ -371,12 +381,12 @@ As \textcite{Eskin2002,Lazarevic2003} showed, \gls{svm} are a good and viable te
 \subsubsection{Entropy-based Outlier Detection}
 \label{sec:background:network:novelty:entropy}
 
-The information entropy, introduced by \textcite{Shannon1948}, provides an effective way to determine the uncertainty of a given system or the information content of a variable. It is further also referred to as measurement for randomness. Especially later one is intuitively related to outlier detection.
+The information entropy introduced by \textcite{Shannon1948} provides an effective way to determine the uncertainty of a given system or the information content of a variable. It is further also referred to as measurement for randomness. Especially the later one is intuitively related to outlier detection.
 
 \textcite{Toshniwal2014} are using these characteristics and propose an algorithm to cluster data streams and determine outliers. 
 The basic principle is to try to fit every occurring data point to every existing cluster. The data point is then finally assigned to the cluster, where it produces the least increase of entropy. Finally, the relative change of entropy for assigning a data point to the nearest cluster (\emph{PCE}) is calculated. If this \emph{PCE} is higher than a prior defined threshold, the data point is considered an outlier.
 However, this method requires access to all previous data points, which implies a high resource utilisation. To increase performance \textcite{Toshniwal2014} are only keeping a window of data in memory.
-Further, it might be to consider to determine a kernel function, fitted to the individual dimensions. The entropy could then be calculated against the distribution function, rather than raw data.
+Further, it might be to consider to determine a kernel function, fitted to the individual dimensions. The entropy could then be calculated against the distribution function, rather than against raw data.
 
 \begin{comment}
 \subsection{Elliptical Envelope}
@@ -416,31 +426,32 @@ Further, it might be to consider to determine a kernel function, fitted to the i
 \subsection{Methods of Feature Encoding}
 \label{sec:background:network:features}
 
-Most algorithms and techniques for Outlier Detection (cf. Section~\ref{sec:background:network:novelty}) work within a multi-dimensional vector space or feature space. Often it is not straight forward to map specific features of a data set into a vector space.
-Problematic cases included when the possible expressions of a feature need to be model as equidistant to each other.
-Alternatively, in certain cases it is necessary to reduce the amount of dimension a feature would add, because otherwise the resource utilisation would exceed sane boundaries.
+Most algorithms and techniques for Outlier Detection (cf. Section~\ref{sec:background:network:novelty}) work within a multi-dimensional vector space or feature space. Often it is not straight forward to map specific features of a data set into the vector space.
+Problematic cases included for instance, when all possible expressions of a feature need to be model as equidistant to each other within the vector space. 
+Alternatively, in certain cases it is necessary to reduce the amount of dimensions a feature would add, because otherwise the resource utilisation would exceed sane boundaries.
 
 \subsubsection{One-Hot Encoding}
 \label{sec:background:network:features:onehot}
 
 Certain features in a dataset can represent markers or flags. In traditional data processing flags are often encoded as bit-field, where each bit represents one specific flag or marker, or as numerical value, where each number represents a state.
-When using machine learning techniques, like Outlier Detection, directly on bit-fields or numerical encoded flags, a problem arises, especially with proximity base approaches.
+When using machine learning techniques directly on bit-fields or numerical encoded flags a problem arises, especially with proximity base approaches.
 
-For instance the \gls{apci} value encodes the application type in a \gls{knx} telegram as numerical value. (cf. Section~\ref{sec:background:bas:knx:communication})
-For instance a \code{A\_GROUP\_VALUE\_WRITE} telegram is encoded with a value of \code{128}, whereby an \code{A\_GROUP\_VALUE\_READ} is encoded with a value of \code{000}, and \code{A\_INDIVIDUAL\_ADDRESS\_WRITE} with \code{192}.
-The euclidean distance between those different \gls{apci} values would be 128, 64, and 0, which would indicate some kind of hierarchy or order.
+For instance, the \gls{apci} value encodes the application type in a \gls{knx} telegram as numerical value. (cf. Section~\ref{sec:background:bas:knx:communication})
+A \code{A\_GROUP\_VALUE\_WRITE} telegram is encoded with a value of \code{128}, whereby an \code{A\_GROUP\_VALUE\_READ} is encoded with a value of \code{000}, and \code{A\_INDIVIDUAL\_ADDRESS\_WRITE} with \code{192}.
+The euclidean distance between those three \gls{apci} values would be 128, 64, and 192, which would indicate some kind of hierarchy or order.
 
 However, for the sake of determining outliers, it is only of relevance if these values differ, the possibly induced hierarchy or order does not provide any information.
+Moreover, it can also introduce the issue that the applied algorithm determines that a \code{A\_GROUP\_VALUE\_WRITE} telegram is more different to a \code{A\_GROUP\_VALUE\_READ} telegram than it is to a \code{A\_INDIVIDUAL\_ADDRESS\_WRITE} one, which is not true.
 In other words the different expressions of this feature must be kept equidistant to each other.
 
-To archive this, it is suggested in literature, to encode each expression as own dimension and only setting the expressed one to 1, leaving the rest at 0. This is referred to as \emph{one-hot} encoding. \parencite[cf.][]{Coates2011}
+To archive this, it is suggested in literature, to encode each expression as own dimension and only setting the expressed one to 1, leaving the rest at 0. It is referred to as \emph{one-hot} encoding. \parencite{Coates2011}
 
 \subsubsection{Feature Hashing}
 \label{sec:background:network:features:hashing}
 
 When introducing multiple features in the vector space, the  amount of dimensions can increase rapidly, especially when using techniques like one-hot encoding (cf. Section~\ref{sec:background:network:features:onehot}).
-This has huge implications with regards to resource consumption and more importantly to the feasibility of used algorithms on the vector space.
-For instance proximity based approaches to Outlier Detection do not perform well in high dimensional vector spaces. \alert{cite needed}
+This has huge implications with regards to resource consumption and more importantly to the feasibility of used algorithms in the vector space.
+For instance proximity based approaches to Outlier Detection (e.g. \gls{knn}) do not perform well in high dimensional vector spaces. \parencite[cf.][]{Beyer1999}
 
 To reduce the number of dimensions the amount of features could be reduced, or one could compress the feature vector. One method to archive compression by maintaining the informative value is called Feature Hashing or Kernel Trick. \parencite{Weinberger2009,Shi2009}
 As the name suggests a specialised hash function is applied to the feature value to reduce the required dimensions down to a defined size.
@@ -453,16 +464,23 @@ However, when compared to a random projection, to reduce dimensionality, the has
 
 Encoding time in machine learning and in the context of anomaly detection has to be considered carefully.
 First, time can not be simply expressed as \gls{unixts}, since it is not recurring by design, therefore providing no point to correlate future data points to.
-As a consequence. time has to be within a seasonal context. This can be a week, a year, or any other season time range, in which events reoccur.
-For example, human behaviour tends to organised in a weekly rhythm. This would make a week our reoccurring cycle. Within this cycle one could express time as seconds since the beginning of the week, e.g. Monday 00:00, and normalised against the length of a week in seconds.
+As a consequence, time has to be within a seasonal or recurring context. This can be a week, a year, or any other seasonal time range, in which events reoccur.
+For example, human behaviour tends to be organised in a weekly rhythm. This would make a week our reoccurring cycle. Within this cycle one could express time as seconds since the beginning of the week, e.g. Monday 00:00, and normalise against the length of a week in seconds.
 
-Another approach on how to incorporate time could be to train several models, each one representing a fraction of the seasonal cycle. For instance, the week could be divided by days, and there would a model for Monday, a model for Tuesday, etc. pp.
-However, doing this might introduce problems at the transition points between those models. So might an action which in the training set never occurred on a Monday, but always on Tuesdays only a few minutes past midnight, be considered an outlier simply due to the fact that it never happen to be trained in the Monday model.
+Another approach on how to incorporate time could be to train several models, each one representing a fraction of the seasonal cycle. For instance, the day could be divided by hours, and there would a model from midnight to three o'clock, from three to six o'clock, etc. pp.
+However, doing this might introduce problems at the transition points between those models. So might an action which in the training set never occurred midnight and three in the morning, but only a few minutes past three, be considered an outlier simply due to the fact that it never happen to be trained in the first model.
 The overall consequence is, that a few minutes in timing can change the decision surface dramatically, which is used to determine the \emph{normality.}
 
-To mitigate these drawbacks, one could train the double amount of models, but with half of them shifted by half a time step. This would result in 14 models in our example. The first half would be normal day models, reaching from midnight to midnight. The second half, however, would be shifted by 12 hours and therefore reaching from noon to noon.
+To mitigate these drawbacks, one could train the double amount of models, but with half of them shifted by half a time step, as illustrated in Figure~\ref{fig:background:network:features:time}.
+This would result in 16 models in our example. The first half would be in normal three hour steps. The second half, however, would be shifted by 90 minutes.
+The benefit using this method compared to a sliding window is, that the model have static time ranges and can therefore be trained in advance.
 
-\todo{include fig from concept}
+\begin{figure}[h]
+	\centering
+	\includegraphics[]{figures/300-time-slots.pdf}
+	\caption{Example of shifted time slots over a day.}
+	\label{fig:background:network:features:time}
+\end{figure}
 
 \begin{comment}
 \begin{itemize}
