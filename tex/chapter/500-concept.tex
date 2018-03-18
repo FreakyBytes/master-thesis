@@ -24,39 +24,40 @@
 
 \todo{better intro sentence?}
 The overall goal is to identify and react to threats and attacks within \gls{bas} networks, which are indicated by malicious traffic.
-This thesis attempts to solve one part of the problem by providing a framework to detect anomalies in those networks.
+This thesis attempts to solve a part of this problem by providing a framework to detect anomalies in those networks.
 It is not part of this concept to identify the kind of attack, nor to distinguish it from abnormal network activity, caused by a rapid change of user behaviour.
-Additionally, it is to note, that the introduced system is merely a part in the defence line.
-However, all further systems in a defence line require data and statistics about threats and attack vectors in real world scenarios.
+Additionally, it is to note, that the introduced system is merely intended to be a part of a defence line.
+However, all further systems in the defence line require data and statistics about threats and attack vectors in real world scenarios.
 Since there is no to little work in this field at the moment, an anomaly-based \gls{ids} is a good tool to gather this required data and therefore a start point for future development.
 
-The architecture proposed in this section is inspired by \textcite{Pan2014}, with extensions made in regards for scalability and continuous use. (cf. Section~\ref{sec:concept:pipeline})
-Opposed to \textcite{Pan2014}, which are using an inductive rule learning algorithm (cf. Chapter~\ref{sec:background:prior-work}), this work employs anomaly detection algorithms, which are able to be trained with unlabelled data sets. (cf. Section~\ref{sec:background:network:novelty})
-This decision was made because \gls{bas} are mostly heterogeneous, since every building and its usage is different, compared to the fire detection system used by \textcite{Pan2014}.
-Therefore, either the baseline model has to reflect a very broad \emph{normality}, or attacks need to be modelled as signatures. The later option has the drawback of requiring constant updates. Also a sufficiently large database of common attacks is required in first place.
-Neither of these options seemed feasible.
+The architecture proposed in this section is inspired by \textcite{Pan2014}, with extensions made in regards to scalability and continuous use. (cf. Section~\ref{sec:concept:pipeline})
+Opposed to \textcite{Pan2014}, which are using an inductive rule learning algorithm (cf. Chapter~\ref{sec:background:prior-work}), this work employs anomaly detection algorithms, which are able to be trained using unlabelled data sets. (cf. Section~\ref{sec:background:network:novelty})
+This decision was made due to the fact that \gls{bas} are mostly heterogeneous, since every building and its usage is different, compared to the fire detection system showcased by \textcite{Pan2014}.
+If this heterogeneity is not taken into account, than either the baseline model has to reflect a very broad port of the\emph{normality} or attacks need to be modelled as signatures. The later option has the drawback of requiring constant updates. Also a sufficiently large database of common attacks is required in first place.
+Neither of these options seemed feasible with the data available at the time this research is conducted.
 Consequently, relying on anomaly detection algorithms makes more sense in the provided context.
+
 Despite anomaly based \glspl{ids} being highly useful in changing environments with possibly unknown threats (cf. Section~\ref{sec:background:network:ids:anomaly}), it is to note that they \enquote{are based on the beliefs that an intruder's behaviour will be noticeably different from that of a legitimate user and that many unauthorized actions are detectable}. \parencite{Mukherjee1994,Yang2006}
 A decision is made deliberately against using a state-based \gls{ids} approach, as the protocols used in \gls{bas} often do not specify long, complex command sequences. And opposed to \gls{scada} networks, the higher level activity of network devices in \gls{bas} is not dictated by routine as it would be in machine park. Rather it is strongly shaped and influenced by human behaviour. (cf. Section~\ref{sec:background:network:ids:state})
 
-\todo{better transition}
-Further, to enable scalability and on-line detection, the proposed framework was designed around the message-passing design principle.
+Furthermore, a part of this concept is dedicated to design a rudimentary software architecture to monitor \gls{bas} efficiently.
+Therefore, to enable scalability and on-line detection, the proposed framework was designed around the message-passing design principle.
 This allows for an easily scalable deployment, strongly capsules application modules, and handles recovery after crashes without data-loss.
 Especially the later two are not only desired characteristics of an production system, but also speed up development and testing rapidly.
 
-Another novelty, compared to prior examples in literature (cf. Chapter~\ref{sec:background:prior-work}), is the focus of passing the flow-data from the Agent to the collector in-band. By doing so, there is no requirement for additional network wiring, which results in easier and possibly cheaper deployment for Agents across the network.
-However, this also introduces new challenges, as the aggregated flow data needs to fit within a relatively small data package, in case of \gls{knx} 255 Bytes. (cf. Section~\ref{sec:background:bas:knx:proto:data})
+Following \textcite{Celeda2012}, this thesis also bases the proposed \gls{ids} on flow-data.
+Novel compared to prior examples in literature (cf. Chapter~\ref{sec:background:prior-work}) is the focus of passing the flow-data from the Agent to the collector in-band. By doing so, there is no requirement for additional network wiring, which results in easier and possibly cheaper deployment for Agents across the network.
+However, this also introduces new challenges, as the aggregated flow-data needs to fit within a relatively small data package, in case of \gls{knx} 255 Bytes. (cf. Section~\ref{sec:background:bas:knx:proto:data})
 Also, the collector and the analytical modules need to account for the possibility, that traffic from the Agents could be blocked or suppressed in certain situations, e.g. due to \gls{dos} attacks.
 
-\todo{challenge, since there are no real flows.}
 Another challenge arises from the nature of \gls{bas} itself. In \gls{scada} networks ,for instance, actions follow strict rules and orders and are therefore highly predictable. % or \gls{ip} networks, which mostly transport connection based traffic.
 Unlike \gls{scada} networks, the communication in \gls{bas} networks consists of many short self-contained commands, which occur in seemingly random fashion, since they are mainly triggered by human behaviour. This includes (light) switches, \gls{pir} motion detectors, or door sensors.
-Due to the fact, that most telegrams are short commands or status reports from sensors, there are no elaborative connection based communication flows in \gls{bas} networks, thus rendering flow-monitoring less useful.
-To accommodate for this special characteristic, the idea of flow-monitoring is interpreter rather liberal. 
-Namely, by focussing more statistics of all telegrams or packets during a specific synchronised time window, instead of tracking individual flows, which also requires less resources on the Agent.
+Due to the fact, that most telegrams are short commands or status reports from sensors, there are no elaborative connection based communication flows in \gls{bas} networks, thus rendering flow monitoring less useful.
+To accommodate for this special characteristic the idea of flow monitoring is interpreter rather liberal. 
+Namely, by focussing more on statistics of all telegrams or packets during a specific synchronised time window, instead of tracking individual flows. Additionally, this approach will require less resources on the Agent.
 
 As already mentioned, this system can merely be a part of a comprehensive security system. Acknowledging this fact, the outlier detection algorithms focus mainly on high level anomaly detection. % Features measured on these higher levels
-In contrast, simpler measurements, like the change in telegrams per seconds, can be simply evaluated in a monitoring and alerting frontend like \gls{grafana}. Consequently a dedicated Analyser module is not required for such.
+In contrast, simpler measurements, like the change in telegrams per seconds, can be simply evaluated in a monitoring and alerting frontend like \gls{grafana}. Consequently a dedicated Analyser module is not intended for such.
 
 \section{Monitoring Pipeline}
 \label{sec:concept:pipeline}
@@ -76,7 +77,7 @@ In contrast, simpler measurements, like the change in telegrams per seconds, can
 	\item if so the collector relays all windows, describing the same time slot (+/- a couple seconds), to the analyser modules
 	\item if not all windows are in by specified timeout (10s or so) they are relayed anyway
 	\item bundled windows are distributed by pub-sub-server independently to different analytical modules
-	\item analytical modules compare the windows to a base-line model (in different fashions)
+	\item analytical modules compare the windows to a baseline model (in different fashions)
 \end{itemize}
 \end{comment}
 
@@ -90,30 +91,30 @@ In this section the general structure and flow within this pipeline is presented
 	\label{fig:concept:architecture}
 \end{figure}
 
-Within the here proposed pipeline the notion of a \emph{project} is used to differentiate unique, not comparable \gls{bas} networks, which share the same analytical resources. It can be understood as common prefix for all internal references. (cf. Chapter~\ref{sec:impl})
+Within the here proposed concept the notion of a \emph{project} is used to differentiate unique, not comparable \gls{bas} networks, which share the same analytical resources. It can be understood as common prefix for all internal references. (cf. Chapter~\ref{sec:impl})
 This is not only a beneficial option when monitoring multiple networks one the same analytical infrastructure, but also allows for quick testing with different data-sets during development.
 Further, all exchanged messages are buffered in queues, to enable easy scaling and recovery after a module or service crashes.
 %To further improve use in production, as well as ease of development, ... (RabbitMQ, but this a detail for impl sec)
 
-Following concepts in literature \parencite[][]{Celeda2012,Pan2014} the pipeline is not build around analysing a full-take of traffic within a \gls{bas}, but rather follows the idea of flow monitoring. (cf. Section~\ref{sec:background:network:netflow})
+Following concepts in literature \parencite[][]{Celeda2012,Pan2014} the pipeline is not build around analysing a full-take of the traffic within a \gls{bas}, but rather follows the idea of flow monitoring. (cf. Section~\ref{sec:background:network:netflow})
 As stated above (cf. Chapter~\ref{sec:methods},~\ref{sec:concept}) traditional flow monitoring introduces certain problems due to the nature of the traffic within \glspl{bas} networks like \gls{knx}. However, the general idea of condensing traffic suits the resource restrictions very well.
 Therefore, the focus is on general statistical data of all packets or telegrams passing by an Agent within a specific time window.
 
-Since one of the requirements for sufficiently efficient flow-monitoring is to obtain world-view (cf. Section~\ref{sec:background:network:netflow},~\ref{sec:methods}), multiple flow monitoring Agents need to be distributed across the \gls{bas} network, as shown in Figure~\ref{fig:concept:network}. Otherwise, network segmentation would be required to be switched off, so a central tapping point could be used for data acquisition.
-Whereas this would decrease complexity, it is not advisable since segmentation is one of the fundamental security concepts e.g. in \gls{knx}. (cf. Section~\ref{sec:background:bas:knx:security})
-Consequently, a number of Agents, distributed over the whole network, will gather statistical data and send it of to central service -- the Collector, which thereby obtains world-view
+Since one of the requirements for sufficiently efficient flow monitoring is to obtain world-view (cf. Section~\ref{sec:background:network:netflow}), multiple flow monitoring Agents need to be distributed across the \gls{bas} network, as shown in Figure~\ref{fig:concept:network}. Otherwise, network segmentation would be required to be switched off, so a central tapping point could be used for data acquisition.
+Whereas this would decrease complexity it is not advisable, since the segmentation is one of the fundamental security concepts e.g. in \gls{knx}. (cf. Section~\ref{sec:background:bas:knx:security})
+Consequently, a number of Agents, distributed over the whole network, will gather statistical data and send it of to central service -- the Collector, which thereby obtains world-view.
 
 The Collector is not only responsible for receiving data from Agents and storing them in a database, but also synchronises these windows. Synchronising the windows simplifies the implementation of the analytical modules (cf. Section~\ref{sec:concept:anal}), since they do not need to account for distorted weights introduced by changing overlaps or lengths of windows sent by the Agents.
 This is archived, first of all by waiting until all windows from all Agents have been send to the Collector. Only then they are relayed to the analytical modules as one unit.
 However, this only works reliable if the Agents are in sync with each other. If not, the Collector would need to compensate for different, changing overlaps. Therefore another task of the Collector service is to ensure the Agents are synchronised, meaning the Agents capture the same length of the of statistical data in the same clock cycle without shifting.
-This is archived by communicating back to the Agent modules, regularly updating the \gls{rtc} and important settings like window length and a time point for starting new windows. (shift in time)
+This is archived by communicating back to the Agent modules, regularly updating the \gls{rtc} and important settings like window length and a time point for starting new windows, also know as the shift in time.
 
-Recurring two-way communication between Agents and Collector in regular time intervals also provides the benefit of identifying simple replay attacks (cf. Section~\ref{sec:methods}), since not or wrongly reacting to configuration requests can be detected.
+Recurring and verified two-way communication between Agents and Collector in regular time intervals also provides the benefit of identifying simple replay attacks (cf. Section~\ref{sec:methods}), since not or wrongly reacting to configuration requests can be detected.
 Further, by accounting for dynamic configuration of the agents, the Collector can adjust parameters based on the world-view.
 The Collector could, for instance, prolong the window length, when the \gls{bas} network is under heavy load to reduce additional traffic. It could also do the exact opposite to receive more detailed information on heavy resource utilisation.
 
 Finally, the analytical modules receive the bundled statistical windows from the Agents via the Collector. They compare this data to baseline models using different techniques and algorithms. (cf. Section~\ref{sec:concept:anal})
-The results are then again stored in a database, from which they can be queried by a standard graphing and alerting tool, e.g. \gls{grafana}. (cf. Section~\ref{sec:concept:mon})
+The results are then again stored in a database, from which they can be queried by a standard graphing and alerting tool. (cf. Section~\ref{sec:concept:mon})
 
 \begin{figure}
 	\centering
@@ -154,28 +155,28 @@ The results are then again stored in a database, from which they can be queried 
 \end{itemize}
 \end{comment}
 
-The concept of flow based network monitoring defines a separation of the Agents, which captures bypassing traffic and aggregates it into flows, and the Collector, receiving the flow data from the Agents and analysing it further.
-This separation holds the fundamental benefit of employing flow monitoring: Since sensible pre-processing of the data to be analysed can already performed in the sensor itself, the required data to be send to the Collector is minimized and does not require additional out-of-band transport. (cf. Section~\ref{sec:background:network:netflow})
-In this adaption of the flow monitoring idea, the concept of this separation is kept for this very reason. In the following the concept of the Agent module is further described.
+The concept of flow based network monitoring defines a separation of the Agents, which capture bypassing traffic and aggregates it into flows, and the Collector, receiving the flow data from the Agents and analysing it further.
+This separation holds the fundamental benefit of employing flow monitoring. Since sensible pre-processing of the data to be analysed can already be performed in the sensor itself, the required data to be send to the Collector is minimized and does not require additional out-of-band transport. (cf. Section~\ref{sec:background:network:netflow})
+In the here described adaptation of the flow monitoring idea, the concept of the separation is kept for this very reason. In the following the concept of the Agent module is further described.
 
 The Agent, in the context of \gls{bas}, could be physically implemented in various ways.
-The two predominant ones seemed to be as an implementation as dedicated appliance, which can be installed directly in the network without any additional requirements, or as software agent accessing the \gls{bas} network via an \gls{ip}-gateway.
+The two predominant ones seemed to be an implementation as dedicated appliance, which can be installed directly in the network without any additional requirements, or as software agent accessing the \gls{bas} network via an \gls{ip}-gateway.
 However, the later solution would neglect any advantages gained by passing the flow data in-band to the Collector. This includes ease of installation, no requirement for an \gls{ip} network connection, and also no additional exposure of the \gls{bas} network via \gls{ip}.
 Therefore, the deployment as dedicated appliance is to be preferred.
 
 Regardless of the kind of implementation, the general task of the Agent is to analyse bypassing traffic and to generate statistical data over it.
-This basically means, that not flows are the subject of interest but the general network activity and the statistical distribution of specific features appearing in packets over a given timespan (window).
-Such features might include hop count, payload length, source and destination addresses, as well as higher level attributes like the application layer protocol. (cf. Section~\ref{sec:background:bas:knx:communication}) Alongside meta information like timestamps for begin and end of the time window, and a unique Agent name.
-The time span or time windows, however, is defined and synchronised by the Collector via configuration commands. This allows to adjust the timeout, when new aggregated windows are send to the Collector, e.g. according to the utilization of the \gls{bas} network.
+This basically means, that not flows as it are the subject of interest but the general network activity and the statistical distribution of specific features appearing in packets over a given timespan (window).
+Such features might include hop count, payload length, source and destination addresses, as well as higher level attributes like the application layer protocol. (cf. Section~\ref{sec:background:bas:knx:communication}) Alongside meta information like timestamps for begin and end of the time window, and a unique Agent name are passed
+The time span or time windows, however, is defined and synchronised by the Collector via configuration commands. This also allows to adjust the timeout, when new aggregated windows are send to the Collector, e.g. according to the utilization of the \gls{bas} network.
 However, this adjustment can not be made by the Agent itself, since the statistical data from all Agents must be timely aligned. (cf. Section~\ref{sec:concept:pipeline},~\ref{sec:concept:collector})
 
-As already outlined earlier, the design decision to only collect statistical data instead of flows diverges significantly with the original concept of flow monitoring.
+As already outlined earlier, the design decision to only collect statistical data instead of flows diverges significantly with the original concept of flow monitoring, as introduced in Section~\ref{sec:background:network:netflow}.
 However, this decision was made due to the fact, that most traffic in \gls{bas} networks consist of short, self-contained commands, which are triggered or at least influenced by human behaviour. This has multiple implications:
-First of all, aggregating packets or telegrams to flows would have negligible resource benefits. Since a flow is defined as a set of packets with common properties bypassing an observation point, there would a many rather short flows, because the majority of packets contain only commands or status updates, which are then simply acknowledge by the receiving party. \parencite[cf.][]{Claise2013} (cf. Section~\ref{sec:background:network:netflow}) \todo{this is ugly af.}
-Consequently, the Agent would be required to report many short flows to the Collector. This would, however, consume a lot of time on the \gls{bas} network, since e.g. in \gls{knx} only a maximum of 255 Byte per telegram can be send. (cf. Section~\ref{sec:background:bas:knx:proto:data})
-Further, it would be of limited use and have higher resource utilization than a full-take of the traffic.
+First of all, aggregating packets or telegrams to flows would have negligible resource benefits. Since a flow is defined as a set of packets with common properties bypassing an observation point, there would be many rather short flows, because the majority of packets contain only commands or status updates, which are then simply acknowledge by the receiving party. \parencite[cf.][]{Claise2013}
+Consequently, the Agent would be required to report many short flows to the Collector. This would, however, consume a lot of time on the \gls{bas} network, since e.g. in \gls{knx} only a maximum of 255 Bytes per telegram can be send. (cf. Section~\ref{sec:background:bas:knx:proto:data})
+Further, it would be of limited use and have higher resource utilization than a full-take of the traffic, due to the overhead introduced by the flow protocol. These resource constraints are in-depth analysed and discussed by \textcite{Jung2018}.
 Additionally, keeping state in minimal Agent appliances might be difficult, due to resource constrains induce by cost reduction, as well as limited space and power.
-Therefore, a less resource intensive way of aggregation is desirable, if it is aspired to follow the idea of deploying minimal agent appliances.
+Therefore, a less resource intensive way of aggregation is desirable, if it is aspired to follow the idea of deploying minimal Agent appliances.
 Also considering the limited space available in one \gls{knx} telegram.
 
 \section{The Collector Module}
@@ -202,14 +203,14 @@ Also considering the limited space available in one \gls{knx} telegram.
 \end{itemize}
 \end{comment}
 
-Eventually, when the length of a time window is reaches the configured length, the Agents will send of their gathered statistical data to the central Collector service.
-As the name implies, the foremost task of it is to collect data from the various Agents (cf. Section~\ref{sec:background:network:netflow}) and stores them immediately in a database to ensure persistence of data, tagged with the unique Agent name, project id, and timestamps.
+Eventually, when the length of a time window reaches the configured length, the Agents will send their gathered statistical data to the central Collector service.
+As the name implies, the foremost task of it is to collect data from the various Agents (cf. Section~\ref{sec:background:network:netflow}) and store them immediately in a database to ensure persistence of data, tagged with the unique Agent name, project id, and timestamps.
 
-Also the Collector aligns the individual windows to each other. This is accomplished by regularly configuring the Agents via management commands, so all Agents within one network are fully synchronised, which improves data quality for the analytical modules. To account for clock drift, changing transmission times, and general imprecisions in date calculation, the alignment allows for a divergence in time. However, the maximum divergence has to be carefully considered, based on the jitter to be expected in the network.
-A too high tolerance can lead to grouping unrelated time windows together. Whereby a too tight tolerance might result in fragmented windows, due to small inaccuracies in time measurement.
+Also the Collector aligns the individual windows to each other. This is accomplished by regularly configuring the Agents via management commands, so all Agents within one network are fully synchronised, which improves data quality for the analytical modules. To account for clock drift, changing transmission times, and general imprecisions in date calculation, the alignment allows for a small divergence in time. However, the maximum shift has to be considered carefully, based on the jitter to be expected in the network.
+A too high tolerance can lead to grouping unrelated time windows together. Whereby a too tight tolerance might result in fragmented windows, due to inaccuracies in time measurement.
 
-When all windows for a specific aligned time period are received by the Collector, the statistical data from the windows is bundled and dispatched to the Analyser modules as one block and marks this specific time block as relayed.
-In case the Collector fails to receive all windows for a time window within a certain timeout, it may forward them to the Analysers anyway.
+When all windows for a specific aligned time period are received by the Collector, the statistical data from these windows are bundled and dispatched to the Analyser modules as one block and marked as relayed.
+In case the Collector fails to receive all windows for a time window within a certain timeout, it may forward the already received once to the Analysers anyway.
 Doing otherwise would results in huge backlog and therefore missing analysis, in case an Agent is offline or any other reason the transmission of data might be disrupted.
 
 \section{Analyser Modules}
@@ -237,20 +238,20 @@ Doing otherwise would results in huge backlog and therefore missing analysis, in
 \end{comment}
 
 The core functionality of the proposed pipeline is delivered by the Analyser modules, which capsule different approaches and algorithms to detect anomalies within a data set. (cf. Section~\ref{sec:background:network:novelty})
-The general idea is to compare current occurring data with some sort of base-line model generated during a dedicated training period.
-Therefore, the function of each analytical module can be distinguished in two phases: a learning phase and an operation phase.
+The general idea is to compare current occurring data with some sort of baseline model generated during a dedicated learning period.
+Therefore, the function of each analytical module can be distinguished in two phases: a training phase and an operation phase.
 
-In the learning phase the module retrieves already captured data from the database, aligns it in the same timely fashion as the Collector would do, transforms the data into the feature space (cf. Section~\ref{sec:concept:anal:feature-vector}), and then uses an appropriate training technique to generate a base-line model.
-Ideally this step can be performed iteratively so the base-line model can be extended or further trained with new data, without redoing the entire training process. This is especially useful, since the usage of a building might change over time and consequently requires for adjustments.
+In the learning phase the module retrieves already captured data from the database, aligns it by time in the same fashion as the Collector would do, transforms the data into the feature vectors (cf. Section~\ref{sec:concept:anal:feature-vector}), and then uses an appropriate training technique to generate a baseline model.
+Ideally this step can be performed iteratively so the baseline model can be extended or further trained with new data, without redoing the entire training process. This is especially useful, since the usage of a building might change over time and consequently requires for adjustments.
 
-The requirement for adjusting the base-line model from time to time could be mitigated by just continuously train the base-line model with new in-coming data.
-However, this also introduces introduces a vulnerability for long planned attacks. For instance an attacker could inject increasing amounts of malicious traffic, beginning with a very small rate. This way the base-line model would be biased over a long time without raising an alarm, by keeping the abnormal to normal ratio under the threshold. Finally ending up with a model which no longer resembles the intended \emph{normality}.
-By having curated and well defined training periods on clean data, this kind of attack can be prevented.
+The requirement for adjusting the baseline model from time to time could be mitigated by just continuously training the baseline model with new in-coming data or by using a sliding-window of the last windows. 
+However, this also introduces a vulnerability for long planned attacks. For instance, an attacker could inject increasing amounts of malicious traffic, beginning with a very small rate. This way the baseline model would be biased over a long time without raising an alarm, by keeping the abnormal to normal ratio under the threshold. After a time of continuously biasing the baseline model by injecting traffic, the result would finally be a model which no longer resembles the intended \emph{normality}.
+By having a curated and well defined training periods on clean data, this kind of attack can be prevented.
 
-During the operational phase this base-line model is used to compare it to the data, captured by the different Agents.
+During the operational phase this baseline model is used to compare it to the data, captured by the different Agents.
 Due to the message-passing design of the pipeline, it does not matter if a backlog builds up for an Analyser module, as long as it is cause by a temporal limited issue.
-However, it is important to not stick to an first-in first-out principle, but rather favour always the latest data for immediate analysis. This ensures that system stays in fact an online analytical tool and does not build up a large lack. Not to mention, that skipped windows should be analysed once to load is reduced.
-It is to note, that this behaviour might introduce the risk of missing attacks or general malicious activities, when to man windows need to be skipped.
+However, it is important to not stick to an first-in first-out principle, but rather favour always the latest data for immediate analysis. This ensures that system stays in fact an online analytical tool and does not build up a large lack. Not to mention, that skipped windows should be analysed once to load is reduced again.
+It is to note, that this behaviour might introduce the risk of missing attacks or general malicious activities, when to many windows are skipped.
 Nevertheless, following the basic assumption, that malicious activities significantly and noticeably alter the behaviour of the network, they should be detectable even when some windows are not analysed immediately. Moreover, the performance of the analytical infrastructure should be scaled with the requirements, so that a backlog is generated only in rare cases, if at all.
 
 \todo{move paragraph about separate world-view/agent specific models up here?}
@@ -289,24 +290,24 @@ Nevertheless, following the basic assumption, that malicious activities signific
 \end{itemize}
 \end{comment}
 
-Generally, a feature vector is a n-dimensional, numerical vector, which represents one object within the feature space. Whereby each feature of this object is described by one or more dimensions of the vector.
+Generally, a feature vector is a n-dimensional, numerical vector, which represents one object within the feature space. Whereby each feature of this object is described by one or more dimensions of the feature vector.
 The feature space, in turn, is the mathematical space containing all possible feature vectors describing similar objects.
 Most clustering or machine learning algorithms use feature vectors as inputs, in which case the vectors are usually normalised beforehand.
 
-In the here proposed concept, a feature vector is used to represent each window received form all Agents. Each statistical distribution captured in the window will be one feature, which is encoded into multiple dimensions each using adopted versions of One-Hot encoding or Feature Hashing. (cf. Sections~\ref{sec:background:network:features:onehot}~and~\ref{sec:background:network:features:hashing})
-Instead of binary values the resulting dimensions will rather contain probabilities, in order to map the statistical information into the feature vector.
+In the here proposed concept a feature vector is used to represent each window received from all Agents. Each statistical distribution captured in the window will be one feature, which is encoded into multiple dimensions each using adopted versions of One-Hot encoding or Feature Hashing. (cf. Sections~\ref{sec:background:network:features:onehot}~and~\ref{sec:background:network:features:hashing})
+Instead of binary values the resulting dimensions will rather contain probabilities, in order to map the statistical information into the feature space.
 
 Also individual features will be normalised against their maximum within the time window, as they are not reflecting an \emph{true} or \emph{false} state, but rather the percentage of occurrence.
-It was decided against using absolute values, since this would introduce many different value ranges into the feature vector, which distorts the balance of weights between different fields.
+It was decided against using absolute values for normalising the individual features, since this would introduce many different value ranges into the feature vector, which distorts the balance of weights between different fields.
 E.g. the priority would weight more, since it is encode with a narrow value range from 1 to 4 and consequently there are more packets with priority 2, then there packets addressed to a specific physical address. The result would be an unwanted weight shift towards favouring priority as a feature.
 By normalising to a local maximum, instead of a global fixed maximum, the compositions of a windows is compared, instead of the absolute appearance of features.
-As a result a drop in transmitted packets, which still results in the same composition could not be detected.
+As a result a drop in transmitted packets, which still results in the feature vector, if the composition did not change.
 However, as mentioned in Section~\ref{sec:concept:mon}, the Analyser modules will merely focus on high level anomaly detection, since a general drop in packets can be easily identified in common monitoring and alerting tools such as \gls{grafana}.
 
 \input{tables/500-feature-var.tex}
-The construction of the feature vector directly influences the quality of the used anomaly detection method, therefore the feature to include has to be carefully selected. In case of \gls{bas} networks, e.g. \gls{knx}, there are only a few fields available, which are also common among all packets. Later requirement essentially limits the selection of features defined in lower levels of the protocol, since the content of the payload and therefore application and device specific data can not be predicted.
-This issue is also considered in traditional flow-monitoring, hence mainly values from the \gls{ip} level are processed. (cf. Section~\ref{sec:background:network:netflow})
-Within the scope of \gls{knx} this includes the the fields as listed in Table~\ref{tab:concept:anal:feature-vector:var}. Further a analysis of the variance per field was performed on a test dataset, which was captured over the course of \todo{add time duration for eiblog.txt} in one corridor of the computer science building at the University Rostock.
+The construction of the feature vector directly influences the quality of the used anomaly detection method, therefore the features to include has to be carefully selected. In case of \gls{bas} networks, e.g. \gls{knx}, there are only a few fields available, which are also common among all packets. The requirement of common features essentially limits the selection to those defined in lower levels of the protocol, since the content of the payload and therefore application and device specific data can not be predicted.
+This issue is also considered in traditional flow monitoring, hence mainly values from the \gls{ip} level are processed. (cf. Section~\ref{sec:background:network:netflow})
+Within the scope of \gls{knx} this includes the the fields as listed in Table~\ref{tab:concept:anal:feature-vector:var}. Further a analysis of the variance per field was performed on a test dataset, which was captured over the course of several months in one corridor of the computer science building at the University Rostock.
 It shows to no surprise that source and destination address vary strongly, followed with a large gap by \gls{apci}, hop count, and payload length. 
 
 For the construction of a feature vector normally the only the features with the higher variance would be chosen, since the fields seems to stay constant and therefore do not add any additional information.
@@ -323,7 +324,7 @@ As a compromise between both points of views the following fields were selected 
 	\item \gls{apci}
 \end{itemize}
 
-Additionally, one dimension will encode the time passed within a seasonal period, which could seconds of the day, week, or even year. (cf. Section~\ref{sec:background:network:features:time}) By doing so the base-line model will also represent reoccurring events. This enables the detection of normal activities which just happen at an unusual time within the chosen period.
+Additionally to the dimensions derived from the windows, one dimension will encode the time passed within a seasonal period, which could be seconds of the day, week, or even year. (cf. Section~\ref{sec:background:network:features:time}) By doing so the baseline model will also to be able to be fit to reoccurring events. This enables the detection of normal activities which just happen at an unusual time within the chosen period.
 
 \subsection{The Address Analyser}
 \label{sec:concept:anal:addr}
@@ -339,13 +340,13 @@ Additionally, one dimension will encode the time passed within a seasonal period
 \end{comment}
 
 The address analyser is by far the most simple analytical module within the proposed concept.
-Its purpose is to detect new device addresses and is intended to mainly identify new devices within the line or possibly reconfigured ones. (cf. Chapter~\ref{sec:methods})
-Due to the simplicity it does not rely on the feature vector generation as described above.
+Its purpose is to detect new device addresses and is intended to mainly identify new or possibly reconfigured devices within the line. (cf. Chapter~\ref{sec:methods})
+Due to the simplicity it does not rely on the feature vector described above.
 
-During the learning phase the module gathers all occurring source and destination addresses per Agent and stores them in separated sets, forming the base-line model.
+During the learning phase the module gathers all occurring source and destination addresses per Agent and stores them separated in sets, forming the baseline model.
 These sets are then queried during the actual operational phase. Every address that is not know will be reported and statistics about the observations will be stored in the database.
-The output of this module is therefore the number of observed unknown source or destination addresses and the number of packets using having unknown source or destination addresses.
-Accordingly the monitoring should report an alert, in case any of these measurements raise above zero.
+The output of this module is therefore the number of observed unknown source or destination addresses and the number of packets using unknown source or destination addresses per Agent.
+Accordingly the monitoring should report an alert, in case any of these measurements rises above zero.
 
 \subsection{The Local Outlier Factor Analyser}
 \label{sec:concept:anal:lof}
@@ -373,51 +374,51 @@ Accordingly the monitoring should report an alert, in case any of these measurem
 The \gls{lof} Analyser module uses the proximity-based anomaly detection algorithm as introduced in Section~\ref{sec:background:network:novelty:lof}, which basic idea is to extend \gls{knn} by the means of locality.
 As outlined by \textcite{Lazarevic2003} and \textcite{Zanero2004}, the \gls{lof} is a good fit for \gls{ids} related anomaly detection.
 
-Using the \gls{lof} algorithm, this Analyser tries to determine, if there are neighbours to the current window with similar statistical distributions of packet features, by comparing the individual feature vectors.
-The base-line model is therefore a set of prior observations.
-Due to the robustness of the algorithm, the data forming the base-line model does not need be purged of all anomalies, however it should not exceed a certain percentile.
+Using the \gls{lof} algorithm, this Analyser tries to determine, if there are neighbours to the currently observed window with similar statistical distributions of packet features, by calculating the distance between the individual feature vectors.
+The baseline model is therefore a set of prior observations.
+Due to the robustness of the algorithm, the data forming the baseline model does not need to be purged of all anomalies, however it should not exceed a certain percentile.
 
-In this concept two kinds of base-line models are proposed: One general world-view model and many Agent specific model. 
+In the here proposed concept two kinds of baseline models are included: One general world-view model and many Agent specific model. 
 The first is used to compare \emph{every} window against, to determine if activities are generally foreign to the network.
-The second, Agent specific, models are used to compare only windows from respective Agent to.
+The second type, the Agent specific models are used to compare only windows from the respective Agent to it.
 Using two models to compare every window to ensures, that activities which are normal on one line, but never occurred on another line, will trigger be identified as anomaly. \hint{mention different sensitivity tuning by doing this?}
 This could also be archived by modelling the agent as additional feature in the feature vector.
-However, this would then require a complete rebuild of the models, when the network is altered in a way, that an Agent is added or removed. Since the feature vector would be altered then as well, observations after this modification can not be compared to older ones.
+However, this would then require a complete rebuild of all models, when the network is altered in a way, that an Agent is added or removed. Since the feature vector would then be altered as well, observations after this modification can not be compared to older ones.
 
-The general nature of the \gls{lof} does allow for continuous training. Although requiring less maintenance, it was decided to not make use of this ability. Continuous training introduces the possible attack surface of an attacker slowly introducing malicious and increasing the amount packets over time. By keeping the malicious activities under the alert threshold the attacker could sustainably alter the modelled normality, thus effectively disabling the alerts for intended malicious activities.
+The general nature of the \gls{lof} does allow for continuous training. Although requiring less maintenance, it was decided to not make use of this ability. Continuous training introduces the possible attack surface of an intruder slowly introducing malicious packets and increasing the amount abnormal behaviour over time. By keeping the malicious activities under the alert threshold the attacker could sustainably alter the modelled normality, thus effectively disabling the alerts for intended malicious activities.
 Therefore, also the \gls{lof} Analyser will fall in line with all other analytical modules and have separated training and operational phases.
 
-During the training phases the module basically takes all observations from the training set and converts them into format, which allows for resource economical proximity queries. The seasonal sensitivity is hereby archived by including the relative time point within the chosen season, as described in Section~\ref{sec:concept:anal:feature-vector}.
+During the training phases the module takes all observations from the training set and converts them into a format, which allows for resource economical proximity queries. The seasonal sensitivity is hereby archived by including the relative time point within the chosen season, as described in Section~\ref{sec:concept:anal:feature-vector}.
 
-Within normal operations, all in coming windows will be matched against the world-view and the agent specific model, by comparing the distance to the \emph{MinPts} nearest neighbours with the average distance among those neighbours. (cf. Section~\ref{sec:background:network:novelty:lof})
-Given the difference stays within certain limits, the window is considered part of normality. If not, the window does not reflect common behaviour and is therefore considered an outlier or anomaly.
-The result is stored in the database regardless of the outcome, from where the monitoring and alerting system can gather the measurements and raise and alert, if the amount of abnormal windows per time unit reaches a threshold.
+Within normal operations, all in coming windows will be matched against the world-view and the Agent specific model, by comparing the distance to the \emph{MinPts} nearest neighbours with the average distance among those neighbours. (cf. Section~\ref{sec:background:network:novelty:lof})
+Given the difference stays within certain limits, the window is considered part of normality. If not, the window does not reflect common behaviour and is therefore considered an outlier or an anomaly.
+The result is stored in the database regardless of the outcome, from where the monitoring and alerting system can gather the measurements and raise an alert, if the amount of abnormal windows per time unit reaches a threshold.
 
 \subsection{The Support Vector Machine Analyser}
 \label{sec:concept:anal:svm}
 
-Another proximity-based algorithm which can be used for anomaly detection is the family of \glsfirst{svm}. Normally used for clustering data, the special kind of one-class \glspl{svm} is well suited for identifying anomalies, as described in Section~\ref{sec:background:network:novelty:svm}.
-In contrast to the \gls{lof}, it requires a clean set of data to be trained. Ideally this dataset also cover the full gamut of what is supposed to be considered \emph{normality}.
-Since \glspl{svm} use the training data to determine a decision plane, separating the \emph{normality} from \emph{outliers}, aspects of \emph{normality} which are only sparsely present in the training data might lead to a too narrow decision plane.
+Another proximity-based algorithm which can be used for anomaly detection is the family of \glsfirst{svm}. Normally used for clustering data, a special kind \glspl{svm}, the one-class \gls{svm}, is well suited for identifying anomalies, as described in Section~\ref{sec:background:network:novelty:svm}.
+In contrast to the \gls{lof}, it requires a clean dataset to be trained. Ideally this dataset also covers the full gamut of what is supposed to be considered \emph{normality}.
+The one-class \glspl{svm} determines a decision surface based on the training data, separating the \emph{normality} from \emph{outliers}.
+Therefore aspects of \emph{normality} which are only sparsely present in the training data might lead to a too narrow decision surface.
 In turn, each contamination of the training data leads a too wide decision plane.
-Unlike the \gls{lof} \glspl{svm} cannot reliably be trained with anomalies, e.g. malicious traffic, in the training data.
+Unlike the \gls{lof} \glspl{svm} cannot be trained reliably with anomalies, e.g. malicious traffic, in the training data.
 
 In line with the other Analyser modules, two types of one-class \glspl{svm} are trained: a world-view model and Agent specific models.
-The world-view model is much more likely to have a decision plane containing the majority of traffic that might occur in \gls{bas} networks.
+The world-view model is much more likely to have a decision surface containing the majority of traffic that might occur in \gls{bas} networks.
 This makes it very general and less sensitive.
-Contrasting this the Agent models are as specific as possible, resulting in a narrow decision plane and a much higher sensitivity.
+Contrasting this the Agent models are as specific as possible, resulting in a narrower decision surface and a much higher sensitivity.
 This separation allows an operator to distinguish, if an attacker uses artificially crafted packets to perform malicious activities in the network, but also if normal appearing packets are re-played or injected in a line where these packets are alien.
 
 During the training phase a regression algorithm is used to find one or multiple mathematical functions forming an decision surface, so all data points from the training set are contained.
-The seasonal sensitivity is hereby archived in same way as it is in the \gls{lof} Analyser module. The proximity-based nature allows to separate clusters just along one dimension, ideally. Therefore time can be encoded as relative time point within the chosen season period.
+The seasonal sensitivity is hereby archived in same way as it is in the \gls{lof} Analyser module. The proximity-based nature allows to separate clusters just along one dimension and the used regression algorithm should be capable of forming multiple clusters as well. Therefore time can be encoded as relative time point within the chosen season period.
 
 Once the training is completed, the derived functions can be used during normal operations to identify outliers.
-For this the closest distance of a new data point to the decision surface, modelled by the decision functions, is calculated.
+For this the closest distance of a new data point to the decision surface modelled by the decision functions is calculated.
 Is the distance positive, i.e. the point lays within the boundaries of \emph{normality}, it is considered an inlier.
 In turn, if the distance is negative, i.e. the point is outside of the boundary, it is an outlier.
 The distance and the outlier or not decision is calculated using the world-view model as well as the respective Agent specific model.
 Both results along with the calculated distance are stored in the database.
-
 
 \subsection{The Entropy Analyser}
 \label{sec:concept:anal:entropy}
@@ -457,15 +458,19 @@ It uses the information theorem by \textcite{Shannon1948} to calculate the infor
 The base-model is generated during a dedicated training phase and contains a \glsfirst{pmf} for every dimension of the feature vector. Only the time dimension is excluded, since it is continuous.
 Seasonal sensitivity is instead archived, as described in Section~\ref{sec:background:network:features:time}, by diving one period into multiple time chunks. Each of these chunks equates to one sub-model, which represents the activity during this time slot. To reduce hard breaks at the end of each chunk, another set chunks is used shifted by half the chunk length. Hence every point of time with in the season period is within two chunks. (see Figure~\ref{fig:concept:time-slots})
 
-Further, two types of base-line models will be trained: One general world-view and many Agent specific models.
+Further, two types of baseline models will be trained: One general world-view and many Agent specific models.
 The world-view model is used to identify general abnormal behaviour in the network and can be seen as a general-purpose, less sensitive model.
 The Agent specific models, on the other hand, are specialised on the traffic and behaviour unique for one Agent. Therefore, they are able to identify local anomalies, which might be completely normal when seen by another Agent.
-Opposed to the proximity based \gls{lof} approach, this could not be modelled as additional dimension in the feature vector.
+Opposed to the proximity-based approaches, this could have not be modelled as additional dimension in the feature vector.
 Even though the Agent is an categorical feature, it is assumed to be totally equal distributed, since all Agents report in the same interval.
 Consequently, this feature does not add any additional value to the model and certainly is not able to separate behaviour for different Agents.
 
 During normal operation the entropy is calculated for the feature vector of incoming windows compared to the respectively applying chunks of world-view and the specific Agent model.
 The resulting entropies are then stored into the database individually as well as sum. From there the monitoring and alerting system can pick these values up and raise an alert, if the summed entropy raises over a certain threshold.
+
+The Entropy Analyser was deliberately not designed after the algorithm described in Section~\ref{sec:background:network:novelty:entropy}.
+\textcite{Toshniwal2014} who proposed this concept initially, are using a fixed amount of clusters, which are used to try-fit new observations into them. If a new observation does not fit into any of these clusters it is considered an outlier. Whereby change in the calculated entropy is used to decide whether a observations fits or not.
+Further, \textcite{Toshniwal2014} only keep a sliding window of data in what would be the baseline model. This comes with the earlier described disadvantage of continuous training, that an attacker can alternate the modelled \emph{normality} by slowly injecting malicious packets.
 
 \section{Monitoring and Alerting}
 \label{sec:concept:mon}
@@ -487,14 +492,14 @@ The resulting entropies are then stored into the database individually as well a
 \end{comment}
 
 The by far most important component of the proposed concept is the monitoring and alerting module.
-Its task is to visualise metrics derived from the windows stored in the database directly, as well as to visualise the results from the analyser modules.
+Its task is to visualise metrics derived from the windows stored in the database directly, as well as to visualise the results from the Analyser modules.
 Most importantly, it also generates user alerts if values raise above a certain secure threshold, so a system administration can assess the situation and possibly initiate counter measures.
-Without a proper monitoring and alerting solution the insights gained by the different Analyser modules would be useless, as it would be difficult for a system administrator to troubleshoot incidents and maintain an overview just using log files.
-Consequently, visual representations of certain system characteristics allow and observe the network behaviour easily.
+Without a proper monitoring and alerting solution the insights gained by the different Analyser modules would be useless, as it would be difficult for a system administrator to troubleshoot incidents and maintain an overview just using log files for instance.
+Consequently, visual representations of certain system characteristics allow to observe the network behaviour easily.
 The most obvious visualisation is to plot these values as a time series graph, which allows to estimate the change of a measurement over time.
 Additionally, graphs visualising the amount of packets per source or destination address, or the amounts of packets per application could be visualised as bar graph.
 Based on these graphs and plots alerting rules and threshold can be defined.
-However, the exact visualisation setup and alerting rules should be always adapted to the specific use case and network, so it is merely feasible to provide an example here.
+However, the exact visualisation setup and alerting rules should be always adapted to the specific use case and network, so it is makes little sense to provide an distinct and fixed setup here.
 
 Since the problem of monitoring and alerting is a well solved one, it is very feasible to rely on existing standards and third-party solutions for this task and follow the principle of decoupling modules from each other.
 This reduces also the scope of this work, and as a result also the code base which need to be maintained for this project.
