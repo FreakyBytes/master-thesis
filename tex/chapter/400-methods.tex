@@ -34,54 +34,53 @@
 \end{comment}
 
 \glsreset{ids}
-The objective of this thesis is to investigate, whether anomaly based \glspl{ids} can provide additional security benefits for \glsfirst{bas} in the same they do for \gls{scada} networks. (cf. Section~\ref{sec:intro})
+The objective of this thesis is to investigate, whether anomaly based \glspl{ids} can provide additional security benefits for \gls{bas} in the same way they do for \gls{scada} networks. % (cf. Section~\ref{sec:intro})
 Given the assumption, that every malicious activity or attack within a network induces noticeable different characteristics and behaviour, these deviations might also be identifiable in aggregated flow-data of this network. \parencite[cf.][]{Mukherjee1994,Yang2006,Pan2014}
-For this I designed a message-passing architecture to test different established algorithms for anomaly detection using flow-data from \gls{bas} networks.
+To investigate this hypothesis, a message-passing architecture to test different established algorithms for anomaly detection using flow-data from \gls{bas} networks was designed.
 
-The test will be conducted as an experiment with data captured in a floor segment of the computer science building over the course of one month from 2017-01-21 to 2017-02-21. It is assumed, that this data set does not contain any malicious activities.
-This test data set is divided into three parts:
-The first two weeks of the data set will be used to train multiple models using different algorithms.
-Then the following third week is used as validation data set is to ensure that the models are not over-fitted and raise as few false-positives as possible.
-Finally, the last week of the data set is used as test data set and is modified with malicious activities, which might resemble a range of plausible attacks scenarios.
+The investigation will be conducted as an experiment with data captured in a floor segment of the computer science building over the course of one month from 2017-01-21 to 2017-02-21. It is assumed, that this dataset does not contain any malicious activities.
+This test dataset is divided into three parts:
+The first two weeks of the dataset will be used to train multiple models using different algorithms.
+Then the following third week is used as validation dataset is to ensure that the models are not over-fitted and raise as few false-positives as possible.
+Finally, the last week of the dataset is used as test dataset and is modified to include malicious activities, which might resemble a range of plausible attacks scenarios.
 This, in turn, is done to ensure that the models and algorithms are not under-fitted and are suitable to detect anomalies, which might be induced by malicious activities.
 However, the experiment will not focus on determining, if the system can distinguish between malicious abnormal activities and legit abnormal activities, which might be caused by a rapid change of user behaviour. In this thesis both are considered worth reporting.
 
-Mostly since rapidly changed user behaviour is difficult to simulate in our test case, the actual test and benchmarking will be done using a selection of plausible attacks.
-Since real observations of attacks are not reported in literature and penetration testing tools targeting \gls{knx} or \gls{bas} in general are only sparsely available, the malicious traffic has to be simulated and artificially injecting packets into the traffic dumps used. This process is described in more detail in Section~\ref{sec:methods:gen-test}
+Mostly since rapidly changed user behaviour is difficult to simulate in the here used test case, the actual test and benchmarking will be done using a selection of plausible attacks an intruder might induce.
+Since real observations of attacks are not reported in literature and penetration testing tools targeting \gls{knx} or \gls{bas} in general are only sparsely available, the malicious traffic has to be simulated. In order to simulate the attacks artificially packets are injected into the traffic datasets, which is described in more detail in Section~\ref{sec:methods:gen-test}
 
-Plausible attacks include \emph{\glsfirst{dos} attacks}, which can be induced by multiple actions: First of all shorting the line circuit would effectively causing a communication blackout on the entire line. Also flooding \code{A\_Restart} telegrams to all devices, would render them useless, since they would be stuck in a restart loop. As last scenario of \gls{dos} attacks, flooding the line with non-sense telegrams on high priority (cf. Section~\ref{sec:background:bas:knx:proto}) would cause at least heavily delayed, if not entirely blocked, normal communication on the line, since no time window would be left open for normal priority telegrams.
+Plausible attacks include \emph{\glsfirst{dos} attacks}, which can be induced by multiple actions: First of all shorting the line circuit would effectively causing a communication blackout on the entire line. Also flooding \code{A\_Restart} telegrams to all devices would render them useless, since they would be stuck in a restart loop. As last scenario of \gls{dos} attacks could be flooding the line with non-sense telegrams on high priority. (cf. Section~\ref{sec:background:bas:knx:proto})
+This would cause at least heavily delayed, if not entirely blocked, normal communication on the line since the high priority telegrams would overrule all telegrams of lower priority.
 
-Another plausible attack scenario would be replay attacks, where three flavours might be imaginable.
-In the first case an attacker would captures traffic for a determined time span and then replays it on the network, possibly to mimic normal behaviour while breaking into the building.
+Another plausible attack scenario would be \emph{replay attacks}, where three flavours might be imaginable.
+In the first case an attacker would captures traffic for a determined time span and then replays it on the network, possibly to mimic normal behaviour while physically breaking into the building.
 Secondly, an attacker could capture an specific event and replay it on will, which could contain the command to open an security door for instance.
 As a third option, the traffic could be monitored and for every action an reverse action could be invoked, effectively keeping the \gls{bas} in one state. The simplest example would be, to turn off the lights every time somebody tries to turn them on.
 
-The next category of attacks can be classified as manipulation or reconfigure attacks. This includes attacks which might modify telegrams while they are send, to either render them invalid and therefore preventing communication. Or it would be conceivable to reconfigure devices, i.e. to trigger different actions, report false measurements etc. A specialisation of this attack focusses on line couplers and breaking the network segmentation by disabling any routing functions.
+The next category of attacks can be classified as manipulation or \emph{reconfigure attacks}. This includes attacks which might modify telegrams while they are send, to either render them invalid and therefore preventing communication. Also it would be conceivable to reconfigure devices, i.e. to trigger different actions, report false measurements etc. A specialisation of this attack focusses on line couplers and breaking the network segmentation by disabling any routing functions.
 
-Finally, the last category describes reconnaissance attacks. These attacks conclude unauthorised detection and mapping of the network. Here only active sweeping approaches are considered, where an attacker probes each individual device in an address range.
+Finally, the last category describes \emph{reconnaissance attacks}. These attacks conclude unauthorised detection and mapping of the network. Here only active sweeping approaches are considered, where an attacker probes each individual device in an address range.
 Passive eavesdropping is not considered as it can not be detected on higher protocol level due to the bus character of the network. (cf. Section~\ref{sec:background:bas:knx:topo})
 
-\section{Generating a Test Data Set including malicious activities}
+\section{Generating a Test Dataset including malicious activities}
 \label{sec:methods:gen-test}
-
-\todo{fix times, that got mangled up due to fucking time zone issues!}
 
 As \gls{bas} automation systems are seldom considered within threat models only in rare cases, if at all, monitoring systems are installed.
 Consequently no empirical data of attacks against \gls{bas} exists, simply because they would not be recognised as such.
-All of this leads to missing knowledge of what kind of attacks an intruder would perform in such network.
+All of this leads to missing knowledge of what kind of attacks an intruder would perform in these networks.
 Additionally, there are only a few tools available for performing penetration tests -- all of them are more targeted towards troubleshooting or reverse engineering the network topology.
 
 However, to test the performance of the anomaly detection algorithms with regards to identifying malicious activities, data resembling those malicious activities or attacks is required.
 Therefore, packets which imitate these activities are artificially crafted and then injected into the traffic and later to be imported using a Simulated Agent. (cf. Section~\ref{sec:impl:agent})
-These activities follow the idea of the attack classes introduced above and are injected in the last week of the of the data set.
+These activities follow the idea of the attack classes introduced above and are injected in the last week of the of the dataset.
 
-First, unusual behaviour is injected at 2017-02-12 from 02:00 to 07:00, replacing this entire segment with traffic from 2017-02-06 09:00 to 14:00. In absence of data more foreign to the observed line the data was simply taken from the same line, but at a different weekday and day time. Effectively this data does not contain any new devices or severe unusual traffic, this modification rather aims to test the time sensitivity.
+First, unusual behaviour is injected at 2017-02-12 from 03:00 to 08:00, replacing this entire segment with traffic from 2017-02-06 10:00 to 15:00. In absence of data more foreign to the observed line the data was taken from the same line, but at a different weekday and day time. Effectively this data does not contain any new devices or severe unusual traffic, this modification rather aims to test the time sensitivity.
 
-Second, an \gls{dos} attack is performed starting at 2017-02-13 08:00 and targeting the entire line \code{3.4}. The attack is performed in 3 bursts of 15 minutes with five minutes break in between. In the \gls{dos} attack a flooding of \code{A\_Restart} telegrams with \code{SYSTEM} are send, which in reality would cause all targeted devices to restart continuously and block all other traffic, since the \code{SYSTEM} priority is the highest specified. During the attack the telegrams were injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
+Second, an \gls{dos} attack is performed starting at 2017-02-13 09:00 and targeting the entire line \code{3.4}. The attack is performed in three bursts of 15 minutes with five minutes break in between. In the \gls{dos} attack a flood of \code{A\_Restart} telegrams with \code{SYSTEM} priority is send, which in reality would cause all targeted devices to restart continuously. Additionally this blocks all other traffic, since the \code{SYSTEM} priority is the highest specified. During the attack the telegrams were injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
 
-As third attack scenario a device scan over the entire possible \gls{knx} address space was performed, starting 2017-02-13 20:00.
-For this the management \gls{apci}\break\code{A\_DEVICE\_DESCRIPTOR\_READ} is send to all addresses. Every \gls{knx} device is required to implement certain management routines, among them the query for the device descriptor. \code{A\_DEVICE\_DESCRIPTOR\_READ} is ideal since the requesting telegram does not require any parameters and the response only contains two bytes of additional payload making it really small, therefore increasing the throughput and effectively reducing the time required for the scan. \parencite[cf.][p.~46]{DIN_EN_50090-4-1}
-Equally to the \gls{dos} attack, the telegrams are injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
+As third attack scenario a device scan over the entire possible \gls{knx} address space was performed, starting from 2017-02-13 21:00.
+To determine if an device is present, the management \gls{apci}\break\code{A\_DEVICE\_DESCRIPTOR\_READ} is send to all addresses. Every \gls{knx} device is required to implement certain management routines, among them the query for the device descriptor. \code{A\_DEVICE\_DESCRIPTOR\_READ} is ideal since the requesting telegram does not require any parameters and the response only contains two bytes of additional payload. By choosing a request which is adds as little overhead as possible, the throughput is increased and effectively reducing the time required for the scan. \parencite[cf.][p.~46]{DIN_EN_50090-4-1}
+Equal to the \gls{dos} attack, the telegrams are injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
 
 Finally, two new rogue device are introduced with the addresses \code{3.6.26} and \code{3.5.18} during the entire day of 2017-02-14.
 Again in lack of data which is foreign to this line but still resembles the activities of an ordinary \gls{knx} device, the traffic for the first device was taken from the address \code{3.6.7} at 2017-02-07 and for the second device from \code{2.6.42} at 2017-02-08.
@@ -107,10 +106,9 @@ This ability is classified by following criteria:
 \end{enumerate}
 
 The first criteria describes, if the attack was detected at all by the respective anomaly detection algorithm.
-However, the second criteria is meant to distinguish how well or clear the algorithm might distinguish abnormal from normal behaviour. For this both the actual inlier or outlier result as well as the underlying metric are considered. Only exception is the Entropy Analyser, since no threshold is predefined.
+However, the second criteria is meant to determine how well or clear the algorithm might distinguish the \emph{abnormal} from \emph{normal} behaviour. For this both the actual inlier or outlier result as well as the underlying metric are considered. Only exception is the Entropy Analyser, since no threshold is predefined.
 Third, the response time is measured from beginning of the attack to when an significant change in the measurements are shown.
 Finally, the persistence of the detection is rated by determining the percentage of the time in which the activities are identified as abnormal by the algorithm.
-
 
 \begin{comment}
 Angriffe:
