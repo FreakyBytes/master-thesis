@@ -1,5 +1,5 @@
 % !TeX spellcheck = en_GB
-Using the concepts described in Chapter~\ref{sec:concept}, a prototype was implemented to validate, test and proof it which is described in Chapter~\ref{sec:impl}.
+Using the concepts described in Chapter~\ref{sec:concept}, a prototype was implemented to validate, test, and proof it, which is described in Chapter~\ref{sec:impl}.
 In this Chapter this implementation shall be used to conduct a performance experiment on the implementation itself and the used algorithms.
 For which first the experiment setup is described.
 
@@ -7,10 +7,10 @@ For which first the experiment setup is described.
 \label{sec:results:experiment}
 
 The in this thesis proposed concept for an online anomaly-based \gls{ids} tailored to \glspl{bas} was implemented as prototype, as described in Chapter~\ref{sec:impl}.
-Using this prototype a full analysis pipeline was setup, which included the Collector, all four Analyser modules, and the Simulated Agent, as well as \gls{rabbitmq} as message broker and \gls{influxdb} as persistent data storage.
+Using this prototype a full analysis pipeline was setup, which included the Collector, all four Analyser modules, and the Simulated Agent, as well as \gls{rabbitmq} as message-broker and \gls{influxdb} as persistent data storage.
 The Simulated Agent was used to inject prior recorded traffic into the system faster than real time.
 The data was originally recorded between 2017-01-21 and 2017-02-21 on the third floor of the computer science building of the University Rostock.
-Before injecting and analysing the data, it was then split into three parts. The first two weeks are dedicated to train the base-line models for the Analyser modules. The following week was used as validation, to ensure the algorithms are properly fitted to the data. Finally, the last week was modified to contain four scenarios which alter the behaviour of the line, as described in Section~\ref{sec:methods:gen-test}.
+Before injecting and analysing the data, it was then split into three parts. The first two weeks are dedicated to train the baseline models for the Analyser modules. The following week was used as validation, to ensure the algorithms are properly fitted to the data. Finally, the last week was modified to contain four scenarios which alter the behaviour of the line, as described in Section~\ref{sec:methods:gen-test}.
 \newpage
 These modifications are meant to resemble plausible attacks on \gls{bas} networks and therefore include:
 
@@ -22,12 +22,10 @@ These modifications are meant to resemble plausible attacks on \gls{bas} network
 \end{enumerate}
 
 First, only the training data was imported via the Simulated Agent and pushed to the \gls{influxdb} by the Collector. This data was then used to train the different algorithms.
-Then the remaining two parts of dataset were imported via the Simulated Agent and processed into statistical windows, these were then processed by the Collector, and relayed to the analytical modules. Finally, the Analyser compare the incoming windows to the base-line model and store the result in the \gls{influxdb}. From there the monitoring and alerting software \gls{grafana} can query the results and plot them into dynamic graphs, as well as send alerts based on predefined thresholds or rules.
+Then the remaining two parts of dataset were imported via the Simulated Agent and processed into statistical windows, these were then processed by the Collector, and relayed to the analytical modules. Finally, the Analyser compare the incoming windows to the baseline model and store the result in the \gls{influxdb}. From there the monitoring and alerting software \gls{grafana} can query the results and plot them into dynamic graphs, as well as send alerts based on predefined thresholds or rules.
 
-During the import of the test dataset an increasing delay of queries to the \gls{influxdb} were observed.
-\todo{...}
-
-\todo{clustering helpful for slow estimation results in lof}
+During the import of the test dataset an increasing delay of processing for queries to the \gls{influxdb} was observed. A cause could not be determined, as the queries itself and the length of the queried data did not change over the course of the experiment.
+Further, the \gls{lof} Analyser module required more processing time as its counterparts, which was easily mitigated by scaling the \gls{lof} Analyser.
 
 In this experiment the feature to simulate multiple Agents, using filter rules, was not used due to the fact that the dataset was merely recorded on one single line. Therefore, a further separation seemed unfeasible, as it would complicate the evaluation of the detection results without providing more insights.
 
@@ -48,8 +46,8 @@ Finally, in this section the detection results of the proposed algorithms are ex
 \end{enumerate}
 
 These criteria will be evaluated by interpreting six different plots exported from the monitoring and alerting solution \gls{grafana}.
-The first plot (a) shows the amount of telegrams per window over time as green staircase. Additionally the amount of telegrams using an unknown address (either as source or destination) are plotted in yellow.
-The second graph (b) builds onto this and indicates how many unique addresses per window were found over time, separated by source addresses (green) and destination addresses (yellow).
+The first plot (a) shows the amount of telegrams per window over time as green staircase plot. Additionally the amount of telegrams using an unknown address (either as source or destination) are plotted in yellow.
+The second graph (b) builds onto this and indicates how many unique unknown addresses per window were found over time, separated by source addresses (green) and destination addresses (yellow).
 Third (c) the number of windows considered outliers over time is shown, detected by the \gls{svm} (red) and using the \gls{lof} (blue). Whereby not single telegrams are evaluated but entire windows.
 The fourth plot (d) displays the calculated entropy per window over time.
 Finally, the fifth (e) and sixth (f) graph show the spread (difference between minimum and maximum) and average of the underlying metric for the \gls{lof} and the \gls{svm}.
@@ -66,14 +64,14 @@ For this a time span of five hours was replaced with traffic from the same line,
 This effectively aims to test the seasonal- or time-sensitivity of the models.
 
 Figure~\ref{fig:results:unusual} shows several metrics from the four different anomaly detection methods.
-In \ref{fig:results:unusual:tc} a sudden increase in the observed amounts of telegrams per window is to observe, whereby telegrams with using unknown addresses were observed. This is to be expected since the five hours which replaced the original traffic were taken from the same line but from a more busy point of the week, hence the increase of transmitted telegrams.
+In \ref{fig:results:unusual:tc} a sudden increase in the observed amounts of telegrams per window is to observe, whereby no telegrams using unknown addresses were observed. This is to be expected since the five hours which replaced the original traffic were taken from the same line but from a more busy point of the week, hence the increase of transmitted telegrams.
 The absence of unknown addresses, either as source or as destination, is also clearly indicated by Figure~\ref{fig:results:unusual:addr}.
 
 Surprisingly, there is also no significant increase in the number of detected outliers neither by the \gls{svm}, nor using the \gls{lof}, as shown in Figure~\ref{fig:results:unusual:outlier}.
 Even though the \gls{lof} shows an average of $0.77$ outliers, it can hardly be considered an significant increase when compared to the surrounding unmodified data and to the validation dataset in Appendix~\ref{app:metrics:validation}.
 However, the spread of the \gls{lof} depicted in Figure~\ref{fig:results:unusual:lof} shows a small change downwards, which indicates less normal behaviour -- it is arguably not significant enough.
 
-In contrast, Figure~\ref{fig:results:unusual:svm} even shows that the distance to the decision function of the \gls{svm} even increases positively, which means the analysed points are considered to represent the normality stronger. This is also reflected in the detection of no outliers with the exception of two small peaks.
+In contrast, Figure~\ref{fig:results:unusual:svm} even shows that the distance to the decision function of the \gls{svm} increases positively, which means the analysed points are considered to represent the normality stronger. This is also reflected in the detection of no outliers with the exception of two small peaks.
 
 The Entropy Analyser mostly calculates a entropy of infinity, which is here encoded as $100000$. This results is not limited to the period of the modification and therefore renders its results relatively meaningless.
 
@@ -146,9 +144,9 @@ The Entropy Analyser mostly calculates a entropy of infinity, which is here enco
 \subsection{Detection of a DoS Attack}
 \label{sec:results:results:dos}
 
-The second modification applied to the test dataset, included a \gls{dos} attack, which flooded the entire line \code{3.4} with \code{A\_Restart} telegrams. As to expect the amount of telegrams with unknown addresses and count of unknown addresses jump right up, as shown in Figure~\ref{fig:results:dos:tc} and~\ref{fig:results:dos:addr}. This clearly indicates an anomaly, since the threshold for unknown addresses within the network should be set to zero.
+The second modification applied to the test dataset, included a \gls{dos} attack, which flooded the entire line \code{3.4} with \code{A\_Restart} telegrams. As to expect the amount of telegrams with unknown addresses and count of unknown addresses increase rapidly, as shown in Figure~\ref{fig:results:dos:tc} and~\ref{fig:results:dos:addr}. This clearly indicates an anomaly, since the threshold for unknown addresses within the network should be set to zero.
 
-Figure~\ref{fig:results:dos:outlier} illustrates, that the \gls{lof} and \gls{svm} outlier detection reacted equally prompt, by both classifying the entire period of the attack as outlier.
+Figure~\ref{fig:results:dos:outlier} illustrates, that the \gls{lof} and \gls{svm} outlier detection reacted equally prompt, by both classifying all windows during the entire period of the attack as outlier.
 This is also reflected by the underlying metrics. The maximum of the \gls{lof} in Figure~\ref{fig:results:dos:lof} stays low during the entire attack. Similarly, the distance to the decision surface of the \gls{svm} resides in the high negatives implying a huge divergence from the normality.
 Especially noteworthy is that the spread between minimum and maximum of the Local Outlier Factor as well as the distance to the decision surface falls close to zero during the attack, which indicates a high certainty of the classification.
 The premature identification of the anomalies visible in Figure~\ref{fig:results:dos:outliers} could be caused by misalignment and small inaccuracies in the time windowing processes performed by the Collector.
@@ -224,13 +222,13 @@ The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at
 \subsection{Detection of a Network Scan}
 \label{sec:results:results:scan}
 
-The third modification to be applied to the test dataset was a network scan where the entire \gls{knx} address space was scanned using a management routine every \gls{knx} device must implement. Every present device will respond with an appropriator answer.
+The third modification to be applied to the test dataset is a network scan where the entire \gls{knx} address space was scanned using a management routine every \gls{knx} device must implement. Every present device would respond with an appropriator answer.
 
-Similar to the \gls{dos} attack produces a scan of the entire network significant more traffic than normal operation, which is indicated by Figure~\ref{fig:results:scan:tc}. Further a lot of traffic targeting prior unknown addresses is inevitable, causing the Address Analyser to detect such behaviour. (see Figure~\ref{fig:results:scan:addr})
+Similar to the \gls{dos} attack a scan of the entire network produces significantly more traffic than normal operation, which is indicated by Figure~\ref{fig:results:scan:tc}. Further, a lot of traffic targeting prior unknown addresses is inevitable, causing the Address Analyser to detect such behaviour. (see Figure~\ref{fig:results:scan:addr})
 
-In contrast to the clear identification by the Address Analyser stands the \gls{lof} Analyser, which identifies the attack but as outlier in Figure~\ref{fig:results:scan:outlier}, but the separation from the background noise is not significant. Similar is to observe in the underlying \gls{lof} metric depicted in Figure~\ref{fig:results:scan:lof}. However, it is curious that even though the average of the \gls{lof} is stable compared with the surrounding background noise, the spread decreases drastically.
+In contrast to the clear identification by the Address Analyser stands the \gls{lof} Analyser, which identifies the attack as outlier in Figure~\ref{fig:results:scan:outlier}, but the separation from the background noise is not significant. Similar behaviour is to be observed in the underlying \gls{lof} metric depicted in Figure~\ref{fig:results:scan:lof}. However, it is curious that even though the average of the \gls{lof} is stable compared with the surrounding background noise, the spread decreases drastically.
 
-On the other hand, the \gls{svm} identifies the threat flawless. The low background noise and the clear detection as outlier in Figure~\ref{fig:results:scan:outlier} allows for a certain identification. This is supported by a sharp drop into the negative of the distance to the decision surface as shown in Figure~\ref{fig:results:scan:svm}, distinctly indicating an outlier.
+On the other hand, the \gls{svm} identifies the threat flawless. The low background noise and the clear detection as outlier in Figure~\ref{fig:results:scan:outlier} allows for a positive identification. This is supported by a sharp drop into the negative of the distance to the decision surface as shown in Figure~\ref{fig:results:scan:svm}, distinctly indicating outlier.
 
 The calculated entropy compared to the training data is continuously infinite, making it unfit to draw any conclusions from.
 
@@ -304,7 +302,7 @@ The calculated entropy compared to the training data is continuously infinite, m
 \subsection{Detection of New Devices}
 \label{sec:results:results:newdevice}
 
-The fourth and final modification applied to the test dataset contained two new devices. The required data was taken from the same line, but from a different day, only the date and the source address were altered. This traffic was injected over the whole target day, keeping the frequency of the original traffic.
+The fourth and final modification applied to the test dataset contained two new devices. The required data was taken from the same line, but from a different day, only the date and the source address were altered. This traffic was injected during the whole target day, keeping the frequency of the original traffic.
 
 As traffic resembling an actual \gls{knx} device was injected using prior not used addresses, the graph in Figure~\ref{fig:results:newdevice:tc} shows only small amounts traffic with unknown addresses, when compared to \gls{dos} attacks or network scans.
 However, Figure~\ref{fig:results:newdevice:addr} illustrates clearly activity with of unknown devices.
@@ -425,13 +423,13 @@ The persistence and response time can not be taken into account for this modific
 \end{comment}
 
 Altogether, three out of four attack scenarios could be detected using a variety of algorithms, as summarised in Table~\ref{tab:results:conclusion}. Two of those would have been detected using the unsupervised machine learning algorithms \gls{lof} and \gls{svm}.
-It is to note that both rely on the feature vector and operated on normalised data, which correspondingly does not account for absolute rates.
+It is to note that both rely on the feature vector and operated on normalised data, which correspondingly does not account for absolute values.
 Under those circumstances only the change in composition or structure of the traffic can be recognised by these algorithms. As effect they can handle changing window lengths without requiring re-training.
 Also, as stated earlier absolute changes in e.g. transmission rate can be monitored easily in exiting monitoring and alerting solutions.
 
 Another module relying on the feature vector and normalised data is the Entropy Analyser.
 In contrast to the \gls{lof} and \gls{svm} it was not able any of the four modifications. Moreover, it calculated an infinite entropy for almost the entire dataset, which would represent an infinite information gain. (cf. Figure~\ref{fig:results:validation:entropy})
-This behaviour might be caused by a high sensitivity, but renders the results of this Analyser modules useless.
+This behaviour might be caused by a extremely high sensitivity, but renders the results of this Analyser modules useless.
 
 \begin{table}[h]
 	\aboverulesep=0ex
@@ -456,11 +454,9 @@ On the other end of the spectrum resides the \gls{svm} Analyser. It detected bot
 The trained model consumes with $504 KiB$ comparably less disk space and shows fast classification results. Although, the training process proved to be computational more intensive.
 
 Proceeding, the \gls{lof} Analyser required further adjustments as it only detected on attack reliably.
-It shows high amount of background noise and false-positives. (cf. Figure~\ref{fig:results:validation:outlier}) The detection \gls{dos} was clearly identifiable and also for the network scan a change in pattern of the \gls{lof} output could be observed, but was not explicitly distinguishable from the background noise.
+It shows high amount of background noise and false-positives. (cf. Figure~\ref{fig:results:validation:outlier}) The detection of the \gls{dos} attack was clearly identifiable and also for the network scan a change in pattern of the \gls{lof} output could be observed, but was not explicitly distinguishable from the background noise.
 Further, during the experiment it was observed that the classification with \gls{lof} takes the longest among all algorithms, which was counteracted by scaling this Analyser Module.
 Moreover, the trained model requires the most disk space with $151 MiB$, even though the training process is not computational intensive.
 
-Lastly, the Address Analyser does not rely on the feature vector, it rather compares the observed addresses to a pre-trained list of known addresses. This is a good supplement and an easy way to discover new unknown devices and also to recognise attacks like network scans, which relies on probing all address within a specific range.
+Lastly, the Address Analyser does not rely on the feature vector, it rather compares the observed addresses to a pre-trained list of known addresses. This is a good supplement and an easy way to discover new unknown devices and also to recognise attacks like network scans, which relies on probing all addresses within a specific range.
 By relying on this simple working principle it only requires a small model with $1.4 KiB$ and is not computational intensive, neither during training nor operation.
-
-

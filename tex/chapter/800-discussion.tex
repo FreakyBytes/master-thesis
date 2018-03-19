@@ -30,61 +30,60 @@
 \end{itemize}
 \end{comment}
 
-In conclusion, this thesis proposed an showcase a modular and extensible software architecture, which allows for for efficient and scalable online monitoring of \gls{bas}.
+In conclusion, this thesis proposed and showcase a modular and extensible software architecture, which allows for efficient and scalable online monitoring of \glspl{bas}.
 Its modularity allows it to be used as foundation for further investigation and implementation of different algorithms, not just limited to anomaly detection.
 Along with the system and architecture a selection of machine learning algorithms were described, evaluated for the use in anomaly-based \glspl{ids}, and finally tested within a prototype of the proposed system.
 The prototype was implemented showcasing the capabilities of the algorithms as well as the architecture at the example of a real world \gls{knx} data.
-Even though not every here tested model was able to detect all modifications or attacks, it was shown that anomaly detection methods also work for \gls{bas}. This is an area where traffic is hugely impacted by human behaviour and object to fluctuations and changes, opposed to strict rules as it is the case in \gls{scada} networks.
+Even though not every here tested model was able to detect all modifications or attacks, it was shown that anomaly detection methods also work for \glspl{bas}. This is an area where traffic is hugely impacted by human behaviour and object to fluctuations and changes, opposed to strict rules as it is the case in \gls{scada} networks.
 
 The sensitivity to different kinds of attacks is illustrated in Section~\ref{sec:results:results}.
-In this overview it is to note, that the Entropy Analyser did not detect any of the scenarios. Further when looking into the corresponding graphs of this module in Section~\ref{sec:results:results} and Appendix~\ref{app:metrics}, it becomes evident that the calculated entropy is nearly always infinite. (Encoded as \(100 000\)) 
+In this overview it is to note, that the Entropy Analyser did not detect any of the scenarios. Further, when looking into the corresponding graphs of this module in Section~\ref{sec:results:results} and Appendix~\ref{app:metrics}, it becomes evident that the calculated entropy is nearly always infinite. (Encoded as \(100 000\)) 
 This leads to the assumption that either the method is too sensitive to changes in the statistical distribution, or the implementation is erroneous. Given the result data from the experiment both possibilities need to be considered, since spikes of assumedly correct calculated entropy exist.
 
 Corresponding to the Table~\ref{tab:results:conclusion} in Section~\ref{sec:results:results}, it is to note that modifications that do not alter the network traffic dramatically were less likely to be detected. This includes the \emph{unusual traffic} and \emph{new device} attack, which are rather shifting and copying records.
-Reason for this could be, that the network traffic in the dataset does not vary to much over time, but rather stays constant.
+Reason for this could be, that the network traffic only varies in nuances over time.
 This means, that the traffic used as source for the destination does not differ too much from the targeted time frame of the modification.
 Another explanation could be a weak seasonal sensitivity.
 
 Unfortunately, the seasonal-sensitivity was not testable in full extend due to limited test data.
-The part of the building the test data was acquired from, is rarely subject to changes in usage during as it is the highest floor in the building and less likely to be frequented by students.
+The part of the building the test data was acquired from, is rarely subject to changes in usage during as it is the highest floor in the building and less likely to be frequented by students, when compared to e.g. the entry hall.
 Further, the examined test period does not include changes in semester schedules or calendar-based seasons.
 Therefore a qualified answer for the requirement of strong seasonal sensitivity cannot be given at this point and would require extensive testing on a larger dataset.
-However, the introduction of a time-dependent dimension in the feature vector, will allow the base-line model to be fit tighter to what the \emph{normality} might be. Consequently, considering such a dimension in the models might be advised, in case such sensitivity might be required.
+However, the introduction of a time-dependent dimension in the feature vector, will allow the base-line model to be fit tighter to what the \emph{normality} might be. Consequently, considering such a dimension in the models might be advised, in case the seasonal sensitivity might be required.
 
 Additional factor possibly influencing the detection results include the parameters used for training the different models and the construction of the feature vector.
 Especially the \gls{lof} seems to be rather sensitive to the number of neighbours an observation is compared to. This parameter need to be adjusted in accordance to the amount of training data and the contamination of it. Further, with an increased number of neighbours and an larger training set the precision may rise, but the time complexity is impacted directly by \(O(n)\) in the worst case.
 For \glspl{svm} the predominantly important factor seems to be the type of function used to form the decision surface and how tight it is fit to the training data. Opposed to \gls{lof}, the performance is not influence by the size of the training data during operation, therefore a larger dataset can be used without considering performance issues.
 
 However, the most influential factor for all algorithms is the feature vector.
-Its construction and the projection of features to dimensions heavily impacts the way observations can be compared.
-In this work the focus was to emphasise critical \gls{knx} features. For this dimensionality was reduced using common methods. (see Section~\ref{sec:impl:vectoriser}) In hindsight these methods should have also been applied to the \gls{apci} feature of \gls{knx}, as it is the most dominant one with regards to occupied dimensions. Not only does this unnecessarily increase the required compute time, but can shift weights towards this single feature and therefore reduce the sensitivity to changes in other features.	
+Its construction and the projection of features to the dimensions heavily impacts the way observations can be compared.
+In this work the focus was to emphasise critical \gls{knx} features. For this dimensionality was reduced using common methods. (see Section~\ref{sec:impl:vectoriser}) In hindsight these methods should have also been applied to the \gls{apci} feature of \gls{knx}, as it is the most dominant one with regards to occupied dimensions. Not only does this unnecessarily increase the required compute time, but can shift weights towards this single feature and therefore reduce the sensitivity to changes in other features.
 
-
-Given the detection rate, the applied data reduction down to windows containing only statistical distribution seem to be sufficient for the detection changes in the composition of the network traffic. A higher resolution could, however, provide more insights.
+Given the detection rate, the applied data reduction down to windows containing only statistical distribution seemed to be still sufficient for the detection changes in the composition of the network traffic. A higher resolution could, however, provide more insights.
 By normalising all dimensions of the feature vector to their respective maximum within the currently observed window, the models could be trained independent from the length of the window. On the one hand, this allows the window length to be adjusted dynamically.
 On the other hand, the absolute values are lost and do not allow to detect changes of a general increase or decrease of traffic. 
 To a certain extend this lack might prevent the system from detecting failure of large portions of a line in a way were the composition of the traffic is not noticeably influence.
 Although this can introduce a blind spot within the observation capabilities, the change of the absolute of traffic should be monitored using existing monitoring and alerting solutions, as already mentioned.
 
-Altogether, it is to consider if the limitation to in-band monitoring messages is feasible. As it is not uncommon in \gls{knx} installations to use \gls{ip} gateways to bridge line-segments, a full-take of the traffic would be available via high-speed backbones. Thus, allowing the Collector easily to tap into this stream and use it directly for further analysis.
+Altogether, it is to consider if the limitation to in-band monitoring messages is feasible. As it is not uncommon in \gls{knx} installations to use \gls{ip} gateways to bridge line-segments, a full-take of the traffic would be available via high-speed backbones. Thus, allowing the Collector to easily tap into this stream and use it directly for further analysis.
 
-Since the tests in this thesis were not conducted within a real \gls{knx} installation, a comprehensive estimation on how regular traffic is influenced cannot be given.
+Since the tests in this thesis were not conducted within a real \gls{knx} installation, a comprehensive estimation on the impact it would have had on the normal operations cannot be given. % how regular traffic is influenced cannot be given.
 % \item Then again, the general observed bandwidth utilisation in the available datasets was perceived to be relatively low.
-Nonetheless, the this thesis complementary work by \textcite{Jung2018} developed and tested an Agent capable of observing live traffic and aggregating the gathered data to statistical windows or flows.
+Nonetheless, the to this thesis complementary work by \textcite{Jung2018} focuses on the development and test of an Agent capable of observing live traffic and aggregating the gathered data to statistical windows or flows.
 He shows that the additional load produced by exporting flow records can be kept relatively low around 20\%, when window length and export timeout are chosen according to the network utilisation.
 For this it needs to be considered, if a constant relative low bus utilisation is desirable, or if the flow exports should be buffered and then burst-transmitted to the Collector. Later one adds the risk of small delays in the network during transmission of the flows.
 
 Another important aspect to consider is the additional security risk introduced by exporting statistical windows or flows in-band to a Collector.
 As shown by \textcite{Mundt2012}, \gls{bas} like \gls{knx} networks can be exploited to harness sensitive user and behavioural data.
-At the time of this thesis, it is not common to deploy encryption in \gls{knx} networks.
+At the time of writing, it is not common to deploy encryption in \gls{knx} networks.
 As a result any device on the bus can listen all traffic transmitted on this line.
 Consequently, attacker are not able to gain additional insights from listening to flow or window exports, if they are eaves dropping a single network segment like a line.
 The only additional potentially introduced security vulnerability lies by the Collector and the backbone lines. In the case attacker would gain access to these recordings or lines, they would gain insights of the general activity and the installed device of the building.
 Under those circumstances, the computer system running the Collector and analytical modules, as well as the backbone lines require particular well designed security mechanisms.
-Even though the risks for security and privacy are recognised in this thesis, there were not subject to this thesis and need to be investigated in future work.
-Before deploying the here proposed concept to a production system, it would be highly recommended to implement proper encryption and signatures for the communication between the Agents and the Collector, before implementing the concept in production systems.
+Even though the risks for security and privacy are recognised in this thesis, there were not subject to it and need to be discussed in future work.
+Before deploying the here proposed concept to a production system, it would be highly recommended to implement proper encryption and signatures for the communication between the Agents and the Collector. %, before implementing the concept in production systems.
 %Even though the risks for security and privacy are recognised in this work, it ..
 
-In this thesis a concept for a software architecture based on anomaly detection algorithms is proposed to monitor \glspl{bas} using distributed Agents, communication in-band. This concept was implemented into a prototype, which was then tested using real world data of a \gls{knx} network.
+Concludingly, in this thesis a concept for a software architecture based on anomaly detection algorithms is proposed to monitor \glspl{bas} using distributed Agents and in-band communication. This concept was implemented into a prototype, which was then tested using real world data of a \gls{knx} network.
 In this test the different anomaly detection algorithms were evaluated with regard to their suitability for \glspl{bas}.
 In conclusion, the system has proven to be able to detect significant changes within the traffic of network, which indicate malicious behaviour.
