@@ -13,13 +13,13 @@
 
 To validate, test, and proof the concept as described in Chapter~\ref{sec:concept}, it was implemented as prototype using \gls{py}3 and the \gls{sklearn} library for data analysis.
 The working name for the prototype is \emph{BAS Observe}, or short \emph{BOb}.
-As the concept evolves around a message-passing architecture, the prototype follow this approach as well by using \gls{amqp} with \gls{rabbitmq} as message-broker. As central data storage the time-series database \gls{influxdb} is used, since it provides good querying capabilities and excellent integration with existing third-party solutions like \gls{grafana}, which will be used as monitoring and alerting solution.
+As the concept evolves around a message-passing architecture, the prototype follow this approach as well by relying on \gls{amqp} for exchanging messages with \gls{rabbitmq} as message-broker. As central data storage the time-series database \gls{influxdb} is used, since it provides good querying capabilities and excellent integration with existing third-party solutions like \gls{grafana}, which will be used as monitoring and alerting solution.
 
 This enables to run the various modules as separate processes on possibly different machines, as every message exchange is done via the message-broker and historical data can be queried directly form the database.
 As a side effect the possible restrictions introduced by \gls{py}'s \glsfirst{gil} are circumvented.
-Even though each module is capsuled in an own process, all of them can be started using an unified \gls{cli}, which abstracts things like configuration and logging, as well as connection management for the \gls{amqp} message-broker and the database.
-For interacting with the \gls{rabbitmq} message-broker \gls{lib-pika} 0.11 is used. To query from and push values to the \gls{influxdb} time series database the official \gls{py} client side library is used.
-The implementation details of each module are described in-depth in the following sections.
+Even though each module is capsuled in its own process, all of them can be started using an unified \gls{cli}, which abstracts things like configuration and logging, as well as connection management for the \gls{amqp} message-broker and the database.
+For interacting with the \gls{rabbitmq} message-broker \gls{lib-pika} 0.11 is used. To query from and push values to the \gls{influxdb} time series database the official \gls{lib-influx} is used.
+The implementation details of each module are described in the following sections.
 
 \section{The Command Line Interface}
 \label{sec:impl:cli}
@@ -35,24 +35,24 @@ The implementation details of each module are described in-depth in the followin
 \end{itemize}
 \end{comment}
 
-The \glsfirst{cli} provides a central and consistent entry point for all operations and is implemented using \gls{lib-click}, which provides an fast way to define command line options and parameters with code annotations.
+The \glsfirst{cli} provides a central and consistent entry point for all operations and is implemented using \gls{lib-click}, which provides an fast way to define command line options and parameters using code annotations.
 The \gls{cli} can be installed via \gls{py} setup tools and exports one command into the operating system's search path, called \code{bob}.
-This exported main command does not provide any functionality itself, apart from taking basic configuration parameter like the database and message-broker host, log level, and a project identifier -- all of which are preset to sane defaults.
+This main command does not provide any functionality itself, apart from taking basic configuration parameter like the database and message-broker host, log level, and a project identifier -- all of which are preset to sane defaults.
 Rather the command exposes a series of subcommands.
 
-The first being \code{bob collector}, which invokes the collector module and only requires a list of available agents additionally to the basic configuration and is further described in Section~\ref{sec:impl:collector}.
-Besides the Collector an agent simulator can be invoked by \code{bob simulate}, which can simulate multiple Agents from the content of a \gls{knx} log file, as described in Section~\ref{sec:impl:agent}.
-By only on replaying existing observations an controllable and repeatable test environment can be archived. An Agent implementation able to process live traffic was not considered necessary for the point of demonstrating and testing the proposed concept.
+The first one being \code{bob collector}, which invokes the collector module and only requires a list of available agents additionally to the basic configuration and is further described in Section~\ref{sec:impl:collector}.
+Besides the Collector an agent simulator can be invoked by \code{bob simulate}, which simulates multiple Agents from the content of a \gls{knx} log file, as described in Section~\ref{sec:impl:agent}.
+By replaying existing observations an controllable and repeatable test environment can be archived. An Agent implementation which is able to process live traffic was not considered necessary for the point of demonstrating and testing the proposed concept.
 
 The Analyser modules, however, can be invoked by either two generic subcommands, \code{bob train} which starts a module in training mode or \code{bob analyse} which runs the module in the operational, analytical mode.
 All training commands take tree additional parameters: a start and end time of the period to be used as training data and the path to a model file, where the training results can be stored. The module which is supposed to be trained can be selected by adding it as another subcommand, so would \code{bob train lof} start the training mode of the \gls{lof} Analyser.
 Same applies for the operation mode, where, however, the start and end date can be omitted and only the path to a model file needs to be passed. So can the Address Analyser be called by \code{bob analyse addr}.
 
-Additionally to starting modules, the \gls{cli} implementation also takes care of configuration management and logging.
-Despite being not critical for demonstrating the performance of the implemented concept, a consistent, easy, and documented mechanism for running modules eases development and hopefully will increase the reuse-ability of the source code.
-A feature that deliberately was left out were configuration files. For the purpose of showcasing the concept it did not seem necessary and comes with the risk of hiding configuration parameter out of sight, which possibly increases the risk of mistakes made just because a changed parameter was forgotten. By plainly relying on command line parameters for configuration, the configuration is always in plain sight, when invoking a command.
+Additionally to invoking modules, the \gls{cli} implementation also takes care of configuration management and logging.
+An essential part of the configuration management is to handle the project id, which can be understood as common prefix for internal names of message queues and is used as additional tag in all \gls{influxdb} measurements. Therefore the notion of the project id allows multiple test scenarios to use the same infrastructure in terms of database and message-broker.
 
-\todo{explain 'project' notion}
+Despite being not being critical for demonstrating the performance of the implemented concept a consistent, easy, and documented mechanism for running modules eases development and hopefully will increase the reuse-ability of the source code.
+A feature that deliberately was left out were configuration files. For the purpose of showcasing the concept it did not seem necessary and comes with the risk of hiding configuration parameter out of sight, which possibly increases the risk of mistakes made just because a changed parameter was forgotten. By plainly relying on command line parameters for configuration, the configuration is always in plain sight, when invoking a command.
 
 \section{The Collector Module}
 \label{sec:impl:collector}
@@ -86,9 +86,9 @@ If no timeslot within $2$ seconds around the window exists, a new one will be cr
 
 Once all queried windows are sorted into the hash-map, the Collector checks if a time slot contains windows from all Agents, by validating against a configurable list of Agent-ids.
 When the time slot is complete, the windows are enriched by querying all remaining measurements from the database and then relayed to the Analyser modules via an \gls{amqp} message exchange, which distributes it into multiple message queues.
-Only if the windows were successfully passed into to the message-broker, they are marked as relayed in the database. This ensures, that every window is processed. However, this way can not prevent time slots to send repeatedly to the Analyser modules, if the Collector crashes right before marking them as relayed in the database. In contrast to receiving windows form Agents and initially writing them to the database, this does no harm, since the analytical algorithms are deterministic and therefore produce the same results for the same data input. Therefore only computational resources would be wasted, as \gls{influxdb} automatically filters redundant time series entries.
+Only if the windows were successfully passed into to the message-broker, they are marked as relayed in the database. This ensures, that every window is processed. However, this way can not prevent time slots to send repeatedly to the Analyser modules, if the Collector crashes right before marking them as relayed in the database. In contrast to receiving windows form Agents and initially writing them to the database, this does no harm, since the analytical algorithms are deterministic and therefore produce the same results for the same data input. Therefore only computational resources would be wasted, as \gls{influxdb} automatically updates entries with the same timestamp and same tags.
 
-In the case one Agent's window is never received by the Collector, it waits a configurable timeout of about 60 seconds before relaying a window anyway. This ensures that a time slot is analyses even when an Agent fails, regardless of the failure mode. As this is an anomaly, which can be easily queried in the monitoring and alerting system, it is also detected there and consequently not handled in the Collector apart from a warning in the log.
+In the case one Agent's window is never received by the Collector, it waits a configurable timeout of about $60$ seconds before relaying this window anyway. This ensures that a time slot is analyses even when an Agent fails, regardless of the failure mode. As this is an anomaly, which can be easily queried in the monitoring and alerting system, it is also detected there and consequently not handled in the Collector apart from a warning in the log.
 
 \section{The Agent Simulator}
 \label{sec:impl:agent}
@@ -113,20 +113,20 @@ In the case one Agent's window is never received by the Collector, it waits a co
 \end{comment}
 
 The original idea and concept describes multiple Agents, possibly in custom hardware, listening to lines, aggregating traffic, and sending statistical windows to the collector.
-In the sense of developing, testing, and benchmarking the concept and prototype implementation this does not seem appealing. Primarily, because by using actual \gls{knx} hardware in a test network would unnecessarily increase complexity and introduce more error sources, since an actual operational Agent has to be developed.
-Further, the test environment can only kept stable with enormous effort, due to the fact, that sensors like buttons or motion detectors would need to be triggered manually in an consistent way. This alone makes it impossible to design repeatable tests and benchmarks.
+In the sense of developing, testing, and benchmarking the concept and prototype implementation this does not seem appealing. Primarily, because using actual \gls{knx} hardware in a test network would unnecessarily increase complexity and introduce more error sources, since an actual operational Agent has to be developed.
+Further, the test environment can only kept stable with enormous effort, due to the fact, that sensors like buttons or motion detectors would need to be triggered manually and in a consistent way. This alone makes it impossible to design repeatable tests and benchmarks.
 Also there is no guarantee, that a test network will resemble an actual \gls{knx} network.
 
 All this led to the decision to not implement a real operation Agent, but rather an Agent Simulator, which can emulate the behaviour of multiple Agents.
-For this it reads a tab separated \gls{knx} dump containing a timestamp and raw \gls{knx} telegrams, encoded in the \gls{baos} format.
-These dump files were easy to produce out of a database, containing a significant large recording of the \gls{knx} traffic of one line if the computer science building.
+For this it reads a comma separated \gls{knx} log containing a timestamp and raw \gls{knx} telegrams, encoded in the \gls{baos} format.
+These dump files were easy to produce out of a database, containing a significant large recording of the \gls{knx} traffic of one line in the computer science building.
 
-Since the module used to capture the actual line traffic initially, exports not normal \gls{knx} telegrams, but rather a proprietary format resembling an extended data telegram called \gls{baos}, the \gls{knx} dump is also encoded in this format.
+Since the module used to capture the actual line traffic initially, exports not regular \gls{knx} telegrams, but rather a proprietary format resembling an extended data telegram called \gls{baos}, the \gls{knx} dump is also encoded in this format.
 Therefore a custom parser is required and was integrated into the prototype implementation as \gls{py} library.
-The parser takes the tab separated log \gls{knx} dump as input, assuming chronological order, parses the packets and updates multiple statistical windows, one for each simulated Agent. Whereby the traffic the different simulated Agents can is distinguished by address filter rules, which work similar to \gls{ip} subnets masks. 
-After the window length exceeded in log time, they are encode in \gls{json} and send to the collector via the message-broker.
+The simulator uses this library and takes the comma separated \gls{knx} log as input, assuming chronological order, parses the packets and updates multiple statistical windows, one for each simulated Agent. Whereby the traffic the different simulated Agents can observe is distinguished by address filter rules, which work similar to \gls{ip} subnets masks. 
+Every time the window length is exceeded in log time, the windows are encode in \gls{json} and send to the collector via the message-broker.
 The statistical window is not based on the feature vector (see Section~\ref{sec:concept:anal:feature-vector}). Instead the appearance of certain features are count, e.g. the source address \code{1.1.15} appeared $15$ times.
-Every further processing, like normalisation and vectorising is done by the Collector. 
+Every further processing, like vectorising and normalising is done in the individual Agent modules.
 
 \section{The Analyser Base Module}
 \label{sec:impl:base}
@@ -147,19 +147,19 @@ Every further processing, like normalisation and vectorising is done by the Coll
 \end{itemize}
 \end{comment}
 
-Once the statistical windows are gathered by the Agent simulator and aggregated by the Collector they are passed on the several Analyser modules.
-Since the handling of persist models, receiving of statistical windows, and querying of training data are tasks common to all Analyser and contain a significant amount of boilerplate code it was abstracted in a base class.
+Once the statistical windows are gathered by the Agent simulator and aggregated by the Collector they are passed on to the several Analyser modules.
+Since the handling of persisting models, receiving of statistical windows, and querying of training data are tasks common to all Analyser and contain a significant amount of boilerplate code it was abstracted in a base class.
 This base class also exposes a set of methods to invoke any Analyser via an standardised interface.
 
-Besides a common interface and initialisation code providing access to configuration and logging utilities, the base class implements a methods to acquire training data and handle persistence of trained models.
+Besides a common interface and initialisation code which provide access to configuration and logging utilities, the base class implements methods to acquire training data and handle persistence of trained models.
 The training data is queried from the \gls{influxdb} by resembling the behaviour of the Collector when grouping Agent windows together.
 Similar to the Collector only the management measurement is queried initially, which is used to sort all windows into time slots, but allowing for up to two seconds of jitter within the windows' timestamps to accommodate for clock drift or similar effects.
-Once a window is assigned to a time slot the remaining measurements are queried and stored in memory. It was found during test runs, that using multiple precise queries instead of one large one significantly improves the performance, resource consumption, and response rate of the \gls{influxdb}.
+Once a window is assigned to a time slot the remaining measurements are queried and stored to an  in-memory hash map. It was found during test runs, that using multiple precise queries instead of one large one significantly improves the performance, resource consumption, and response rate of the \gls{influxdb}.
 When the requested time span of training data is gathered it is passed back to actual training function, implemented in the specific Analyser modules.
 
-Another important task handled within the base class is the persistence of models, meaning saving and loading trained base-line models to disk.
-In case the base-line model only consists of standard \gls{py} object, these are simply serialised into \gls{json} and stored in the file system, like it is done for the address Analyser described in Section~\ref{sec:impl:addr}.
-However, if the base-line model is trained using \gls{sklearn}, it can often not be stored as a \gls{json} representation. Therefore the in \gls{sklearn} integrated binary serialiser is used. Since one base-line model consists actually of many sub-models to account for world-view and Agent specific models (cf. Section~\ref{sec:concept:anal:lof}), multiple files are written to the file system. To keep track of all those sub-models, the mapping between the Agent ID or the world-view model and the file name for their binary representation are stored in an central \gls{json} file. This \gls{json} file is used to point to for configuration purposes, so the user does not have to supply the Agent ID to file mapping by hand.
+Another important task handled within the base class is the persistence of models, meaning saving and loading trained baseline models to and from disk.
+In case the baseline model only consists of standard \gls{py} object, these are simply serialised into \gls{json} and stored in the file system, like it is done for the address Analyser described in Section~\ref{sec:impl:addr}.
+However, if the baseline model is trained using \gls{sklearn}, it can often not be converted easily into a \gls{json} representation. Therefore the in \gls{sklearn} integrated binary serialiser is used. Since one baseline model consists actually of many sub-models to account for world-view and Agent specific models (cf. Section~\ref{sec:concept:anal:lof}), multiple files are written to the file system. To keep track of all those sub-models, the mapping between the Agent ID or the world-view model and the file name for their binary representation is stored in a central \gls{json} file. This \gls{json} file is used to point to for configuration purposes, so the user does not have to supply the Agent ID to file mapping by hand.
 
 \section{The Address Analyser Module}
 \label{sec:impl:addr}
@@ -179,9 +179,8 @@ However, if the base-line model is trained using \gls{sklearn}, it can often not
 
 The simplest implementation build upon the Analyser Base module is the Address Analyser.
 As specified in the concept (see Section~\ref{sec:concept:anal:addr}) its purpose is to detect the usage of prior unknown addresses.
-
-For this all addresses, which occur during the defined training period, are stored as a \gls{py} \code{set}, separated by Agent ID and whether it was discovered as source or destination address. 
-The \code{set} data type ensures that first, every address is unique within one set -- eliminating redundancies, and secondly that it can checked if address is stored within a set very resource efficiently.
+To archive this all addresses, which occur during the defined training period, are stored as a \gls{py} set, separated by Agent ID and whether it was discovered as source or destination address. 
+The set data type ensures that first, every address is unique within one set -- eliminating redundancies, and second that it can checked if address is stored within a set very resource efficiently.
 Once the training phase is complete, all sets (two per Agent) are stored using the methods the base class provides.
 
 During the operational phase, the model containing all sets is loaded. Following all addresses in incoming windows are compared to their respective address set.
@@ -203,7 +202,7 @@ However, in an testing environment log message seem sufficient.
 \section{Converting a Window into a Feature Vector}
 \label{sec:impl:vectoriser}
 
-For more sophisticated analytical modules using machine learning algorithms, the input data needs to encoded as feature vector.
+For more sophisticated analytical modules which use machine learning algorithms, the input data needs to be encoded as feature vector.
 Within the proposed concept this means, that a statistical window has to be transformed into a numerical vector representation.
 The basics principle of this is described in Section~\ref{sec:concept:anal:feature-vector}, whereby this section focusses on the details how each feature is encoded.
 It is to note, that a window contains discrete or categorical statistical data describing a set of events, instead of just a single event, meaning the window produced by an Agent contains a number of occurrences over the period of the window.
@@ -220,36 +219,37 @@ Mentioned excerpt of fields contains a set of low level, application independent
 	\item \gls{apci}
 \end{itemize}
 
-The first feature to encode is the time of the window within a defined period. For this prototype implementation this seasonal period was set to one week. Consequently the dimensions contains the seconds since the last Monday, normalised to the length of a 7 day week in seconds.
+The first feature to encode is the time of the window within a defined period. For this prototype implementation the seasonal period was set to one week. Consequently the dimensions contains the seconds since the last Monday 00:00, normalised to the length of a seven day week in seconds.
 
-Both addresses fields are encoded with 16 dimensions each. Every dimension represents the frequency of occurrence of one bit, normalised against the overall number of telegrams observed in the current window.
-Example given the numerical address $2$ would appear twice and the numerical address $1$ three times within a window. Given these are the only addresses in this window and the length of addresses would be 2 bit, the final feature vector dimensions for this address would be calculated as follow:
+Both address fields are encoded with 16 dimensions each. Every dimension represents the frequency of occurrence of one bit, normalised against the overall number of telegrams observed in the current window.
+Example given the numerical address $2$ would appear twice and the numerical address $1$ three times within a window. And given these are the only addresses in this window and the overall length of addresses would be $2$ bits, the final feature vector dimensions for this address would be calculated as follow:
 \[
-\dfrac{2 \cdot \begin{pmatrix}1 & 0\end{pmatrix} + 3 \cdot \begin{pmatrix}0 & 1\end{pmatrix}}{2 + 3} = \begin{pmatrix}0.4 & 0.6\end{pmatrix}
+\dfrac{2 \cdot \begin{pmatrix}1 \\ 0\end{pmatrix} + 3 \cdot \begin{pmatrix}0 \\ 1\end{pmatrix}}{2 + 3} = \begin{pmatrix}0.4 \\ 0.6\end{pmatrix}
 \]
 The result is an vector encoding the probability of each bit to occur within this specific window.
 Goal was to reduce the amount of dimension, which would have been necessary when the entirety of possible addresses is mapped into the feature space -- each address using one dimension to encode the possibility of occurrence.
 For the two address types, this would result in $2 \cdot 2^{16} = 2 \cdot 65536 = 131072$ dimensions. By applying this adapted form of the hashing trick (cf. Section~\ref{sec:background:network:features:hashing}) it was possible to reduce it to $2 \cdot 16 = 32$ dimensions.
 
 In contrast to the addresses the priority of \gls{knx} telegrams has only four possible values. (see Table~\ref{tab:background:bas:knx:proto:prio}) Therefore the frequency of appearance of these four values can be directly mapped into feature vector as four dimensions. Similar to the addresses the frequency of each distinct priority is normalised against the overall number of telegrams observed in the current window.
-The result are four dimensions, each of which represents the probability of telegram having the respective priority in the context of the current window, which can be compared to the OneHot encoding as described in Section~\ref{sec:background:network:features:onehot}.
+The result contains four dimensions, each of which represent the probability of a telegram having the respective priority in the context of the current window, which can be compared to the OneHot encoding as described in Section~\ref{sec:background:network:features:onehot}.
 The hop count is encoded equally, just with seven dimensions instead of four, as the maximum hop count for \gls{knx} telegrams is seven.
 
 Initially the same encoding, used for priority and hop count, was also applied to the payload length. However, since the maximum payload length for a \gls{knx} telegram is $255$ Bytes, which would result in $255$ dimensions in the feature vector.
-By encoding a feature using so many dimensions, a high granularity is introduced. For a feature like the payload length this granularity comes with a risk of over fitting the base-line model, as a small shift in the distribution of lengths could place the window in an significant different spot within the feature space.
+By encoding a feature using so many dimensions, a high granularity is introduced. For a feature like the payload length this granularity comes with a risk of over fitting the baseline model, as a small shift in the distribution of lengths could place the window in an significant different spot within the feature space.
 To minimize this risk the range of the payload length is divided into ten equally sized buckets. These buckets are then encoded into the feature vector the same way as priority and hop count.
 Each bucket is assigned a value representing the number of observed telegrams having a payload length which is within the range of the bucket. These values are then normalised against the number of overall observed telegrams for the period of the window.
-The result is vector with the size 10 representing the distribution of payload length with an reduced granularity.
+The result is a vector with the length of ten and represents the distribution of payload length with an reduced granularity.
 
-Finally, the \gls{apci}, which represents the application of the telegram, is again encoded using the same adaption of the OneHot encoding as used for the as for priority and hop count. This results in vector which one dimension for every possible \gls{apci}, whereby each dimension represents the amount of telegrams using this \gls{apci} normalised to the overall amount of telegrams observed within the period of this window.
+Finally, the \gls{apci} which represents the application of the telegram, is encoded using the same adaption of the OneHot encoding as used for the as for priority and hop count. This results in vector which one dimension for every possible \gls{apci}, whereby each dimension represents the amount of telegrams using this \gls{apci} normalised to the overall amount of telegrams observed within the period of this window.
 According to \textcite{DIN_EN_50090-4-1} $44$ possible \glspl{apci} are defined, therefore introducing $44$ dimensions into the feature vector.
-Compared to the other encoded features this would be a significant portion of the feature vector's dimensions. Consequently the problem of over fitting needs to be considered, similar as in the case of the payload length.
-However, grouping the \gls{apci} expression is not as easy as introducing buckets for the payload length, since the \gls{apci} is a 
+Compared to the other encoded features this is a significant portion of the feature vector's dimensions. Consequently the problem of over fitting needs to be considered, similar to the case of the payload length.
+However, grouping the \gls{apci} expression is not as easy as introducing buckets for the payload length, since the \gls{apci} is 
 not a discrete measure, but rather categorical. Further, the \gls{apci} is more characteristic for a telegram as it determines directly the effect which the telegram has.
 This fact combined with the categorical nature of this feature lead to the decision to not compress it further and include it fully.
 
 To form the final feature vector all vectors produces by encoding the single features are concatenated and returned as one single vector.
 
+% 44 is the correct length of APCI after Simeons updates
 \section{The Local Outlier Factor Analyser Module}
 \label{sec:impl:lof}
 
@@ -301,34 +301,34 @@ To form the final feature vector all vectors produces by encoding the single fea
 \end{itemize}
 \end{comment}
 
-A more sophisticated Analyser modules uses the \gls{lof} algorithm, an proximity-based approach to outlier or anomaly detection.
+A more sophisticated Analyser modules uses the \gls{lof} algorithm, a proximity-based approach for outlier or anomaly detection.
 The main idea is outlined in Section~\ref{sec:concept:anal:lof}. The general concept is to detect uncommon or abnormal behaviour by comparing the current observation to prior observations and determine if it is significantly further away within the feature space.
 To determine theses distances the \glsfirst{lof} implementation of \gls{sklearn} library is used with the feature vector as input, which is constructed as described in Section~\ref{sec:impl:vectoriser}.
-The main advantage of the \gls{lof} algorithm consists in its ability to cope with unclean data, this means that the training data set can contain a small portion of malicious traffic without affecting the performance.
+The main advantage of the \gls{lof} algorithm lies in its ability to cope with unclean data, this means that the training data set can contain a small portion of malicious traffic without affecting the performance.
 
-During the training phase the module may create a new base-line model or further train an existing one, whereby the construct of the base-line model consists for multiple sub-models. First there is a general world-view model used to compared to traffic from all Agents to. Second there are multiple Agent specific models, each for every Agent. All of these sub-models is managed using functions provided by the Base Module described in Section~\ref{sec:impl:base}.
-The differentiation between the general world-view model and the individual Agent specific models is important to maintain a general overview of activities which are normal in the general context of the \gls{bas} network in question and simultaneously being able to identify minor changes of the activities in individual network segments.
+During the training phase the module may create a new baseline model or further train an existing one, whereby the construct of the baseline model consists for multiple sub-models. First there is a general world-view model used to compared to traffic from all Agents to. Second there are multiple Agent specific models, one for every Agent. All of these sub-models are managed using functions provided by the Base Module described in Section~\ref{sec:impl:base}.
+The differentiation between the general world-view model and the individual Agent specific models is important to maintain a general overview of activities which are normal in the general context of the \gls{bas} network, while simultaneously being able to identify minor changes in the activities of individual network segments.
 Basically by having a general model and multiple highly specific ones a balance between low and high sensitivity is archived. 
 The world-view model is less likely to react to small derivations and therefore reduce false positives. The Agent specific models, however, enable the system to detect anomalies caused by activities which are normal for one line, but extremely rare on another line.
 
-To train these different models first data from \gls{influxdb} is queries for a chosen training period using the functions provided by the Base Module, then this data is grouped in the same way as the Collector would do and passed into the Vectoriser.
-Finally, the resulting feature vectors are used to train the respective (sub-)models with \gls{sklearn}.
+To train these different models, first, data from \gls{influxdb} is queries for a chosen training period using the functions provided by the Base Module, then this data is grouped in the same way as the Collector would do and passed into the Vectoriser.
+Finally, the resulting feature vectors are used to train the respective (sub-)models with routines provided by \gls{sklearn}.
 
 During the operational phase the module analyses incoming windows, by first passing them through the Vectoriser and then comparing them to two models: the world-view model and the respective Agent specific model for the Agent that captured that window.
 For this the vector of the to-be-analysed window is compared to its \emph{MinPts} $100$ nearest neighbours using the \emph{Minkowski} distance with $p=2$, which equals to the Euclidean distance, according to the \gls{lof} algorithm as introduced by \textcite{Breunig2000}.
-The resulting factor is then compared to a threshold, which is derived from the assume contamination of the training data and the training data itself. For the purpose of demonstration the contamination is assumed to be $10\%$.
+The resulting factor is then compared to a threshold, which is derived from the assumed contamination of the training data and the training data itself. For the purpose of demonstration the contamination is assumed to be $10\%$.
 Finally, the \gls{lof} and the result after comparing it to the threshold are pushed to the \gls{influxdb} database for both models.
-The actual binary decision is important for alerting and can not be easily archived within the monitoring and alerting solution, as the threshold is not fixed.
+The actual binary decision is important for alerting and cannot be easily archived within the monitoring and alerting solution, as the threshold is not fixed.
 However, the factor of \enquote{oulier-ness} is provided as well to allow for better over time monitoring of the abnormal activities within the network and to provide more insides.
 
 \section{The Support Vector Machine Analyser Module}
 \label{sec:impl:svm}
 
-Another approach from the class of proximity-based approaches is the \gls{svm} Analyser module. It uses a special subclass of \glspl{svm}
-to separate observations belonging to the \emph{normality} from outliers.
+Another approach in the class of proximity-based approaches is the \gls{svm} Analyser module. It uses a special subclass of \glspl{svm}
+to separate observations belonging to the \emph{normality} from outliers -- the one-class \gls{svm}.
 Whereby the concept of \gls{lof} is to determine outliers by comparing distances in the local cluster, \glspl{svm} define a border or decision surface of \emph{normality}. Every data point outside this border is considered an outlier.
 
-This decision surface is defined during the training period, where \gls{rbf} kernel is fitted to cover to training data as best as possible. For this multiple iterations of fitting and measuring the effect are performed, whereby the upper bound of training errors and the lower bound of support vectors $nu$ is set to $0.01$. The influence $\gamma$ each sample has on the shape of the \gls{rbf} is determined automatically as \(\gamma = \sfrac{1}{number\ of\ features}\), which follows the recommendation for one-class \gls{svm} by \gls{sklearn}.
+This border, or decision surface is defined during the training period, where a \gls{rbf} kernel is fitted to cover the training data as best as possible. For this multiple iterations of fitting and measuring the effect are performed, whereby the upper bound of training errors and the lower bound of support vectors $nu$ is set to $0.01$. The influence $\gamma$ each sample has on the shape of the \gls{rbf} is determined automatically as \(\gamma = \sfrac{1}{number\ of\ features}\), which follows the recommendation for one-class \gls{svm} by \gls{sklearn}.
 The training data is acquired using the functions provided by the Base Module (see Section~\ref{sec:impl:base}) and then translated into the vector space using the Vectoriser.
 The algorithms provided by \gls{sklearn} are used to train to sets of models involving one world-view model and several Agent specific models.
 
@@ -342,14 +342,14 @@ Finally, both distances and the outlier or inlier decision for each distance are
 \label{sec:impl:entropy}
 
 Opposed to the proximity-based approaches of the \gls{lof} and \gls{svm}, the Entropy Analyser evaluates the statistical distribution using the Shannon entropy. \parencite[cf.][]{Shannon1948}
-For this it data is accumulated during the training period passed through the Vectoriser using the functions provided by the Base Module.
-Unlike the proximity-based approaches the time sensitivity cannot be archived by using one dimension to separate clusters by time. Therefore this dimension is stripped from the feature vector. Instead multiple time buckets are defined over the seasonal period, with a base-line model for each of them. The time dimension is then used to determine which time bucket to use.
-To smooth artefacts which might occur on the transition points from one bucket to another, the effective amount of buckets is doubled. Whereby the second half is shifted in time by half the bucket's length.
+For this data is accumulated during the training period and passed through the Vectoriser using the functions provided by the Base Module.
+Unlike the proximity-based approaches the time sensitivity cannot be archived by using one dimension to separate clusters by time. Therefore this dimension is stripped from the feature vector. Instead multiple time buckets are defined over the seasonal period, with a baseline model for each of them. The time dimension is then used to determine which time bucket to use.
+To smooth artefacts which might occur on the transition points from one bucket to another, the effective amount of buckets is doubled. Whereby the second half is shifted by half the bucket's length in time.
 Consequently every relative time point in the season falls in exactly two overlapping buckets.
 In the prototype implementation a seasonal period of one week is assumed and the bucket length is set to one hour. This results in $2 \cdot (7 \cdot 24) = 2 \cdot 168 = 336$ buckets. Each bucket contains the mean distribution per feature dimension.
 
-Additional to the separation by time buckets, the Entropy Analyser also separates between one world-view model and multiple Agent specific models. This separation allows for finer sensitivity adjustments and therefore might provide better insights into abnormal activities based on the behaviour specific for one network segment.
+Additional to the separation by time buckets, the Entropy Analyser also distinguishes between one world-view model and multiple Agent specific models. This separation allows for finer sensitivity adjustments and therefore might provide better insights into abnormal activities based on the behaviour specific for one network segment.
 
-During the operational phase the mean distribution stored in the base-line models is used to calculate the entropy when combined with the new incoming window for the world-view model and the respective Agent specific one.
+During the operational phase the mean distribution stored in the baseline models is used to calculate the entropy when combined with the new incoming window for the world-view model and the respective Agent specific one.
 For the calculation of the entropy the statistical functions of the \gls{scipy} library are used.
 The resulting entropies is then pushed to the \gls{influxdb} as raw values. A threshold for the outlier/inlier decision is not applied.
