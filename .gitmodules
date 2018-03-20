@@ -1,6 +1,3 @@
 [submodule "src/bas-observe"]
 	path = src/bas-observe
 	url = git@github.com:FreakyBytes/bas-observe.git
-[submodule "src/baos-knx-parser"]
-	path = src/baos-knx-parser
-	url = git@github.com:FreakyBytes/bas-observe.git
