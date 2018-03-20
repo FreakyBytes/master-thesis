@@ -143,5 +143,53 @@
 	
 \end{figure}
 
+\chapter{Steps to Reproduce the Experiment Results}
+\chaptermark{Reproduction Steps}
+\label{app:reproduce}
+
+Before attempting to build the sources, please ensure that following software packages are installed and working:
+\code{Git}, \code{Docker}, \code{Docker-Compose}, \code{Python 3}, and \code{pip for Python 3}.
+
+All described steps were developed and tested on
+\code{Linux 4.14.0-3-amd64 \#1 SMP Debian 4.14.17-1 (2018-02-14) x86\_64 GNU/Linux}.\\
+Alternative platforms might need adjustments to the build scripts or steps.
+
+% set some new settings for listings
+\lstset{
+	language=Bash,
+	breaklines=true,
+	breakatwhitespace=true,
+	numbers=none,
+	frame=single,
+	framerule=0pt,
+	belowskip=-24pt,
+	aboveskip=5pt,
+	basicstyle=\footnotesize\ttfamily,
+	stringstyle={},
+	keywordstyle={},
+}
+
+\section{Building and Installing the Prototype}
+\label{app:reproduce:build}
+
+\begin{enumerate}
+	\item Clone the git repository or alternatively use the source repository on the attached disk in Appendix~\ref{app:disk}
+		\begin{enumerate}
+			\item Clone the main repository
+\begin{lstlisting}
+git clone https://github.com/FreakyBytes/master-thesis.git
+\end{lstlisting}
+			\item Navigate into the newly created directory
+\begin{lstlisting}
+cd master-thesis
+\end{lstlisting}			
+			\item Clone all submodules
+\begin{lstlisting}
+git submodule init
+git submodule update
+\end{lstlisting}
+		\end{enumerate}
+\end{enumerate}
+
 \chapter{CD-ROM with Software and Data}
 \label{app:disk}
