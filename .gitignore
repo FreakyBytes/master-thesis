@@ -34,3 +34,6 @@ tex/master-thesis-peters-blx.bib
 *.xdy
 *.fdb_latexmk
 *.fls
+tmp/
+models/
+data/
