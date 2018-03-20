@@ -1,8 +1,8 @@
 % !TeX spellcheck = en_GB
-\documentclass[12pt, a4paper, titlepage, oneside]{book}
-\usepackage[a4paper, margin=3cm]{geometry}
+\documentclass[12pt, a4paper, titlepage, oneside, final]{book}
+\usepackage[a4paper, top=30mm, right=25mm, bottom=30mm, left=35mm]{geometry}
+\usepackage{showframe}
 
-%
 \usepackage[utf8]{inputenc}			% utf-8, bitches
 \usepackage[T1]{fontenc}			% das Trennen der Umlaute
 \usepackage[ngerman,english]{babel}	% word wrapping
@@ -11,10 +11,15 @@
 \usepackage{setspace}				% more spacing control
 %\setstretch{1.25}
 
-\usepackage[breaklinks,hidelinks]{hyperref}		% links
+\tolerance 1800
+\hbadness 1800
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\emergencystretch 1.5em
+\raggedbottom
 
-%\usepackage{lmodern}
-%\usepackage{textcomp}
+\usepackage[breaklinks,hidelinks]{hyperref}		% links
 
 \usepackage{xspace}					% intelligent spacing after words, usefull for shortcut coammnds
 \usepackage{graphicx}				% better graphics support
@@ -162,7 +167,7 @@
 	
 	\chapter{Background and Prior Work}
 	%\chapter{Building Automation Systems and Field Buses}
-	\section{Building Automation Systems and Field Buses}
+	\section{Building Automation Systems (BAS) and Field Buses}
 	% background about BAS and KNX
 	\label{sec:background:bas}
 	\input{chapter/100-background-bas.tex}
@@ -175,7 +180,7 @@
 	
 	%\chapter{Prior Work}
 	\clearpage
-	\section{Prior Work in Anomaly Detection for Building Automation Systems}
+	\section{Prior Work in Anomaly Detection for BAS}
 	% what does exits already
 	\label{sec:background:prior-work}
 	\input{chapter/300-prior-work.tex}
@@ -186,13 +191,13 @@
 	\input{chapter/400-methods.tex}
 	
 	%\chapter{Conceptual Architecture}
-	\chapter[Concept of an IDS for Building Automation Systems]{Concept of an Intrusion Detection System for Building Automation Systems}
+	\chapter{Concept of an Intrusion Detection System for BAS}
 	\chaptermark{Concept}
 	% concept
 	\label{sec:concept}
 	\input{chapter/500-concept.tex}
 	
-	\chapter[Implementation of a Prototype]{Implementation of a Prototype IDS for Building Automation Systems}
+	\chapter[Implementation of a Prototype]{Implementation of a Prototype IDS for BAS}
 	%\chaptermark{Prototype Implementation}
 	\label{sec:impl}
 	\input{chapter/600-prototype-implementation.tex}
@@ -214,12 +219,27 @@
 	
 	\chapter*{Selbstständigkeitserklärung}
 	Hiermit erkläre ich, Martin Peters, dass ich die vorliegende Masterarbeit selbständig angefertigt habe. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemä\ss \ übernommenes Gedankengut habe ich als solches kenntlich gemacht.
-	\\[64pt]
-	\noindent Rostock, \thedate
-	\begin{flushright}
-		$\overline{~~~~~~~~~\mbox{(Unterschrift)}~~~~~~~~~}$
-	\end{flushright}
 	
+	\vspace{15mm}
+	
+	%\hspace{5mm}
+	\hfil
+	\begin{minipage}[t]{55mm}
+		\centering
+		Rostock, \thedate\\
+		\vspace{-1.9em}
+		\rule[-8pt]{\textwidth}{0.5pt}
+		{\footnotesize (Ort, Datum)}
+	\end{minipage}
+	\hfil\hfil
+	\begin{minipage}[t]{55mm}
+		\centering
+		\ \\
+		\vspace{-1.9em}
+		\rule[-8pt]{\textwidth}{0.5pt}
+		{\footnotesize (Unterschrift)}
+	\end{minipage}
+
 	% restart page numbering
 	\newpage
 	\pagenumbering{Roman}
