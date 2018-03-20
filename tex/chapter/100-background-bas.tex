@@ -60,7 +60,7 @@ One of the most appealing benefits of using \gls{knx} is the ubiquitous availabi
 Thus, more devices from multiple vendors are available with a large variety of sensors, actuators, control and regulation solutions, as well as operation and monitoring.
 
 From an academic point of view the easy availability of the standards, provides a good understanding of the protocol. Therefore allowing for analysis without prior reverse-engineering the protocol.
-Additionally the University of Rostock also uses \gls{knx} in some buildings, which a provides an promising source of test and demo data. \parencite[cf.][]{Mundt2012}
+Additionally the University of Rostock also uses \gls{knx} in some buildings, which a provides a promising source of test and demo data. \parencite[cf.][]{Mundt2012}
 Due to the ease of accessibility it is therefore used as an example for \gls{bas} in this thesis without the limitation of generality.
 
 % ------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ The telegram type is encoded in the first two bit of the \gls{ctrl} byte, which 
 
 The data telegram being utilised the most and used for transferring commands, state, and value changes, comes in two flavours.
 The standard data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-standard}) is able to transmit between 2 and 16 bytes per telegram. To transfer more data the extended data telegram (cf. Table~\ref{tab:background:bas:knx:proto:knx-extended}) can be utilised, which can transfer up to 255 bytes.
-Both are sent in reaction of an direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
+Both are sent in reaction of a direct interaction (e.g. light switch) or to send periodical sensor data (e.g. temperature). \parencite{Merz2009}
 Once received and successfully processed, the recipient replies then with an acknowledge telegram. \parencite{Merz2009,Sokollik2017}
 
 The extended data telegram introduces another header byte after \gls{ctrl}, the \gls{ctrle} header byte. It contains information otherwise encoded together with the payload length like the destination address type and the hop count, thus it allows the payload length to encoded as a full byte, ranging up to 255. (see Table~\ref{tab:background:bas:knx:proto:ctrle})
@@ -187,10 +187,10 @@ The extended data telegram introduces another header byte after \gls{ctrl}, the 
 
 The acknowledge telegram can indicate the correct reception (\code{ACK}, positive acknowledge), faulty reception (\code{NACK}, negative acknowledge), or that the receiving device is currently busy and is not able to process the telegram. (cf. Table~\ref{tab:background:bas:knx:proto:ack})
 It consists of one byte and is sent by the recipient after waiting 13 bit times.
-If the sender receives an positive acknowledge, the telegram was send successfully and no further action is required. However, if it detects an negative acknowledge or busy signal, the telegram is resend up to three times.
+If the sender receives a positive acknowledge, the telegram was send successfully and no further action is required. However, if it detects a negative acknowledge or busy signal, the telegram is resend up to three times.
 Supposed a busy signal occurred, the sender adds a waiting period before attempting to resend the telegram.
 Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to three times.
-In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), an negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
+In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), a negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
 
 \input{tables/100-knx-ack.tex}
 
@@ -244,7 +244,7 @@ They are defined to consist of a combination of a data type and a dimension. Whe
 It was decided not to specify data types and dimensions separately to reduce abstract naming and confusion.
 Therefore any \gls{dpt} declares a single combination of format, encoding, range, and unit. \parencite[p.~38]{DIN_EN_50090-3-3}
 
-Each \gls{dpt} is identified by an 16 bit main number and an 16 bit sub-number, separated by a dot. The main number describes the format and encoding and consequently the sub-number describes range and unit. As a result, \glspl{dpt} with the same main number share the format and encoding.
+Each \gls{dpt} is identified by a 16 bit main number and a 16 bit sub-number, separated by a dot. The main number describes the format and encoding and consequently the sub-number describes range and unit. As a result, \glspl{dpt} with the same main number share the format and encoding.
 
 \input{tables/100-knx-tpci-apci.tex}
 	

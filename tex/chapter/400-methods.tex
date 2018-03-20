@@ -6,7 +6,7 @@
 	\item test data captured from a floor section of the computer science building
 	\item enriched with malicious packets to keep consistent
 	
-	\item (focusses only an purpose based) attack classes (cf. \parencite{Uma2013})
+	\item (focusses only a purpose based) attack classes (cf. \parencite{Uma2013})
 		\subitem \gls{dos}
 			\subsubitem Short circuit -> blackout on entire line
 			\subsubitem flooding of \code{A\_Restart} telegrams
@@ -78,10 +78,10 @@ These activities follow the idea of the attack classes introduced above and are 
 
 First, unusual behaviour is injected at 2017-02-12 from 03:00 to 08:00, replacing this entire segment with traffic from 2017-02-06 10:00 to 15:00. In absence of data more foreign to the observed line the data was taken from the same line, but at a different weekday and day time. Effectively this data does not contain any new devices or severe unusual traffic, this modification rather aims to test the time sensitivity.
 
-Second, an \gls{dos} attack is performed starting at 2017-02-13 09:00 and targeting the entire line \code{3.4}~. The attack is performed in three bursts of 15 minutes with five minutes break in between. In the \gls{dos} attack a flood of \code{A\_Restart} telegrams with \code{SYSTEM} priority is send, which in reality would cause all targeted devices to restart continuously. Additionally this blocks all other traffic, since the \code{SYSTEM} priority is the highest specified. During the attack the telegrams were injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
+Second, a \gls{dos} attack is performed starting at 2017-02-13 09:00 and targeting the entire line \code{3.4}~. The attack is performed in three bursts of 15 minutes with five minutes break in between. In the \gls{dos} attack a flood of \code{A\_Restart} telegrams with \code{SYSTEM} priority is send, which in reality would cause all targeted devices to restart continuously. Additionally this blocks all other traffic, since the \code{SYSTEM} priority is the highest specified. During the attack the telegrams were injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
 
 As third attack scenario a device scan over the entire possible \gls{knx} address space was performed, starting from 2017-02-13 21:00.
-To determine if an device is present, the management \gls{apci}\break\code{A\_DEVICE\_DESCRIPTOR\_READ} is send to all addresses. Every \gls{knx} device is required to implement certain management routines, among them the query for the device descriptor. \code{A\_DEVICE\_DESCRIPTOR\_READ} is ideal since the requesting telegram does not require any parameters and the response only contains two bytes of additional payload. By choosing a request which is adds as little overhead as possible, the throughput is increased and effectively reducing the time required for the scan. \parencite[cf.][p.~46]{DIN_EN_50090-4-1}
+To determine if a device is present, the management \gls{apci}\break\code{A\_DEVICE\_DESCRIPTOR\_READ} is send to all addresses. Every \gls{knx} device is required to implement certain management routines, among them the query for the device descriptor. \code{A\_DEVICE\_DESCRIPTOR\_READ} is ideal since the requesting telegram does not require any parameters and the response only contains two bytes of additional payload. By choosing a request which is adds as little overhead as possible, the throughput is increased and effectively reducing the time required for the scan. \parencite[cf.][p.~46]{DIN_EN_50090-4-1}
 Equal to the \gls{dos} attack, the telegrams are injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
 
 Finally, two new rogue device are introduced with the addresses \code{3.6.26} and \code{3.5.18} during the entire day of 2017-02-14.

@@ -35,14 +35,14 @@ The implementation details of each module are described in the following section
 \end{itemize}
 \end{comment}
 
-The \glsfirst{cli} provides a central and consistent entry point for all operations and is implemented using \gls{lib-click}, which provides an fast way to define command line options and parameters using code annotations.
+The \glsfirst{cli} provides a central and consistent entry point for all operations and is implemented using \gls{lib-click}, which provides a fast way to define command line options and parameters using code annotations.
 The \gls{cli} can be installed via \gls{py} setup tools and exports one command into the operating system's search path, called \code{bob}.
 This main command does not provide any functionality itself, apart from taking basic configuration parameter like the database and message-broker host, log level, and a project identifier -- all of which are preset to sane defaults.
 Rather the command exposes a series of subcommands.
 
 The first one being \code{bob collector}, which invokes the collector module and only requires a list of available agents additionally to the basic configuration and is further described in Section~\ref{sec:impl:collector}.
 Besides the Collector an agent simulator can be invoked by \code{bob simulate}, which simulates multiple Agents from the content of a \gls{knx} log file, as described in Section~\ref{sec:impl:agent}.
-By replaying existing observations an controllable and repeatable test environment can be archived. An Agent implementation which is able to process live traffic was not considered necessary for the point of demonstrating and testing the proposed concept.
+By replaying existing observations a controllable and repeatable test environment can be archived. An Agent implementation which is able to process live traffic was not considered necessary for the point of demonstrating and testing the proposed concept.
 
 The Analyser modules, however, can be invoked by either two generic subcommands, \code{bob train} which starts a module in training mode or \code{bob analyse} which runs the module in the operational, analytical mode.
 All training commands take tree additional parameters: a start and end time of the period to be used as training data and the path to a model file, where the training results can be stored. The module which is supposed to be trained can be selected by adding it as another subcommand, so would \code{bob train lof} start the training mode of the \gls{lof} Analyser.
@@ -149,12 +149,12 @@ Every further processing, like vectorising and normalising is done in the indivi
 
 Once the statistical windows are gathered by the Agent simulator and aggregated by the Collector they are passed on to the several Analyser modules.
 Since the handling of persisting models, receiving of statistical windows, and querying of training data are tasks common to all Analyser and contain a significant amount of boilerplate code it was abstracted in a base class.
-This base class also exposes a set of methods to invoke any Analyser via an standardised interface.
+This base class also exposes a set of methods to invoke any Analyser via a standardised interface.
 
 Besides a common interface and initialisation code which provide access to configuration and logging utilities, the base class implements methods to acquire training data and handle persistence of trained models.
 The training data is queried from the \gls{influxdb} by resembling the behaviour of the Collector when grouping Agent windows together.
 Similar to the Collector only the management measurement is queried initially, which is used to sort all windows into time slots, but allowing for up to two seconds of jitter within the windows' timestamps to accommodate for clock drift or similar effects.
-Once a window is assigned to a time slot the remaining measurements are queried and stored to an  in-memory hash map. It was found during test runs, that using multiple precise queries instead of one large one significantly improves the performance, resource consumption, and response rate of the \gls{influxdb}.
+Once a window is assigned to a time slot the remaining measurements are queried and stored to an in-memory hash map. It was found during test runs, that using multiple precise queries instead of one large one significantly improves the performance, resource consumption, and response rate of the \gls{influxdb}.
 When the requested time span of training data is gathered it is passed back to actual training function, implemented in the specific Analyser modules.
 
 Another important task handled within the base class is the persistence of models, meaning saving and loading trained baseline models to and from disk.
@@ -184,7 +184,7 @@ The set data type ensures that first, every address is unique within one set -- 
 Once the training phase is complete, all sets (two per Agent) are stored using the methods the base class provides.
 
 During the operational phase, the model containing all sets is loaded. Following all addresses in incoming windows are compared to their respective address set.
-If an unknown address is discovered an counter will be increased. After a window is processed measurement containing these counters per Agent is pushed to the \gls{influxdb}, which contains:
+If an unknown address is discovered a counter will be increased. After a window is processed measurement containing these counters per Agent is pushed to the \gls{influxdb}, which contains:
 
 \begin{itemize}
 	\item amount of unique unknown source addresses
@@ -197,7 +197,7 @@ If an unknown address is discovered an counter will be increased. After a window
 
 Additionally, a log warning is produced every time an unknown address is discovered. The warning includes the address, amount of telegrams, and direction (source or destination address).
 For an implementation beyond the prototype status, an alert send to the administrator containing these information would be desirable.
-However, in an testing environment log message seem sufficient.
+However, in a testing environment log message seem sufficient.
 
 \section{Converting a Window into a Feature Vector}
 \label{sec:impl:vectoriser}
@@ -226,7 +226,7 @@ Example given the numerical address $2$ would appear twice and the numerical add
 \[
 \dfrac{2 \cdot \begin{pmatrix}1 \\ 0\end{pmatrix} + 3 \cdot \begin{pmatrix}0 \\ 1\end{pmatrix}}{2 + 3} = \begin{pmatrix}0.4 \\ 0.6\end{pmatrix}
 \]
-The result is an vector encoding the probability of each bit to occur within this specific window.
+The result is a vector encoding the probability of each bit to occur within this specific window.
 Goal was to reduce the amount of dimension, which would have been necessary when the entirety of possible addresses is mapped into the feature space -- each address using one dimension to encode the possibility of occurrence.
 For the two address types, this would result in $2 \cdot 2^{16} = 2 \cdot 65536 = 131072$ dimensions. By applying this adapted form of the hashing trick (cf. Section~\ref{sec:background:network:features:hashing}) it was possible to reduce it to $2 \cdot 16 = 32$ dimensions.
 
@@ -235,10 +235,10 @@ The result contains four dimensions, each of which represent the probability of 
 The hop count is encoded equally, just with seven dimensions instead of four, as the maximum hop count for \gls{knx} telegrams is seven.
 
 Initially the same encoding, used for priority and hop count, was also applied to the payload length. However, since the maximum payload length for a \gls{knx} telegram is $255$ Bytes, which would result in $255$ dimensions in the feature vector.
-By encoding a feature using so many dimensions, a high granularity is introduced. For a feature like the payload length this granularity comes with a risk of over fitting the baseline model, as a small shift in the distribution of lengths could place the window in an significant different spot within the feature space.
+By encoding a feature using so many dimensions, a high granularity is introduced. For a feature like the payload length this granularity comes with a risk of over fitting the baseline model, as a small shift in the distribution of lengths could place the window in a significant different spot within the feature space.
 To minimize this risk the range of the payload length is divided into ten equally sized buckets. These buckets are then encoded into the feature vector the same way as priority and hop count.
 Each bucket is assigned a value representing the number of observed telegrams having a payload length which is within the range of the bucket. These values are then normalised against the number of overall observed telegrams for the period of the window.
-The result is a vector with the length of ten and represents the distribution of payload length with an reduced granularity.
+The result is a vector with the length of ten and represents the distribution of payload length with a reduced granularity.
 
 Finally, the \gls{apci} which represents the application of the telegram, is encoded using the same adaption of the OneHot encoding as used for the as for priority and hop count. This results in vector which one dimension for every possible \gls{apci}, whereby each dimension represents the amount of telegrams using this \gls{apci} normalised to the overall amount of telegrams observed within the period of this window.
 According to \textcite{DIN_EN_50090-4-1} $44$ possible \glspl{apci} are defined, therefore introducing $44$ dimensions into the feature vector.

@@ -51,8 +51,8 @@ This requires many protocol and application specific signatures, which are diffi
 A signature which is too generic, may cause many false positives. This might lead to an elimination of any positive effect of the \gls{ids}, since real alerts become impossible to spot among the false positives.
 In contrast, however, a signature which is too specific might suffer from a too narrow scope. Meaning, that it might be really precise in classifying one particular attack, but fails to do so if an attacker just slightly modifies it.
 
-As a result, a valuable \gls{ids} solution is characterised by an balanced precision/recall ratio. This can be archived by using a good signature database and fine tuning the sensors.
-However, it is to note, that every \gls{ids} will produce false positives. This derives out of the consideration, that each false negative is an legitimate attack, which was not detected. Therefore a slight tendency to (over) sensitivity is sensible.
+As a result, a valuable \gls{ids} solution is characterised by a balanced precision/recall ratio. This can be archived by using a good signature database and fine tuning the sensors.
+However, it is to note, that every \gls{ids} will produce false positives. This derives out of the consideration, that each false negative is a legitimate attack, which was not detected. Therefore a slight tendency to (over) sensitivity is sensible.
 
 Other than false positives, there might be legitimate alerts that are of no interest. These unwanted alerts should be blocked, to not numb the system administrator. \parencite[pp.~205-206]{Northcutt2005}
 
@@ -103,7 +103,7 @@ Unlike signature based methods (cf. Section~\ref{sec:background:network:ids:sig}
 
 This is archived by having a so called training phase before deploying the \gls{ids}. During the training phase a baseline model is established using the normal network activity over a period of time. It is to note, that this period should be long enough to cover normally recurring usage cycles, e.g. day-time/night-time, weekday/weekends, etc.
 
-After an successful training phase the \gls{ids} uses the generated baseline model to compare bypassing traffic against it.
+After a successful training phase the \gls{ids} uses the generated baseline model to compare bypassing traffic against it.
 If it detects a significant deviation from it, an alert is raise as it indicates unusual network activities.
 For instance if an internal host in an \gls{ip} network, suddenly produces a lot of outbound traffic, which was not the case before, it might indicate an infection on this host.
 This example illustrates two primary drawbacks of purely anomaly-based \glspl{ids}:
@@ -145,7 +145,7 @@ As a result, anomaly-based \glspl{ids} should be combined with other \gls{ids} t
 
 Following the idea of network monitoring with \glspl{ids}, multiple method are being used. They can be roughly classified into active and passive. 
 Active approaches work by injecting additional traffic into the network to obtain certain measurements, like ping or trace-route.
-Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problems within high-speed networks or if network bandwidth is highly limited, like it is in field bus networks. This is especially problematic if information are required to be analysed by an central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth.
+Passive techniques, on the contrary, only observe existing traffic passing by a measurement point and derive measurements from it. The most simple and straight forward passive approach would be packet capturing. Also it provides the most insights into bypassing traffic, since in-depth analysis are possible. However, a full packet capture raises problems within high-speed networks or if network bandwidth is highly limited, like it is in field bus networks. This is especially problematic if information are required to be analysed by a central authority to obtain world-view. The problems arising here include high storage consumption, excessive infrastructure requirements, and unnecessary high utilisation of network bandwidth.
 \parencite{Hofstede2014}
 Especially the additional high network utilisation is of notable concern in field bus networks used in \glspl{bas}. Effectively doubling the traffic in the sub-lines, as well as routing the monitoring traffic to central place would not only at least half free bus capacity, but would also render network separation (cf. Section~\ref{sec:background:bas:knx:security}) useless. Consequently, soften the security in the network and possibly decreasing the responsiveness of commands dramatically.
 
@@ -262,10 +262,10 @@ If a new data point lies outside of the this boundary it is considered an \emph{
 \end{comment}
 
 Among the techniques which can be used for clustering and hence for anomaly detection \gls{knn} is one of the more established ones, initially published by \textcite{Fix1951}.
-The problem is described, that for any given collection of data points in an m-dimensional metric feature space, to find the k nearest data points for an arbitrary query point. \parencite{Beyer1999}
+The problem is described, that for any given collection of data points in a m-dimensional metric feature space, to find the k nearest data points for an arbitrary query point. \parencite{Beyer1999}
 It consequently uses the proximity of data points within the feature space, allowing \gls{knn} to work with unlabelled unclean data, making it a class one technique according to \textcite{Hodge2004}. (cf. Section~\ref{sec:background:network:ids:anomaly})
 
-To determine if the query point is located in an sparse area, meaning it is an outlying observation, the sum of the distance to the k-nearest neighbours is calculated.
+To determine if the query point is located in a sparse area, meaning it is an outlying observation, the sum of the distance to the k-nearest neighbours is calculated.
 Data points with in denser area, representing \emph{normality}, will have shorter distances to their neighbours. 
 Whereas \emph{outliers} reside in sparse areas, and will consequently have larger distances to their neighbours. \parencite{Eskin2002}
 

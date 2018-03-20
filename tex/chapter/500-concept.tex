@@ -43,7 +43,7 @@ A decision is made deliberately against using a state-based \gls{ids} approach, 
 Furthermore, a part of this concept is dedicated to design a rudimentary software architecture to monitor \gls{bas} efficiently.
 Therefore, to enable scalability and on-line detection, the proposed framework was designed around the message-passing design principle.
 This allows for an easily scalable deployment, strongly capsules application modules, and handles recovery after crashes without data-loss.
-Especially the later two are not only desired characteristics of an production system, but also speed up development and testing rapidly.
+Especially the later two are not only desired characteristics of a production system, but also speed up development and testing rapidly.
 
 Following \textcite{Celeda2012}, this thesis also bases the proposed \gls{ids} on flow-data.
 Novel compared to prior examples in literature (cf. Chapter~\ref{sec:background:prior-work}) is the focus of passing the flow-data from the Agent to the collector in-band. By doing so, there is no requirement for additional network wiring, which results in easier and possibly cheaper deployment for Agents across the network.
@@ -250,7 +250,7 @@ By having a curated and well defined training periods on clean data, this kind o
 
 During the operational phase this baseline model is used to compare it to the data, captured by the different Agents.
 Due to the message-passing design of the pipeline, it does not matter if a backlog builds up for an Analyser module, as long as it is cause by a temporal limited issue.
-However, it is important to not stick to an first-in first-out principle, but rather favour always the latest data for immediate analysis. This ensures that system stays in fact an online analytical tool and does not build up a large lack. Not to mention, that skipped windows should be analysed once the load is reduced again.
+However, it is important to not stick to a first-in first-out principle, but rather favour always the latest data for immediate analysis. This ensures that system stays in fact an online analytical tool and does not build up a large lack. Not to mention, that skipped windows should be analysed once the load is reduced again.
 It is to note, that this behaviour might introduce the risk of missing attacks or general malicious activities, when to many windows are skipped.
 Nevertheless, following the basic assumption, that malicious activities significantly and noticeably alter the behaviour of the network, they should be detectable even when some windows are not analysed immediately. Moreover, the performance of the analytical infrastructure should be scaled with the requirements, so that a backlog is generated only in rare cases, if at all.
 
@@ -297,7 +297,7 @@ Most clustering or machine learning algorithms use feature vectors as inputs, in
 In the here proposed concept a feature vector is used to represent each window received from all Agents. Each statistical distribution captured in the window will be one feature, which is encoded into multiple dimensions each using adopted versions of One-Hot encoding or Feature Hashing. (cf. Sections~\ref{sec:background:network:features:onehot}~and~\ref{sec:background:network:features:hashing})
 Instead of binary values the resulting dimensions will rather contain probabilities, in order to map the statistical information into the feature space.
 
-Also individual features will be normalised against their maximum within the time window, as they are not reflecting an \emph{true} or \emph{false} state, but rather the percentage of occurrence.
+Also individual features will be normalised against their maximum within the time window, as they are not reflecting a \emph{true} or \emph{false} state, but rather the percentage of occurrence.
 It was decided against using absolute values for normalising the individual features, since this would introduce many different value ranges into the feature vector, which distorts the balance of weights between different fields.
 E.g. the priority would weight more, since it is encode with a narrow value range from 1 to 4 and consequently there are more packets with priority 2, then there are packets addressed to a specific physical address. The result would be an unwanted weight shift towards favouring priority as a feature.
 By normalising to a local maximum, instead of a global fixed maximum, the composition of the windows is compared, instead of the absolute appearance of features.
@@ -411,7 +411,7 @@ This makes it very general and less sensitive.
 Contrasting this the Agent models are as specific as possible, resulting in a narrower decision surface and a much higher sensitivity.
 This separation allows an operator to distinguish, if an attacker uses artificially crafted packets to perform malicious activities in the network, but also if normal appearing packets are re-played or injected in a line where these packets are alien.
 
-During the training phase a regression algorithm is used to find one or multiple mathematical functions forming an decision surface, so all data points from the training set are contained.
+During the training phase a regression algorithm is used to find one or multiple mathematical functions forming a decision surface, so all data points from the training set are contained.
 The seasonal sensitivity is hereby archived in the same way as it is in the \gls{lof} Analyser module. The proximity-based nature allows to separate clusters just along one dimension and the used regression algorithm should be capable of forming multiple clusters as well. Therefore time can be encoded as relative time point within the chosen season period.
 
 Once the training is completed, the derived functions can be used during normal operations to identify outliers.
@@ -500,7 +500,7 @@ Consequently, visual representations of certain system characteristics allow to 
 The most obvious visualisation is to plot these values as a time series graph, which allows to estimate the change of a measurement over time.
 Additionally, graphs visualising the amount of packets per source or destination address, or the amounts of packets per application could be visualised as bar graph.
 Based on these graphs and plots alerting rules and threshold can be defined.
-However, the exact visualisation setup and alerting rules should be always adapted to the specific use case and network, so it is makes little sense to provide an distinct and fixed setup here.
+However, the exact visualisation setup and alerting rules should be always adapted to the specific use case and network, so it is makes little sense to provide a distinct and fixed setup here.
 
 Since the problem of monitoring and alerting is a well solved one, it is very feasible to rely on existing standards and third-party solutions for this task and follow the principle of decoupling modules from each other.
 This reduces also the scope of this work, and as a result also the code base which needs to be maintained for this project.
