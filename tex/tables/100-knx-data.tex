@@ -1,6 +1,6 @@
 % KNX data telegram structure for standard and extended
 
-\begin{table}
+\begin{table}[p]
 	\aboverulesep=0ex
 	\belowrulesep=0ex
 	\renewcommand{\arraystretch}{1.2}
@@ -21,11 +21,11 @@
 		Bit & & & & & & & & & & & & & & & & & & & & & & & & \\\midrule
 		Function & \multicolumn{16}{c|}{Payload $n+1$ Bytes} & \multicolumn{8}{c|}{Parity} \\\bottomrule
 	\end{tabularx}
-	\caption[Standard \knx data telegram]{Standard \knx data telegram with $2$ to $16$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
+	\caption[Standard KNX data telegram]{Standard \acs{knx} data telegram with $2$ to $16$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Address Type (AT), Hop Count (Hops), Payload Length (Length), Payload, and Parity.}
 	\label{tab:background:bas:knx:proto:knx-standard}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 	\aboverulesep=0ex
 	\belowrulesep=0ex
 	\renewcommand{\arraystretch}{1.2}
@@ -50,6 +50,6 @@
 		Bit & & & & & & & & & \multicolumn{16}{c|}{ } \\\cmidrule{1-9}
 		Function & \multicolumn{8}{c|}{Parity} & \multicolumn{16}{c|}{ } \\\bottomrule
 	\end{tabularx}
-	\caption[Extended \knx data telegram]{Extended \knx data telegram with $2$ to $255$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
+	\caption[Extended KNX data telegram]{Extended \acs{knx} data telegram with $2$ to $255$ bytes of payload. Control Byte (CTRL) cf. Table~\ref{tab:background:bas:knx:proto:ctrl}, Extended Control Byte (CTRLE) cf. Table~\ref{tab:background:bas:knx:proto:ctrle}, Source Address, Destination Address cf. Table~\ref{tab:background:bas:knx:topo:addr}, Payload Length (Length), Payload, and Parity.}
 	\label{tab:background:bas:knx:proto:knx-extended}
 \end{table}

@@ -48,6 +48,7 @@ Especially in commercial buildings room requirements might change regularly, and
 One of the most commonly used systems for building automation systems in Germany and Europe is \Gls{knx} or Konnex. Formerly known as the \gls{eib}, \gls{knx} is ab association of multiple building automation vendors, co-operating in the KNX Association. %\footnote{\url{https://www.knx.org/}}
 It was designed to substitute traditional electrical installations and to implement functions and processes in an automated fashion. \parencite{Merz2009}
 
+\newpage
 The \gls{knx} protocol is defined in the DIN EN 50090 family and can the transmitted over various physical media. Among those physical layers are \gls{knx} over twisted pair (KNX.TP), \gls{knx} over power line (KNX.PL) and \gls{knx} over radio (KNX.RF). Especially, KNX.PL and KNX.RF are intended for retrofitting older buildings.
 Another more recent addition is KNX/IP, which transports the \gls{knx} physical layer over an \gls{ip} network and can be used to bridge multiple \gls{knx} lines, connect a central control unit, or to program \gls{knx} devices via the \gls{ets} software.
 \parencite{Merz2009}
@@ -119,21 +120,21 @@ The logical structure builds on top of the physical topology and is intended to 
 Each device is directly connected to a line, which can accommodate up to 256 devices, if supported by all devices on the line. Alternatively, up to 64 devices can be in one line segment before line repeater is required. (cf. Table~\ref{tab:background:bas:knx:topo:tpsegments})
 Most \gls{knx} devices still follow the TP1-64 specification. Due to the high market fragmentation devices are often not mark in regards of supporting either TP1-64 or TP1-256, therefore it is still recommended to only use 64 devices within a line segment. \alert{sentence too long?} Thus, a full logical line is advised to be build using three line repeater. \parencite{Sokollik2017,Merz2009}
 
-\input{tables/100-knx-segments.tex}
-
 Usually a line coupler is installed as a line repeater. A line coupler is an active device to connect one logical level of the \gls{knx} network to another one, which can be one line segment to another line segment.
 However, their original purpose is to separate the different levels of the logical \gls{knx} topology, explicitly to attach a line to the main line of an area or to attach a main line to the backbone. (cf. Figure~\ref{fig:background:knx:topo})
 An area is formed by combining up to 16 lines: one main line and 15 sub-lines. All main lines are then connected to a backbone line, again via area couplers. \parencite{Sokollik2017}
+
+\input{tables/100-knx-segments.tex}
 
 As active devices line couplers are assigned addresses, and are able to filter traffic by addresses similar to \gls{ip} router. %usually with device number 0 in case it connects a line to backbone line.
 Further couplers provide galvanic isolation to mitigate damages by high voltages, shorted circuits, etc. As a result multiple power supplies are required, basically one for each line segment.
 An important feature to be aware of, when using line couplers, is that a \gls{knx} telegram can only be routed over six hops. This was introduced to prevent high network load in case of cyclic routing, comparable to the time to live in IP based networks. \parencite{Sokollik2017}
 
 \input{tables/100-knx-addr.tex}
-
+\newpage
 Additional to the physical address each devices is assigned, devices may listen to group addresses.
-\todo{describe layers/modes of group addresses?}
 Whereby physical addresses are used to communicate with one specific device, which is common during installation, throughout normal operation mostly group addresses are used. As the name implies multiple devices may listen to such an address, allowing one light switch to turn on or off multiple lights for instance.
+Both physical and group addresses can be split with different granularity. Most commonly it is distinguished between three different levels as shown in Table~\ref{tab:background:bas:knx:topo:addr}, but also only two levels are possible.
 
 % ------------------------------------------------------------------------------	
 \subsubsection{KNX Protocol}
@@ -177,10 +178,6 @@ Once received and successfully processed, the recipient replies then with an ack
 
 The extended data telegram introduces another header byte after \gls{ctrl}, the \gls{ctrle} header byte. It contains information otherwise encoded together with the payload length like the destination address type and the hop count, thus it allows the payload length to encoded as a full byte, ranging up to 255. (see Table~\ref{tab:background:bas:knx:proto:ctrle})
 
-\input{tables/100-knx-data.tex}
-\input{tables/100-knx-ctrl.tex}
-\input{tables/100-knx-ctrle.tex}
-
 %\subsubsection{Acknowledge Telegram}
 \paragraph{Acknowledge Telegram}
 \label{sec:background:bas:knx:proto:ack}
@@ -192,16 +189,12 @@ Supposed a busy signal occurred, the sender adds a waiting period before attempt
 Given, the sender does not receives any form of acknowledge telegram within 13 bit times, it resends the telegram also up to three times.
 In case the sender addressed the original telegram to multiple devices by using a group address as destination, the acknowledge frame is send simultaneously by all recipients. Due to the bus characteristic of being normally high (1), a negative acknowledge or busy signal overrules a positive acknowledge, since \code{BUSY} and \code{NACK} are encoded with low bits (0). \parencite{Merz2009,Sokollik2017}
 
-\input{tables/100-knx-ack.tex}
-
 %\subsubsection{Poll Telegram}
 \paragraph{Poll Telegram}
 \label{sec:background:bas:knx:proto:poll}
 
 The poll telegram allows to poll one byte of data from up to 15 devices, however, it is seldom used in \gls{knx} networks. It consists of a poll data request frame (cf. Table~\ref{tab:background:bas:knx:proto:knx-poll}) and a poll data response frame. Former starts the poll telegram and sets the group address to query, also it defines how many bytes to receive.
 The poll data response consists of each device sending one byte on the bus without starting a new telegram. The responding devices are doing so in a prior configured time slot. \parencite{Hubner2009,DIN_EN_50090-5-2}
-
-\input{tables/100-knx-poll.tex}
 
 \subsubsection{KNX Communication}
 \label{sec:background:bas:knx:communication}
@@ -246,6 +239,11 @@ Therefore any \gls{dpt} declares a single combination of format, encoding, range
 
 Each \gls{dpt} is identified by a 16 bit main number and a 16 bit sub-number, separated by a dot. The main number describes the format and encoding and consequently the sub-number describes range and unit. As a result, \glspl{dpt} with the same main number share the format and encoding.
 
+\input{tables/100-knx-data.tex}
+\input{tables/100-knx-ctrle.tex}
+\input{tables/100-knx-ctrl.tex}
+\input{tables/100-knx-ack.tex}
+\input{tables/100-knx-poll.tex}
 \input{tables/100-knx-tpci-apci.tex}
 	
 \subsubsection{KNX Management Procedures}
@@ -272,6 +270,7 @@ They mainly provide routines to configure addresses, read serial numbers, get fu
 Secondly, there are device management procedures, which require in depth knowledge of the devices. \parencite[pp.~30~ff.]{DIN_EN_50090-7-1}
 These are used to i.e. configure devices, restart them, and verify the configuration.
 
+\newpage
 \subsubsection{Security in KNX}
 \label{sec:background:bas:knx:security}
 
