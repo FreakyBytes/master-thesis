@@ -148,7 +148,7 @@
 \label{app:reproduce}
 
 Before attempting to build the sources, please ensure that following software packages are installed and working:
-\code{Git}, \code{Docker}, \code{Docker-Compose}, \code{Python 3}, and \code{pip for Python 3}.
+\code{Git}, \code{Docker 17.05.0-ce}, \code{docker-compose 1.19.0}, \code{Python 3.6.4+}, \code{Virtualenv 13.1.2}, and \code{pip 9.0.1}.
 
 All described steps were developed and tested on
 \code{Linux 4.14.0-3-amd64 \#1 SMP Debian 4.14.17-1 (2018-02-14) x86\_64 GNU/Linux}.\\
@@ -169,7 +169,7 @@ Alternative platforms might need adjustments to the build scripts or steps.
 	keywordstyle={},
 }
 
-\section{Building and Installing the Prototype}
+\section{Build and Install the Prototype}
 \label{app:reproduce:build}
 
 \begin{enumerate}
@@ -189,7 +189,154 @@ git submodule init
 git submodule update
 \end{lstlisting}
 		\end{enumerate}
+	\item Create a temporary Python 3 virtual environment, the directory should be changed for more permanent installations
+\begin{lstlisting}
+virtualenv -p $(which python3) /tmp/bob-venv
+\end{lstlisting}
+	\item Activate the virtual environment. \textbf{This step must be repeated whenever a new terminal session is started.}
+\begin{lstlisting}
+source /tmp/bob-venv/bin/activate
+\end{lstlisting}
+	\item Install the \gls{baos} parser library
+\begin{lstlisting}
+pip install --process-dependency-links --editable src/baos-knx-parser
+\end{lstlisting}
+	\item Install the \code{BOb} command line tool
+\begin{lstlisting}
+pip install --process-dependency-links --editable src/bas-observe
+\end{lstlisting}
+	\item Check if everything was installed correctly
+\begin{lstlisting}
+bob --help
+\end{lstlisting}
 \end{enumerate}
+
+\section{Setup Required Services}
+\label{app:reproduce:services}
+
+\begin{enumerate}
+	\item Start a new terminal session, not using the virtual environment
+	\item Ensure the docker daemon is up and running
+\begin{lstlisting}
+docker info
+\end{lstlisting}
+	\item Navigate in from the main repository to the \code{bas-observe} submodule's \code{docker} directory
+\begin{lstlisting}
+cd src/bas-observer/docker
+\end{lstlisting}
+	\item Start the services in the background using \code{docker-compose}
+\begin{lstlisting}
+docker-compose up -d
+\end{lstlisting}
+	\item Check the status of the container
+\begin{lstlisting}
+docker-compose ps
+\end{lstlisting}
+	\item Optionally, monitor the log output from \code{InfluxDB}, \code{RabbitMQ}, and \code{Grafana}
+\begin{lstlisting}
+docker-compose logs -f --tail=200
+\end{lstlisting}
+	\item Log into \code{Grafana} by navigating to \url{http://localhost:3000/} using a web browser\\
+		Username: \code{admin}\\
+		Password: \code{testpw}
+	\item Import the pre-made dashboards, by navigating to \emph{create} shown as a plus on the left side, and then \emph{Import}
+	\item Upload \code{src/bas-observer/docker/grafana-bob-dashboard-avg.json}
+	\item Repeat the upload for \code{src/bas-observer/docker/grafana-bob-dashboard-sum.json}
+\end{enumerate}
+
+\section{Train the Models}
+\label{app:reproduce:train}
+
+\begin{enumerate}
+	\item Ensure the services are set up and are running, according to Appendix~\ref{app:reproduce:services}
+	\item Activate the virtual environment if necessary, this needs to be repeated for every new terminal session
+\begin{lstlisting}
+source /tmp/bob-venv/bin/activate
+\end{lstlisting}
+	\item Start the Collector
+\begin{lstlisting}
+bob -l INFO --project test collector -a agent0
+\end{lstlisting}
+	\item Start the the Simulator Agent to import the training dataset
+\begin{lstlisting}
+bob -l INFO --project test simulate --dump-format new --agent agent0 0 0 data/dataset_training.csv
+\end{lstlisting}
+	\item To accelerate the import process additional Collectors can be started, without relaying function
+\begin{lstlisting}
+bob -l INFO --project test collector -a agent0 --no-relay
+\end{lstlisting}
+	\item Wait until every every window is processed by the Collector\\ (not just until the Simulator Agent terminates)
+	\item Train the four different models
+		\begin{enumerate}
+			\item \gls{lof} Analyser
+\begin{lstlisting}
+bob -l DEBUG --project test train lof --start "2012-02-27T00:00:00" --end "2012-02-27T01:00:00" -m models/lof_model.json
+\end{lstlisting}
+			\item \gls{svm} Analyser
+\begin{lstlisting}
+bob -l DEBUG --project test train svm --start "2012-02-27T00:00:00" --end "2012-02-27T01:00:00" -m models/svm_model.json
+\end{lstlisting}
+			\item Entropy Analyser
+\begin{lstlisting}
+bob -l DEBUG --project test train entropy --start "2012-02-27T00:00:00" --end "2012-02-27T01:00:00" -m models/entropy_model.json
+\end{lstlisting}
+			\item Address Analyser
+\begin{lstlisting}
+bob -l DEBUG --project test train addr --start "2012-02-27T00:00:00" --end "2012-02-27T01:00:00" -m models/addr_model.json
+\end{lstlisting}
+		\end{enumerate}
+\end{enumerate}
+
+\section{Analyse the Validation and Test Datasets}
+\label{app:reproduce:run}
+
+\begin{enumerate}
+	\item Ensure the services are set up and are running, according to Appendix~\ref{app:reproduce:services}
+	\item Activate the virtual environment if necessary, this needs to be repeated for every new terminal session
+\begin{lstlisting}
+source /tmp/bob-venv/bin/activate
+\end{lstlisting}
+	\item Start the Collector
+\begin{lstlisting}
+bob -l INFO --project test collector -a agent0
+\end{lstlisting}
+	\item Additional Collector can be started to speed up the processing
+\begin{lstlisting}
+bob -l INFO --project test collector -a agent0 --no-relay
+\end{lstlisting}
+	\item Start all Analyser modules
+		\begin{enumerate}
+			\item \gls{lof} Analyser
+\begin{lstlisting}
+bob -l INFO --project test analyse lof -m models/lof_model.json
+\end{lstlisting}
+			\item \gls{svm} Analyser
+\begin{lstlisting}
+bob -l INFO --project test analyse svm -m models/svm_model.json
+\end{lstlisting}
+			\item Entropy Analyser
+\begin{lstlisting}
+bob -l INFO --project test analyse entropy -m models/entropy_model.json
+\end{lstlisting}
+			\item Address Analyser
+\begin{lstlisting}
+bob -l INFO --project test analyse addr -m models/addr_model.json
+\end{lstlisting}
+		\end{enumerate}
+	\item Import the validation dataset
+\begin{lstlisting}
+bob -l INFO --project test simulate --dump-format new --agent agent0 0 0 data/dataset_validation.csv
+\end{lstlisting}
+	\item Import the test dataset
+\begin{lstlisting}
+bob -l INFO --project test simulate --dump-format new --agent agent0 0 0 data/dataset_test.csv
+\end{lstlisting}
+\end{enumerate}
+
+\begin{comment}
+\begin{lstlisting}
+\end{lstlisting}
+\end{comment}
 
 \chapter{CD-ROM with Software and Data}
 \label{app:disk}
