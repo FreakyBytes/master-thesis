@@ -116,7 +116,7 @@ The Entropy Analyser mostly calculates a entropy of infinity, which is here enco
 		\label{fig:results:\figprefix:svm}
 	\end{subfigure}
 	
-	\caption[Detection Results of Unusual Network Traffic]{Detection Results of Unusual Network Traffic from 2017-02-12 02:00 to 09:00 with a minimal time resolution of 2 minutes. The modified time range is marked as a grey box.}
+	\caption[Detection results of unusual network traffic]{Detection results of unusual network traffic from 2017-02-12 02:00 to 09:00 with a minimal time resolution of 2 minutes. The modified time range is marked as a grey box.}
 	\label{fig:results:\figprefix}
 	
 \end{figure}
@@ -144,7 +144,7 @@ The Entropy Analyser mostly calculates a entropy of infinity, which is here enco
 \subsection{Detection of a DoS Attack}
 \label{sec:results:results:dos}
 
-The second modification applied to the test dataset, included a \gls{dos} attack, which flooded the entire line \code{3.4} with \code{A\_Restart} telegrams. As to expect the amount of telegrams with unknown addresses and count of unknown addresses increase rapidly, as shown in Figure~\ref{fig:results:dos:tc} and~\ref{fig:results:dos:addr}. This clearly indicates an anomaly, since the threshold for unknown addresses within the network should be set to zero.
+The second modification applied to the test dataset, included a \gls{dos} attack, which flooded the entire line \code{3.4} with \code{A\_Restart} telegrams. As expect the amount of telegrams with unknown addresses and count of unknown addresses increase rapidly, as shown in Figure~\ref{fig:results:dos:tc} and~\ref{fig:results:dos:addr}. This clearly indicates an anomaly, since the threshold for unknown addresses within the network should be set to zero.
 
 Figure~\ref{fig:results:dos:outlier} illustrates, that the \gls{lof} and \gls{svm} outlier detection reacted equally prompt, by both classifying all windows during the entire period of the attack as outlier.
 This is also reflected by the underlying metrics. The maximum of the \gls{lof} in Figure~\ref{fig:results:dos:lof} stays low during the entire attack. Similarly, the distance to the decision surface of the \gls{svm} resides in the high negatives implying a huge divergence from the normality.
@@ -194,7 +194,7 @@ The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at
 		\label{fig:results:\figprefix:svm}
 	\end{subfigure}
 	
-	\caption[Detection Results of a DoS]{Detection Results DoS attack from 2017-02-13 08:40 to 09:50 with a minimal time resolution of 2 minutes. The time range of the attack is marked as a grey box.}
+	\caption[Detection results of the DoS attack]{Detection results DoS attack from 2017-02-13 08:40 to 09:50 with a minimal time resolution of 2 minutes. The time range of the attack is marked as a grey box.}
 	\label{fig:results:\figprefix}
 	
 \end{figure}
@@ -274,7 +274,7 @@ The calculated entropy compared to the training data is continuously infinite, m
 		\label{fig:results:\figprefix:svm}
 	\end{subfigure}
 	
-	\caption[Detection Results of a Network Scan]{Detection Results of Network Scan from 2017-02-13 20:45 to 21:17 with a minimal time resolution of 30 seconds. The time range of the attack is marked as a grey box.}
+	\caption[Detection results of the network scan]{Detection results of the network scan from 2017-02-13 20:45 to 21:17 with a minimal time resolution of 30 seconds. The time range of the attack is marked as a grey box.}
 	\label{fig:results:\figprefix}
 	
 \end{figure}
@@ -360,7 +360,7 @@ The persistence and response time can not be taken into account for this modific
 		\label{fig:results:\figprefix:svm}
 	\end{subfigure}
 	
-	\caption[Detection Results of New Devices]{Detection Results of New Devices from 2017-02-13 23:00 to 2017-02-15 01:00 with a minimal time resolution of 10 minutes. The time range of the modification is marked as a grey box.}
+	\caption[Detection results of new devices]{Detection results of new devices from 2017-02-13 23:00 to 2017-02-15 01:00 with a minimal time resolution of 10 minutes. The time range of the modification is marked as a grey box.}
 	\label{fig:results:\figprefix}
 	
 \end{figure}
@@ -460,3 +460,8 @@ Moreover, the trained model requires the most disk space with $151 MiB$, even th
 
 Lastly, the Address Analyser does not rely on the feature vector, it rather compares the observed addresses to a pre-trained list of known addresses. This is a good supplement and an easy way to discover new unknown devices and also to recognise attacks like network scans, which relies on probing all addresses within a specific range.
 By relying on this simple working principle it only requires a small model with $1.4 KiB$ and is not computational intensive, neither during training nor operation.
+
+In conclusion, the \gls{svm} Analyser seems to be the most proficient choice among the machine learning approaches. It stands out by detecting the most attacks clearly and with low background noise. Further, the trained model is small in size making it rather portable. 
+In comparison to the \gls{svm} Analyser, the results of the \gls{lof} module are characterised by high background noise. The \gls{lof} metric itself, however, suggests potential to reduce this noise and increase the clarity of detection, if the algorithm can be tuned more.
+Furthermore, it seems to be rather implausible to utilise the Entropy Analyser in the here presented form, as it is not fit to evaluate or detect any kind of anomaly.
+In contrast to the machine learning approaches the Address Analyser focusses on one specific feature and archives even better detection results than the \gls{svm} Analyser, when the attack involves unknown addresses.

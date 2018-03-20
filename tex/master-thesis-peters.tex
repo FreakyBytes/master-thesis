@@ -1,11 +1,11 @@
-% !TeX spellcheck = en_US
+% !TeX spellcheck = en_GB
 \documentclass[12pt, a4paper, titlepage, oneside]{book}
 \usepackage[a4paper, margin=3cm]{geometry}
 
 %
 \usepackage[utf8]{inputenc}			% utf-8, bitches
 \usepackage[T1]{fontenc}			% das Trennen der Umlaute
-\usepackage[english]{babel}			% word wrapping
+\usepackage[english,ngerman]{babel}	% word wrapping
 
 \usepackage{parskip}				% makes paragraph spacing nicer
 \usepackage{setspace}				% more spacing control
@@ -102,7 +102,7 @@
 % ------------------------------------------------------------------------------
 % Titel
 % 
-\newcommand{\thedate}{\today}					% TODO change before handing in
+\newcommand{\thedate}{2017-03-21}					% TODO change before handing in
 \newcommand{\theauthor}{Martin Peters}
 \newcommand{\thetitle}{Analysis of Distributed In-Band Monitoring Messages for Field Bus Networks in Building Automation Systems}
 
@@ -185,12 +185,15 @@
 	\label{sec:methods}
 	\input{chapter/400-methods.tex}
 	
-	\chapter{Conceptual Architecture}
+	%\chapter{Conceptual Architecture}
+	\chapter[Concept of an IDS for Building Automation Systems]{Concept of an Intrusion Detection System for Building Automation Systems}
+	\chaptermark{Concept}
 	% concept
 	\label{sec:concept}
 	\input{chapter/500-concept.tex}
 	
-	\chapter{Prototype Implementation}
+	\chapter[Implementation of a Prototype]{Implementation of a Prototype IDS for Building Automation Systems}
+	%\chaptermark{Prototype Implementation}
 	\label{sec:impl}
 	\input{chapter/600-prototype-implementation.tex}
 	
@@ -210,7 +213,7 @@
 	\pagenumbering{gobble}  % turn off page numbering for this page
 	
 	\chapter*{Selbstständigkeitserklärung}
-	Hiermit erkläre ich Martin Peters, dass ich die vorliegende Masterarbeit selbständig angefertigt habe. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut habe ich als solches kenntlich gemacht.
+	Hiermit erkläre ich, Martin Peters, dass ich die vorliegende Masterarbeit selbständig angefertigt habe. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemä\ss \ übernommenes Gedankengut habe ich als solches kenntlich gemacht.
 	\\[64pt]
 	\noindent Rostock, \thedate
 	\begin{flushright}

@@ -15,7 +15,7 @@
 	\end{itemize}
 \end{comment}
 
-With the ever increasing amount of requirements and complexity with regards to monitoring and controlling lights, \gls{hvac}, and other aspects in private and commercial buildings, more versatile and flexible wiring and control solutions are required. 
+With the ever increasing amount of requirements and complexity with regards to monitoring and controlling lights, \acs{hvac}, and other aspects in private and commercial buildings, more versatile and flexible wiring and control solutions are required. 
 Additionally, more flexible solutions offer possibilities like comfort functions, increased energy efficiency, and ease of maintenance. \parencite{Merz2009}
 These functions are provided by modern \glsfirst{bas} and networks.
 Especially in commercial buildings room requirements might change regularly, and hence systems in these buildings should be designed to accommodate such changes. \parencite{Merz2009} \todo{more?}
@@ -45,18 +45,19 @@ Especially in commercial buildings room requirements might change regularly, and
 	\end{itemize}
 \end{comment}
 
-One of the most commonly used systems for building automation systems in Germany and Europe is \Gls{knx} or Konnex. Formerly known as the \gls{eib}, \gls{knx} is ab association of multiple building automation vendors, co-operating in the KNX Association.\footnote{\url{https://www.knx.org/}}
+One of the most commonly used systems for building automation systems in Germany and Europe is \Gls{knx} or Konnex. Formerly known as the \gls{eib}, \gls{knx} is ab association of multiple building automation vendors, co-operating in the KNX Association. %\footnote{\url{https://www.knx.org/}}
 It was designed to substitute traditional electrical installations and to implement functions and processes in an automated fashion. \parencite{Merz2009}
 
 The \gls{knx} protocol is defined in the DIN EN 50090 family and can the transmitted over various physical media. Among those physical layers are \gls{knx} over twisted pair (KNX.TP), \gls{knx} over power line (KNX.PL) and \gls{knx} over radio (KNX.RF). Especially, KNX.PL and KNX.RF are intended for retrofitting older buildings.
 Another more recent addition is KNX/IP, which transports the \gls{knx} physical layer over an \gls{ip} network and can be used to bridge multiple \gls{knx} lines, connect a central control unit, or to program \gls{knx} devices via the \gls{ets} software.
 \parencite{Merz2009}
 
-As a result, \gls{knx} twisted-pair is the most commonly used installation method and is defined in two flavours. \parencite{DIN_EN_50090-5-2}
+As a result, \gls{knx} twisted-pair is the most commonly used installation method.
+It is defined in two flavours. \parencite{DIN_EN_50090-5-2}
 The older variant TP-0 was derived from the BatiBUS \todo{ref?} and operates at 2400 Baud. However, nowadays most \gls{knx} devices implement TP-1, operating at 9600 Baud, which is a direct successor of \gls{eib}.
 
 One of the most appealing benefits of using \gls{knx} is the ubiquitous availability as world wide accepted DIN standard, which was even amplified as large sections were included in ISO/IEC 14543.
-Following, more devices from multiple vendors are available with a large variety of sensors, actuators, control and regulation solutions, as well as operation and monitoring.
+Thus, more devices from multiple vendors are available with a large variety of sensors, actuators, control and regulation solutions, as well as operation and monitoring.
 
 From an academic point of view the easy availability of the standards, provides a good understanding of the protocol. Therefore allowing for analysis without prior reverse-engineering the protocol.
 Additionally the University of Rostock also uses \gls{knx} in some buildings, which a provides an promising source of test and demo data. \parencite[cf.][]{Mundt2012}
@@ -100,7 +101,8 @@ Due to the ease of accessibility it is therefore used as an example for \gls{bas
 	\end{itemize}
 \end{comment}
 
-To accommodate for the initially mentioned advanced features in building automation systems, like central control and management, improved energy efficiency, or other comfort functions \gls{knx} introduces an additional wiring installation (cf. Section~\ref{sec:background:bas:knx}) next to the conventional mains power line. Both of these installations are galvanically isolated and \gls{knx} merely use mains power for actuators e.g. lights or blinds, since the \gls{knx} devices are powered via the \gls{knx} bus from special \gls{knx} power supply units.
+To accommodate for the initially mentioned advanced features in building automation systems, like central control and management, improved energy efficiency, or other comfort functions \gls{knx} introduces an additional wiring installation (cf. Section~\ref{sec:background:bas:knx}) next to the conventional mains power line. 
+Both of these installations are galvanically isolated and \gls{knx} merely use mains power for actuators e.g. lights or blinds, since the \gls{knx} devices are powered via the \gls{knx} bus from special \gls{knx} power supply units.
 Each power supply is able to power up to 32 or 64 devices, depending on the model.
 As a result, two separate cable installations are required.
 Besides the physical \gls{knx} wiring can be constructed in various forms, like star, tree, or mixed forms, it is strongly advised to ensure that the physical wiring resembles the logical structure of the network. \parencite{Sokollik2017,Merz2009} \todo{visualise Data-Cables vs Topology}
@@ -123,7 +125,7 @@ Usually a line coupler is installed as a line repeater. A line coupler is an act
 However, their original purpose is to separate the different levels of the logical \gls{knx} topology, explicitly to attach a line to the main line of an area or to attach a main line to the backbone. (cf. Figure~\ref{fig:background:knx:topo})
 An area is formed by combining up to 16 lines: one main line and 15 sub-lines. All main lines are then connected to a backbone line, again via area couplers. \parencite{Sokollik2017}
 
-As an active device line couplers are assigned an address, and are able to filter traffic by addresses similar to \gls{ip} router. %usually with device number 0 in case it connects a line to backbone line.
+As active devices line couplers are assigned addresses, and are able to filter traffic by addresses similar to \gls{ip} router. %usually with device number 0 in case it connects a line to backbone line.
 Further couplers provide galvanic isolation to mitigate damages by high voltages, shorted circuits, etc. As a result multiple power supplies are required, basically one for each line segment.
 An important feature to be aware of, when using line couplers, is that a \gls{knx} telegram can only be routed over six hops. This was introduced to prevent high network load in case of cyclic routing, comparable to the time to live in IP based networks. \parencite{Sokollik2017}
 
@@ -234,7 +236,7 @@ The transport layer defines multiple transport layer services, which are encoded
 
 Depending on the category, multiple telegrams might be send in order to establish a connection, e.g. point-to-point, connection oriented.
 Further, these communication modes are used by the \alert{54} different application layer services described in \textcite{DIN_EN_50090-4-1}.
-These application layer service can be used to access and set device states, encoded in \glspl{dpt}, or to configure the device.
+These application layer services can be used to access and set device states, encoded in \glspl{dpt}, or to configure the device.
 Each response needs to match the requests \gls{apci} type and must be send on with the corresponding communication mode allowed for this telegram. \parencite[pp.~9--10]{DIN_EN_50090-4-1}
 
 \glspl{dpt}, in turn, define the structure of the data, which is transported using the application layer services.
@@ -258,11 +260,11 @@ Each \gls{dpt} is identified by an 16 bit main number and an 16 bit sub-number, 
 	\end{itemize}
 \end{comment}
 
-To ensure maximum compatibility among \gls{knx} devices of different vendors, it is not enough to implement the same protocol stack (cf. Section~\ref{sec:background:bas:knx:proto}) and use the same communication services (cf. Section~\ref{sec:background:bas:knx:communication}).
-Moreover, it is also required to share a common set of management and configuration services.
+To ensure maximum compatibility among \gls{knx} devices of different vendors, it is not only sufficient these devices implement the same protocol stack (cf. Section~\ref{sec:background:bas:knx:proto}) and use the same communication services (cf. Section~\ref{sec:background:bas:knx:communication}).
+Moreover, it is also required that they share a common set of management and configuration services.
 This is especially true in an environment like \gls{knx}, where devices need to be fully interchangeable and need to be configurable by a common tool used by electricians.
 
-Therefore the \gls{knx-assoc} specified two sets of management procedure.
+Therefore, the \gls{knx-assoc} specified two sets of management procedure.
 For these procedures dedicated application layer services were defined in \textcite{DIN_EN_50090-4-1}. (cf. Section~\ref{sec:background:bas:knx:communication})
 The first, being called network management procedures, are device independent, which do not require any knowledge or insight of the devices and will work across all vendors and device types. \parencite[pp.~11~ff.]{DIN_EN_50090-7-1}
 They mainly provide routines to configure addresses, read serial numbers, get functions, or to find all devices in programming mode.
@@ -286,7 +288,8 @@ These are used to i.e. configure devices, restart them, and verify the configura
 \end{comment}
 
 With \gls{knx} being so widely used, it is also deployed in security sensitive areas like access control\footnote{\url{http://search-ext.abb.com/library/Download.aspx?DocumentID=2CDC500074M0201&LanguageCode=en&DocumentPartId=&Action=Launch}}, ventilation, or fire alarms\footnote{\url{https://www.knx.org/media/docs/downloads/Marketing/Flyers/KNX-Solutions/KNX-Solutions_en.pdf}}.
-As a consequence it is only sensible to consider not only the operational security, but also the information security of \gls{knx} networks. Meaning, it should not only be assured, that the network is operational at any time, but it needs to be protected against malicious usage or intrusion.
+As a consequence it is only sensible to consider not only the operational safety, but also the information security of \gls{knx} networks. Meaning, it should not only be assured, that the network is operational at any time, but it needs to be protected against malicious usage or intrusion.
+This is especially vital, if gateways to \gls{ip} networks exists as these are easily exposed to the internet.
 
 By design \gls{knx} introduces a zone concept by distinguishing between lines and areas.
 This offers the possibility to limit a potential attack to just one line, because the traffic between lines is filtered by line couplers.
@@ -300,7 +303,8 @@ Another possibility to secure a \gls{knx} network is to enable \gls{s-al}, as de
 As encryption standard \textcite{DIN_EN_50090-3-4} defines \acs{aes}-128 in \gls{ctr} or \gls{ccm} mode.
 Later also functions as authentication. \todo{ensure short formes are used, at least for AES}
 
-Nonetheless it is to note, that \textcite{DIN_EN_50090-3-4} is merely a draft at the point of June 2017, therefore it is not to expect, that available \gls{knx} devices with this capability will be on the market any time soon. This may also be caused by the relatively high life time of devices which are installed permanently in buildings.
+Nonetheless it is to note, that \textcite{DIN_EN_50090-3-4} is merely a draft at the point of June 2017.
+Therefore, it is not to expect, that available \gls{knx} devices with this capability will be on the market any time soon. This may also be caused by the relatively high life time of devices which are installed permanently in buildings, which have an expected lifetime of up to 40 years.
 
 
 % ------------------------------------------------------------------------------
