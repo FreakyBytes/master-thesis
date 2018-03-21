@@ -82,7 +82,7 @@ For instance a state-based \gls{ids} can detect if resources are requested from 
 Unfortunately, the high complexity of tracking the state of each and every connection while simultaneously verifying against a profile is a major drawback of this approach. It requires a lot of processing resources and memory capacity.
 Further, this method is only able to detect violations against a protocol's fundamental behaviour.
 Additionally, the state-based analysis works the best with stateful, connection-oriented protocols, this does not include protocols relying on short, broadcasted, and self-containing commands as they can be found in \gls{bas}. \parencite[p.~306]{Whitman2009}
-	
+
 \subsubsection{Anomaly-based Intrusion Detection Systems (A-IDS)}
 \label{sec:background:network:ids:anomaly}
 	
@@ -156,7 +156,8 @@ It is widely used for \enquote{security analysis, capacity planning, accounting,
 Common protocols used for flow monitoring are \gls{netflow} \parencite{Claise2004} and \gls{ipfix} \parencite{Claise2013}.
 %\todo{not predominantly used for security, but network congestion avoidance/mitigate.}
 
-\begin{figure}
+\newpage
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{figures/200-netflow-architecture.pdf}
 	\caption[Simplified flow monitoring system architecture]{Simplified flow monitoring system architecture. \parencite[cf.][]{Hofstede2014} \todo{adjust font size}}
@@ -245,7 +246,7 @@ The third and last sub-class in Outlier Detection techniques models only the \em
 It requires also pre-labelled data, but compared to the second type it only works with \emph{normal} labelled data points. Consequently the full gamut of \emph{normality} is required to train a precise model. On the other hand no \emph{outlying} data points are required for training, which is highly beneficial in certain, data-sparse, scenarios, when abnormal data is difficult to obtain.
 However, the training data must not contain outliers, otherwise they will be assumed to be a part of \emph{normality}.
 Generally the aim of this approach is to establish a tight boundary around \emph{normality} and is therefore suitable for static as well as dynamic data.
-If a new data point lies outside of the this boundary it is considered an \emph{outlier}, if not it is part of the \emph{normal} data.
+If a new data point lies outside of the this boundary it is considered an \emph{outlier}, if not it is part of the \emph{normal} data. \parencite{Hodge2004}
 
 % ------------------------------------------------------------------------------
 \newpage
@@ -310,6 +311,7 @@ By not relying on a global threshold, the \gls{lof} can account for clusters of 
 \newpage
 \begin{wrapfigure}{l}{0.5\textwidth}
 	\centering
+	\vspace{-5pt}
 	\includegraphics[width=0.5\textwidth,trim={12mm 5mm 15mm 10mm},keepaspectratio,clip]{figures/200-background-lof.pdf}
 	\caption[Example visualisation of the LOF]{Visualisation of the \gls{lof} in a two dimensional vector space. \emph{Green}: trainings data, \emph{Red}: outlier from test data, \emph{White}: inlier from test data. Background indicates the calculated \emph{LOF} value.}
 	\label{fig:background:network:novelty:lof}
@@ -320,6 +322,7 @@ For a productive use, however, a threshold should be determined based on the sam
 An example of the \gls{lof} calculation in a two dimensional vector space containing random test data is illustrated in Figure~\ref{fig:background:network:novelty:lof}.
 The background in this figure indicates the \gls{lof} values for every possible point, whereby a blue background indicates values outside of the threshold for \emph{normality} and a red one marks values within those borders.
 
+\vspace{8pt}
 Moreover, the ability of \gls{lof} to work on unclean data and account for different densities in clusters through locality, makes it a good fit for \gls{ids} solutions, as \textcite{Lazarevic2003} shows.
 Also \textcite{Zanero2004} conducted an experiment on using unsupervised learning algorithms for intrusion detection. They found, that proximity-based approaches like \gls{knn} need to address the problem of locality for some observations, in order to archive more precise predictions. The \gls{lof}, as presented by \textcite{Breunig2000}, focusses on this aspect.
 

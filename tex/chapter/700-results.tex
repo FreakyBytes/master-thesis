@@ -13,7 +13,6 @@ The data was originally recorded between 2017-01-21 and 2017-02-21 on the third 
 Before injecting and analysing the data, it was then split into three parts. The first two weeks are dedicated to train the baseline models for the Analyser modules. The following week was used as validation, to ensure the algorithms are properly fitted to the data. Finally, the last week was modified to contain four scenarios which alter the behaviour of the line, as described in Section~\ref{sec:methods:gen-test}.
 \newpage
 These modifications are meant to resemble plausible attacks on \gls{bas} networks and therefore include:
-
 \begin{enumerate}
 	\item Injecting unusual network traffic by copying traffic from another day and time
 	\item Performing a \gls{dos} attack
@@ -29,11 +28,11 @@ Further, the \gls{lof} Analyser module required more processing time as its coun
 
 In this experiment the feature to simulate multiple Agents, using filter rules, was not used due to the fact that the dataset was merely recorded on one single line. Therefore, a further separation seemed unfeasible, as it would complicate the evaluation of the detection results without providing more insights.
 
+\newpage
 \section{Experiment Results}
 \label{sec:results:results}
 
 Finally, in this section the detection results of the proposed algorithms are examined using the graphs generated with \gls{grafana}. They will be used to determine the quality of the detection results based on five criteria:
-
 \begin{enumerate}
 	\item General ability to the detect the attack
 	\item Differentiation from background noise of the detection results
@@ -137,7 +136,7 @@ The Entropy Analyser mostly calculates a entropy of infinity, which is here enco
 		3. Response time & 0s & 0s & n/a & n/a \\\midrule
 		4. Persistence & n/a & n/a & n/a & n/a \\\bottomrule
 	\end{tabularx}
-	\caption[Detection results of unusual traffic]{Detection results of unusual traffic. Averages are compared to the validation dataset.}
+	\caption[Detection results of unusual traffic]{Detection results of unusual traffic. Difference in averages is calculated against the validation dataset.}
 	\label{tab:results:unusual}
 \end{table}
 
@@ -215,7 +214,7 @@ The entropy, plotted in Figure~\ref{fig:results:dos:entropy}, does not change at
 		3. Response time & 0s & 0s & 0s & n/a \\\midrule
 		4. Persistence & $100$\% & $100$\% & $100$\% & n/a \\\bottomrule
 	\end{tabularx}
-	\caption[Detection results of the DoS attack]{Detection results of the \gls{dos} attack.}
+	\caption[Detection results of the DoS attack]{Detection results of the \gls{dos} attack. Difference in averages is calculated against the validation dataset.}
 	\label{tab:results:dos}
 \end{table}
 
@@ -295,7 +294,7 @@ The calculated entropy compared to the training data is continuously infinite, m
 		3. Response time & n/a & 0s & 0s & n/a \\\midrule
 		4. Persistence & n/a & $100$\% & $100$\% & n/a \\\bottomrule
 	\end{tabularx}
-	\caption[Detection results of the network scan]{Detection results of the network scan.}
+	\caption[Detection results of the network scan]{Detection results of the network scan. Difference in averages is calculated against the validation dataset.}
 	\label{tab:results:scan}
 \end{table}
 
@@ -381,7 +380,7 @@ The persistence and response time can not be taken into account for this modific
 		3. Response time & n/a & ($4.5$h) & ($6.83$h) & n/a \\\midrule
 		4. Persistence & n/a & ($0.54$\%) & ($3.23$\%) & n/a \\\bottomrule
 	\end{tabularx}
-	\caption[Detection results of new devices]{Detection results of two new devices in the network.}
+	\caption[Detection results of new devices]{Detection results of two new devices in the network. Difference in averages is calculated against the validation dataset.}
 	\label{tab:results:newdevice}
 \end{table}
 

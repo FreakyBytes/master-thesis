@@ -90,6 +90,7 @@ Only if the windows were successfully passed into to the message-broker, they ar
 
 In the case one Agent's window is never received by the Collector, it waits a configurable timeout of about $60$ seconds before relaying this window anyway. This ensures that a time slot is analyses even when an Agent fails, regardless of the failure mode. As this is an anomaly, which can be easily queried in the monitoring and alerting system, it is also detected there and consequently not handled in the Collector apart from a warning in the log.
 
+\newpage
 \section{The Agent Simulator}
 \label{sec:impl:agent}
 
@@ -128,6 +129,7 @@ Every time the window length is exceeded in log time, the windows are encode in 
 The statistical window is not based on the feature vector (see Section~\ref{sec:concept:anal:feature-vector}). Instead the appearance of certain features are count, e.g. the source address \code{1.1.15} appeared $15$ times.
 Every further processing, like vectorising and normalising is done in the individual Agent modules.
 
+\newpage
 \section{The Analyser Base Module}
 \label{sec:impl:base}
 
@@ -185,7 +187,6 @@ Once the training phase is complete, all sets (two per Agent) are stored using t
 
 During the operational phase, the model containing all sets is loaded. Following all addresses in incoming windows are compared to their respective address set.
 If an unknown address is discovered a counter will be increased. After a window is processed measurement containing these counters per Agent is pushed to the \gls{influxdb}, which contains:
-
 \begin{itemize}
 	\item amount of unique unknown source addresses
 	\item amount of unique unknown destination addresses
@@ -206,9 +207,9 @@ For more sophisticated analytical modules which use machine learning algorithms,
 Within the proposed concept this means, that a statistical window has to be transformed into a numerical vector representation.
 The basics principle of this is described in Section~\ref{sec:concept:anal:feature-vector}, whereby this section focusses on the details how each feature is encoded.
 It is to note, that a window contains discrete or categorical statistical data describing a set of events, instead of just a single event, meaning the window produced by an Agent contains a number of occurrences over the period of the window.
+
 The feature vector, however, will contain a normalised excerpt of the events' features, whereby each feature is encoded as one or more dimensions.
 Mentioned excerpt of fields contains a set of low level, application independent, and easy to measure fields: 
-
 \begin{itemize}
 	\item seconds of the week
 	\item source address
@@ -226,6 +227,7 @@ Example given the numerical address $2$ would appear twice and the numerical add
 \[
 \dfrac{2 \cdot \begin{pmatrix}1 \\ 0\end{pmatrix} + 3 \cdot \begin{pmatrix}0 \\ 1\end{pmatrix}}{2 + 3} = \begin{pmatrix}0.4 \\ 0.6\end{pmatrix}
 \]
+
 The result is a vector encoding the probability of each bit to occur within this specific window.
 Goal was to reduce the amount of dimension, which would have been necessary when the entirety of possible addresses is mapped into the feature space -- each address using one dimension to encode the possibility of occurrence.
 For the two address types, this would result in $2 \cdot 2^{16} = 2 \cdot 65536 = 131072$ dimensions. By applying this adapted form of the hashing trick (cf. Section~\ref{sec:background:network:features:hashing}) it was possible to reduce it to $2 \cdot 16 = 32$ dimensions.

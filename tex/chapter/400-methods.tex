@@ -64,7 +64,7 @@ The next category of attacks can be classified as manipulation or \emph{reconfig
 Finally, the last category describes \emph{reconnaissance attacks}. These attacks conclude unauthorised detection and mapping of the network and its behaviour. Here only active sweeping approaches are considered, where an attacker probes each individual device in an address range.
 Passive eavesdropping is not considered as it can not be detected on higher protocol levels due to the bus character of the network. (cf. Section~\ref{sec:background:bas:knx:topo})
 
-\section{Generating a Test Dataset including malicious activities}
+\section[Generating a Test Dataset including malicious activities]{Generating a Test Dataset including\\ malicious activities}
 \label{sec:methods:gen-test}
 
 As \gls{bas} automation systems are only seldom considered within threat models, monitoring systems are rarely installed, if at all.
@@ -81,7 +81,7 @@ First, unusual behaviour is injected at 2017-02-12 from 03:00 to 08:00, replacin
 Second, a \gls{dos} attack is performed starting at 2017-02-13 09:00 and targeting the entire line \code{3.4}~. The attack is performed in three bursts of 15 minutes with five minutes break in between. In the \gls{dos} attack a flood of \code{A\_Restart} telegrams with \code{SYSTEM} priority is send, which in reality would cause all targeted devices to restart continuously. Additionally this blocks all other traffic, since the \code{SYSTEM} priority is the highest specified. During the attack the telegrams were injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
 
 As third attack scenario a device scan over the entire possible \gls{knx} address space was performed, starting from 2017-02-13 21:00.
-To determine if a device is present, the management \gls{apci}\break\code{A\_DEVICE\_DESCRIPTOR\_READ} is send to all addresses. Every \gls{knx} device is required to implement certain management routines, among them the query for the device descriptor. \code{A\_DEVICE\_DESCRIPTOR\_READ} is ideal since the requesting telegram does not require any parameters and the response only contains two bytes of additional payload. By choosing a request which is adds as little overhead as possible, the throughput is increased and effectively reducing the time required for the scan. \parencite[cf.][p.~46]{DIN_EN_50090-4-1}
+To determine if a device is present, the management \gls{apci} \code{A\_DEVICE\_DESCRIPTOR\_READ} is send to all addresses. Every \gls{knx} device is required to implement certain management routines, among them the query for the device descriptor. \code{A\_DEVICE\_DESCRIPTOR\_READ} is ideal since the requesting telegram does not require any parameters and the response only contains two bytes of additional payload. By choosing a request which is adds as little overhead as possible, the throughput is increased and effectively reducing the time required for the scan. \parencite[cf.][p.~46]{DIN_EN_50090-4-1}
 Equal to the \gls{dos} attack, the telegrams are injected with a maximum of \(500 \ \sfrac{telegrams}{min}\).
 
 Finally, two new rogue device are introduced with the addresses \code{3.6.26} and \code{3.5.18} during the entire day of 2017-02-14.
@@ -90,12 +90,12 @@ The traffic was injected additional to the normal base-line activity on the targ
 
 The scripts to generate the malicious traffic and the datasets itself can be found on the data disk in Appendix~\ref{app:disk}.
 
+\newpage
 \section{Evaluating the Detection Results}
 \label{sec:methods:eval}
 
 For each crafted attack, the different anomaly detection algorithms are benchmarked with regards to their ability to detect those.
 This ability is classified by following criteria:
-
 \begin{enumerate}
 	\item General ability to detect the attack
 	\item Differentiation from background noise of the detection results
