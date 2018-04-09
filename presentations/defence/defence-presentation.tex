@@ -1,0 +1,82 @@
+\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\documentclass{beamer}
+\providecommand\insertframetitle{}
+
+\usepackage[english]{babel}
+\usepackage{environ}
+\usepackage{graphicx}
+\usepackage[tikz]{bclogo}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{multimedia}
+\usepackage{hyperref}
+\usetikzlibrary{calc}
+\usepackage[utf8]{inputenc}
+\usepackage[overlay,absolute]{textpos}
+\usepackage{xpatch}
+\usepackage{csquotes}
+\usepackage{comment}
+\usepackage{mathtools}
+\usepackage{pgfpages}
+
+\beamertemplatenavigationsymbolsempty
+\makeatletter
+\def\beamer@framenotesbegin{% at beginning of slide
+	\usebeamercolor[fg]{normal text}
+	\gdef\beamer@noteitems{}% 
+	\gdef\beamer@notes{}% 
+}
+\makeatother
+
+\xpatchcmd{\beamer@part}{\Hy@writebookmark{\the\c@section}{#1}{Outline\the\c@part}{1}{toc}}{}{}{}
+\newcommand{\srcsize}{\@setfontsize{\srcsize}{5pt}{5pt}}
+\usepackage[uni, footuni, headframelogo]{./unirostock/beamerthemeRostock}
+\footinstitute{Institute of Computer Science}
+%\footinstitute{Institut für Informatik}
+
+\input{../../tex/shortcuts.tex}
+\input{metadata.tex}
+
+\title[\thetitle]{\themaintitle}
+\subtitle{\thesubtitle}
+\author{\theauthor}
+\date{\thedate}
+
+\usepackage[backend=bibtex, style=numeric,
+	citestyle=numeric,
+	sortcites=true, block=none,	indexing=true,
+	citereset=none, isbn=false,
+	url=true, doi=true, natbib=false,
+	hyperref=true]{biblatex}					% even better citation support
+\addbibresource{bas-sec.bib}
+\addbibresource{standards.bib}
+
+\makeatletter
+\makeatother
+\headLogoTop{standard} % Main-Logo (``hafen'' or ``standard'')
+\secondHeadLogoTop{20}{./res/iuk-logo-farbe.pdf} % Optional: Image for a second logo in the header
+%\showNaviSymbols % show Navi-symbols in the footer
+%\showNaviDots %show Navi-Dots in the header
+\withParts %toogle Pagenumbering with parts on
+%\printmode{handout} % Remove decoration
+
+% Show notes page with slide plus note
+\setbeameroption{show notes}
+\setbeameroption{show notes on second screen=bottom}
+
+\begin{document}
+{
+	\setbeamertemplate{footline}[titlewithoutnumber] %hg%no numbers on first page
+	\maketitle
+	\note{Hello, my name is Martin Peters.}
+}
+
+%\tableofcontents
+
+\input{intro.tex}
+\input{content.tex}
+\input{outro.tex}
+\input{backup-slides.tex}
+
+
+\end{document}
