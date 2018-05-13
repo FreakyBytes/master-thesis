@@ -1,11 +1,36 @@
 % ------------------------------------------------------------------------------
-\part{Backup Slides}
+\section{Backup Slides}
 \label{part:backup}
 
-\section{KNX}
+\subsection{KNX}
 \begin{frame}[c]
 	\centering
-	\LARGE KNX
+	\LARGE Building Automation Systems\\and KNX
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Building Automation Systems}
+	\begin{itemize}
+		\item Installed in an increasing amount of modern buildings
+		\item Serve ever changing requirements for HVAC, energy saving, and monitoring
+		\item \textit{\enquote{[...] optimize energy consumption and enable support and maintenance personnel to carry out their jobs more efficiently}} \parencite{Merz2009}
+	\end{itemize}
+	
+	\note{}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{KNX}
+	\begin{itemize}
+		\item Former European Installation Bus (EIB)
+		\item Widely used in Germany and the wider European Market
+		\item Typically galvanically isolated 2-wire installation next to mains power line
+		\item Addresses separated in 3 Layers: area, line, device
+	\end{itemize}
+	
+	\note{
+		Also KNX power line, KNX-IP, KNX-Wireless
+	}
 \end{frame}
 
 \begin{frame}[c]
@@ -50,16 +75,16 @@
 	\end{itemize}
 	
 	\note{
-	TPCI -> Transport Layer\\
-	APCI -> Application Layer\\
-	multicast am häufigsten
+		TPCI -> Transport Layer\\
+		APCI -> Application Layer\\
+		multicast am häufigsten
 	}
 \end{frame}
 
-\section{Algorithms}
+\subsection{Anomaly Detection Algorithms}
 \begin{frame}[c]
 	\centering
-	\LARGE Algorithms
+	\LARGE Anomaly Detection Algorithms
 \end{frame}
 
 \begin{frame}[c]
@@ -71,30 +96,68 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}[b]
+	\frametitle{Algorithms -- Local Outlier Factor}
+	
+	\centerImage{110\mm}{../../tex/figures/200-breuning2000-figure3.pdf}{Visualisation of the Local Outlier Factor (LOF) theorem 1 by \textcite{Breunig2000}}{fig:top-threats}
+	
+	\note{
+		\begin{itemize}
+			\item Measures the local deviation of density of a given sample compared to its neighbours \parencite{Pedregosa2011}
+			\item How isolated is the object in regards of its surrounding? \\ (k-nearest neighbours)
+			\item Samples with lower density than their neighbours are consider outliers
+			\item Can be trained with unclean data
+		\end{itemize}
+	}
+\end{frame}
+
 \begin{frame}[c]
 	\frametitle{Algorithms -- Local Outlier Factor}
 	
-	\begin{itemize}
-	\item Measures the local deviation of density of a given sample compared to its neighbours \parencite{Pedregosa2011}
-	\item How isolated is the object in regards of its surrounding? \\ (k-nearest neighbours)
-	\item Samples with lower density than their neighbours are consider outliers
-	\item Can be trained with unclean data
-	\end{itemize}
+	\centerImageWithoutCaption{190\mm}{../../tex/figures/200-background-lof.pdf}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Algorithms -- Support Vector Machine}
+	
+	\centerImageWithoutCaption{190\mm}{../../tex/figures/200-background-oneclass.pdf}
+	
+	\note{
+		\begin{itemize}
+			\item RBF -> Radial Basis Function
+			\item OneClass SVM
+			\item Full-Gamut of Clean Data required
+		\end{itemize}
+	}
 \end{frame}
 
 \begin{frame}[c]
 	\frametitle{Algorithms -- Entropy}
 	
 	\begin{itemize}
-	\item Determine statistical distribution of feature vector dimension in training phase
-	\item Calculate Entropy/Information Gain compared to this base distribution
+		\item Determine statistical distribution of feature vector dimension in training phase
+		\item Calculate Entropy/Information Gain compared to this base distribution
 	\end{itemize}
 \end{frame}
 
-\section{Feature Vector}
+\subsection{Feature Vector}
 \begin{frame}[c]
 	\centering
 	\LARGE Feature Vector
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Feature Vector Encoding}
+	
+	\begin{enumerate}
+		\item seconds of the week
+		\item source address
+		\item destination address
+		\item priority
+		\item hop count
+		\item payload length
+		\item APCI
+	\end{enumerate}
 \end{frame}
 
 \begin{frame}[c]

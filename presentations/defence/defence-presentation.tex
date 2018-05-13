@@ -19,6 +19,11 @@
 \usepackage{mathtools}
 \usepackage{pgfpages}
 
+\usepackage{booktabs}				% improvements to LaTeX tables
+\usepackage{tabularx}				% better tables
+\usepackage{multirow}				% for cells spanning multiple rows
+\usepackage{multicol}				% seems to be necessary for multirow?
+
 \beamertemplatenavigationsymbolsempty
 \makeatletter
 \def\beamer@framenotesbegin{% at beginning of slide
@@ -38,9 +43,9 @@
 \input{metadata.tex}
 
 \title[\thetitle]{\themaintitle}
-\subtitle{\thesubtitle}
+\subtitle{for Field Bus Networks\\in Building Automation Systems}
 \author{\theauthor}
-\date{\thedate}
+\date{2018-04-16}
 
 \usepackage[backend=bibtex, style=numeric,
 	citestyle=numeric,
@@ -57,18 +62,24 @@
 \secondHeadLogoTop{20}{./res/iuk-logo-farbe.pdf} % Optional: Image for a second logo in the header
 %\showNaviSymbols % show Navi-symbols in the footer
 %\showNaviDots %show Navi-Dots in the header
-\withParts %toogle Pagenumbering with parts on
+%\withParts %toogle Pagenumbering with parts on
 %\printmode{handout} % Remove decoration
 
 % Show notes page with slide plus note
 \setbeameroption{show notes}
-\setbeameroption{show notes on second screen=bottom}
+\setbeameroption{show notes on second screen=right}
+% covered points do not disappear, but get transparent
+\setbeamercovered{transparent} 
 
 \begin{document}
 {
 	\setbeamertemplate{footline}[titlewithoutnumber] %hg%no numbers on first page
 	\maketitle
-	\note{Hello, my name is Martin Peters.}
+	\note{
+		Hello, my name is Martin Peters.\\
+		Analysis of Distributed In-Band Monitoring Messages for Field Bus Networks in Building Automation Systems\\
+		Entwicklung von Verfahren zur Analyse von Netflows in Feldbussen in der Gebäudeautomation
+	}
 }
 
 %\tableofcontents

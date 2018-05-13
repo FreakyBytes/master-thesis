@@ -1,23 +1,549 @@
 % !TeX spellcheck = en_GB
-
-% ------------------------------------------------------------------------------
 \section{Motivation}
 \begin{frame}[c]
-	\frametitle{Motivation}
+	\frametitle{Security in Industrial Control Systems (ICS)}
 	\begin{itemize}
-		\item Ever increasing inter-linkage of Building-, Automotive-, and Industrial-Networks
-		\item concerns are internal (accidental) threats \parencite{Gregory-Brown2017}
-			\begin{itemize}
-				\item many devices insecure by design
-				\item wide spread legacy technology
-				\item connectivity amplifies threat
-			\end{itemize}
-		%\item \textit{\enquote{[...] threat from nearly every vector identified by ICS security practitioners can be reduced by detailed monitoring of ICS network traffic [...]}} \parencite{Gregory-Brown2017}
+		\item 12\% of ICS experienced a breach
+		\item 40\% of ICS security professionals can not give clear answers
+		\item 69\% consider the threat for ICS severe or high
 	\end{itemize}
+	\vfill
+	{\hfill\footnotesize \textcite{Gregory-Brown2017}}
+	
+	\note{
+		\begin{itemize}
+			\item \textbf{Die Sicherheit von Industrie-Steuerungs-Systemen steht auf dem Spiel}.\\
+			\item Studie aus 2017 vom SANS Institute 
+			\item \textbf{12\%} befragter ICS Sicherheits Exp wurden \textbf{infiltriert}
+			\item weitere \textbf{40\% keine Aussage}
+			\item \textbf{69\%} schätzen die \textbf{Sicherheitsgefahr auf kritisch}
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Security in Industrial Control Systems (ICS)}
+	\centerImage{178\mm}{../../tex/figures/000-gregory-brown2017-threats.png}{Top Threat Vectors in ICS as perceived by security practitioners \parencite{Gregory-Brown2017}}{fig:top-threats}
+	
+	\note{
+		\begin{itemize}
+			\item in der gleichen Studie
+			\item top threat: \textbf{Devices and \enquote{things} added to the network}
+			\item mehr und mehr kleinere Geräte im Netzwerk
+			\item nicht (nur) IoT, sondern industrielle/professionelle Anlagen
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Attacks tailored to Embedded Devices increase}
+	
+	\begin{itemize}
+		\item Stuxnet \parencite{Karnouskos2011}
+		\item Mirai IoT Botnet \parencite{Kolias2017}
+		\item Various exposed and vulnerable ICS devices in IP networks \parencite{Roth2017}
+	\end{itemize}
+	
+	\note{
+		\begin{itemize}
+			\item Anzahl auf Embedded Devices nimmt zu
+			\item Stuxnet -> ICS
+			\item Mirai -> IoT Botnet
+			\item viele Geräte verwundbar und am Internet, Thomas Roth 34C3
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Building Automation Systems (BAS)}
+	
+	\begin{itemize}
+		\item Despite BAS being a part of ICS
+		\item Little work focussing on security BAS
+		\item Prior work focussing on Intrusion Detection in BAS by
+			\begin{itemize}
+				\item \textcite{Yang2006}
+				\item \textcite{Celeda2012}
+				%\item \textcite{Mundt2012}
+				\item \textcite{Pan2014}
+			\end{itemize}
+	\end{itemize}
+
+	\note{
+		\begin{itemize}
+			\item Auch wenn BAS Teil von ICS
+			\item nur wenig Arbeit spezifisch zu Sicherheit in BAS
+			\item Fokus auf Intrusion Detection
+		\end{itemize}
+		
+	}
+\end{frame}
+
+\section{Goals and Objective}
+\begin{frame}[c]
+	\frametitle{Goal}
+	
+	\begin{itemize}
+		\item Increase the security by monitoring BAS
+		\item Gather data of possible security incidents
+		\item Gain insights of those attacks
+	\end{itemize}
+
+	\note{
+		\begin{itemize}
+			\item (Arbeit im Rahmen von Sindabus)
+			\item Übergeordneten Ziele:
+			\item Verbesserung der Allg. Sicherheit von BAS
+			\item Daten über Infektionen und Angriffe sammeln
+			\item Erkenntnisse über Angriffscenarien
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Objective}
+	
+	\begin{itemize}
+		\item Monitor the traffic within BAS
+		\item Maintain minimal interference
+		%\item Do not rely on existing backbones
+		\item Leverage the Netflow concept
+		\item Detect threats and intrusions as anomalies
+		\item Implement and test a prototype
+		\item Determine if an Anomaly-based IDS is a viable concept for BAS
+	\end{itemize}
+	
+	\note{
+		\begin{itemize}
+			\item BAS traffic überwachen
+			\item Minimaler Eingriff \\
+				\subitem \hspace{1cm} Keine Zusätzlichen Installationen
+			\item Netflow
+			\item \emph{Ansatz:} Angriffe als Anomalien erkennen
+			\item Prototyp impl + test
+			\item Ist Anomalie Erkennung sinnvoll in BAS?
+		\end{itemize}
+	}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\section{The Concept}
+
+\begin{frame}[c]
+	\frametitle{KNX as Example}
+	
+	\centerImageWithoutCaption{160\mm}{../../tex/figures/100-knx-demo-topo.pdf}
+	
+	\note{
+		\begin{itemize}
+			\item Schritt zurück
+			\item Gebäude-Automatisierungs-System
+			\item Komfortfunktionen
+			\item ----
+			\item KNX als Beispiel
+			\item 2-Draht Verkabelung parallel zum Stromkreis
+			\item Hier nur logische Struktur wichtig
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{KNX as Example}
+	
+	\centerImageWithoutCaption{160\mm}{../../tex/figures/500-knx-demo-topo-with-agents.pdf}
+	
+	\note{
+		\begin{itemize}
+			\item Idee ist dezentral Infos über Aktivitäten sammeln
+			\item zu zentraler Stelle weiterleiten
+			\item Dazu Agent im Netzwerk
+			\item Collector an zentraler Stelle
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{The Concept}
+	
+	\begin{itemize}
+		\item<1> Deploy \emph{Agents} in the network collecting traffic information over synchronised time windows
+		\item<1-2> Aggregate this information and collect it at a central node
+		\item<1-2> Train baseline-models with captured information
+		\item<1-2> Use aggregated data to detect deviations from these baseline-models as anomalies
+		\item<1-2> Incorporate seasonal sensitivity into those models
+		%\item<1-2> \emph{Build an Intrusion Detection System based on the netflow-idea}
+			
+	\end{itemize}
+
+	\nocite{Jung2018}
+	\note{
+		\begin{itemize}
+			\item Deploy Agents
+			\item Infos in Zeit-abschnitten sammeln
+			\item Infos zentral sammeln
+			\item Infos nutzen um Modelle zu trainieren
+			\item Nutze Modelle um neue Beobachtungen zu bewerten
+			\item Saisonal sensitivität
+			\item ----
+			\item Fokus auf Collector
+			\item Implementation und Evaluariung des Agents Teil von \textbf{Maximilian Jung}s Arbeit
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Limitation of the Scope}
+	
+	\begin{itemize}
+		\item No classifications of attacks
+		\item Focus on anomalies as such
+		\item Privacy implications are acknowledged but not further investigated
+	\end{itemize}
+	
+	\note{
+		\begin{itemize}
+			\item Keine Klassifizierung von Angriffen
+			\item Fokus auf Anomalien als solche \\
+			\subitem \hspace{1cm} Anomalien im \textbf{Nutzerverhalten} auch erkennen
+			\item keine Betrachtung des Datenschutzes \\
+			\subitem \hspace{1cm} Implikationen bereits von \textcite{Mundt2012} aufgezeigt
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Monitoring Pipeline}
+	
+	\centerImageWithoutCaption{180\mm}{../../tex/figures/300-concept-architecture.pdf}
+	
+	\note{
+		\begin{itemize}
+			\item orientiert an \textcite{Pan2014}
+			\item mehrere Agenten senden agg. Daten
+			\item werden in message Queue gesammelt
+			\item Collector speicher sofort in InfluxDB
+			\item wenn alle Windows für einen Zeitabschnitt da
+			\item weiterleiten an Analyser über Message Exchange
+			\item ADDR
+			\item Entropy (Shannon, Information Gain)
+			\item Local Outlier Factor
+			\item SVM
+			\item speichern Ergebnis direkt in InfluxDB
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Implementation of the Monitoring Pipeline as Prototype}
+	
+	\begin{itemize}
+		\item Prototype implemented as Python modules
+		\item Communicating via AMQP and rabbitMQ as message broker
+		\item Data is stored in an InfluxDB instance
+		\item Anomaly detection based on Python Scikit-learn \parencite{Pedregosa2011}
+	\end{itemize}
+	
+	\note{
+		\begin{itemize}
+			\item Impl. als Python Modul
+			\item Message-passing via AMQP und rabbitMQ
+			\item Daten in InfluxDB
+			\item Scikit-learn für Datenanalyse Algorithmen
+		\end{itemize}
+	}
+\end{frame}
+
+
+
+\begin{frame}[c]
+	\frametitle{Selection of Anomaly Detection Algorithms}
+	
+	\begin{itemize}
+		\item Unsupervised Anomaly Detection
+		\item Not using signatures or predefined rules
+		\item Can be trained without malicious data
+		\item Evidence in literature for their performance with regard to IDS \parencite{Lazarevic2003,Toshniwal2014}
+	\end{itemize}
+	
+	\note{
+		\begin{itemize}
+			\item \textbf{Unsupervised}, aka. ohne weiteren manuellen Einfluss (labelling)
+			\item Nicht \textbf{signatur}- oder regel-basierend
+			\item Braucht \textbf{keine Daten von zu erkennenden Angriffen}
+			\item Wurde bereits in der Literatur als für IDS geeignet erkannt
+			\item \textcite{Lazarevic2003,Toshniwal2014}
+		\end{itemize}
+	}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\section{Evaluation}
+\begin{frame}[c]
+	\centering
+	\LARGE Evaluation of the Prototype Implementation
+	
+	\note{Objective = test performance of proposed IDS concept}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{The Test Setup}
+	
+	\begin{itemize}
+		\item One month of test data from the computer science building
+			\begin{itemize}
+				\item 2 weeks training data
+				\item 1 week validation data
+				\item 1 week test data
+			\end{itemize}
+		\item Test data set is modified with different attack scenarios
+	\end{itemize}
+
+	\note{
+		\begin{itemize}
+			\item 1 Monat Test Daten vom 3. Stock im KZH
+			\begin{itemize}
+				\item 2w training
+				\item 1w validation
+				\item 1w test 
+			\end{itemize}
+			\item Test daten manipuliert
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Simulated Attack Scenarios}
+	
+	\begin{enumerate}
+		\item Unusual traffic
+		\item Denial of Service Attack
+		\item Network Scan
+		\item New Devices
+	\end{enumerate}
+	
+	\note{
+		\begin{enumerate}
+			\item Unusual traffic
+			\item Denial of Service Attack
+			\item Network Scan
+			\item New Devices
+		\end{enumerate}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Evaluation Criteria}
+	
+	\begin{enumerate}
+		\item General ability to the detect the attack
+		\item Differentiation from background noise of the detection results
+		\begin{enumerate}[a)]
+			\item Average difference in detected outliers 
+			\item Average difference in underlying decision metric
+		\end{enumerate}
+		\item Response time 
+		\item Persistence of detection
+	\end{enumerate}
+	
+	\note{
+		\begin{enumerate}
+			\item Wurde Attacke erkannt
+			\item Abgrenzung vom Hintergrund rauschen
+			\begin{enumerate}[a)]
+				\item in der Anzahl erkannter Anomalien
+				\item in der zugrundeliegenden Metrik
+			\end{enumerate}
+			\item Erkennungszeit
+			\item Persistenz
+		\end{enumerate}
+	}
+\end{frame}
+
+\section{Detection Results of the DoS Attack}
+\begin{frame}[c]
+	\centering
+	\LARGE Detection Results of the DoS Attack
 	
 	\note{}
 \end{frame}
 
+\begin{frame}[c]
+	\frametitle{Telegrams with Unknown Addresses During the DoS Attack}
+	
+	\centerImageWithoutCaption{230\mm}{../../tex/figures/700-results/dos-tc.png}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Outliers of SVM and LOF classifier during the DoS Attack}
+	
+	\centerImageWithoutCaption{230\mm}{../../tex/figures/700-results/dos-num-outliers.png}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Spread of LOF during the DoS Attack}
+	
+	\centerImageWithoutCaption{230\mm}{../../tex/figures/700-results/dos-lof-spread.png}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Spread of SVM Distance during the DoS Attack}
+	
+	\centerImageWithoutCaption{230\mm}{../../tex/figures/700-results/dos-svm-spread.png}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Average Entropy during the DoS Attack}
+	
+	\centerImageWithoutCaption{230\mm}{../../tex/figures/700-results/dos-entropy.png}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Detection Results of the DoS Attack}
+	
+	\begin{table}[H]
+		\aboverulesep=0ex
+		\belowrulesep=0ex
+		\renewcommand{\arraystretch}{1.2}
+		\newcolumntype{Y}{>{\centering\arraybackslash}X}
+		
+		\small
+		\centering
+		\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
+			\toprule
+			& LOF & SVM & Address & Entropy \\\midrule
+			1. Attack detected & yes & yes & yes & no \\\midrule
+			2.a) Avg. difference in outliers  & $0.549$ & $0.997$ & $254$ & n/a \\\midrule
+			2.b) Avg. difference in metric & $-1.730$ & $-39.46$ & n/a & n/a \\\midrule
+			3. Response time & 0s & 0s & 0s & n/a \\\midrule
+			4. Persistence & $100$\% & $100$\% & $100$\% & n/a \\\bottomrule
+		\end{tabularx}
+		%\caption[Detection results of the DoS attack]{Detection results of the \gls{dos} attack. Difference in averages is calculated against the validation dataset.}
+		%\label{tab:results:dos}
+	\end{table}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Summary of Detection Results}
+	
+	\begin{table}[h]
+		\aboverulesep=0ex
+		\belowrulesep=0ex
+		\renewcommand{\arraystretch}{1.2}
+		\newcolumntype{Y}{>{\centering\arraybackslash}X}
+		
+		\centering
+		\begin{tabularx}{0.95\textwidth}{|l|Y|Y|Y|Y|}
+			\toprule
+			& LOF & SVM & Address & Entropy \\\midrule
+			Unusual Traffic & no & no & no & no \\\midrule
+			DoS Attack & yes & yes & yes & no \\\midrule
+			Network Scan & no & yes & yes & no \\\midrule
+			New Devices & no & no & yes & no \\\midrule
+		\end{tabularx}
+		%\caption[Summary of detection results]{Summary of detection results.}
+		%\label{tab:results:conclusion}
+	\end{table}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\section{Results and Conclusion}
+\begin{frame}[c]
+	\centering
+	\LARGE Results and Conclusion
+	
+	\note{}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Results}
+	
+	\begin{itemize}
+		\item \emph{Unusual Traffic} modification was not detected at all
+		\item \emph{New Devices} were only identified address analyser
+		\item \emph{DoS} and \emph{Network Scan} clearly identified
+	\end{itemize}
+
+	\note{
+		\begin{itemize}
+			\item \emph{Unusual traffic} war nicht ungewöhnlich genug
+			\item \emph{New Devices} gleiches Problem, \\
+				\subitem \hspace{1cm} da traffic von selber Line, aber anderer Tag
+			\item sesonal sensitivity nur eingeschränkt gezeigt
+			\item ----
+			\item \emph{DoS} und \emph{Network Scan} relativ leicht erkennbar, da 
+			\item ----
+			\item In aktueller Form gut, um Manipulationen im Bus zu erkennen
+			\item Weniger gut als Alarmanlage \\
+				\subitem \hspace{1cm} -> \textbf{WAS AUCH NIE ZWECK WAR}
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Results}
+	
+	\begin{itemize}
+		\item SVM seems to be the best fit for IDS
+		\item LOF requires more parameter tuning
+		\item Entropy failed to detect anything
+		\item Address analyser performed good for its simplicity
+	\end{itemize}
+	
+	\note{
+		\begin{itemize}
+			\item SVM best fit -> genaue Detection, kleine Models, schnelle Erkennung
+			\item LOF -> sensitiv zu Anzahl an Neighbours und MinPts\\
+				\subitem \hspace{1cm} riesige Modelle
+			\item Entropy -> fehlerhafte Impl. oder ungeeignet\\
+				\subitem \hspace{1cm} nicht nach \textcite{Toshniwal2014}, da eher Clustering
+			\item Address -> einfaches aber äußerst wirksames Mittel
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Possible Error Sources}
+	
+	\begin{itemize}
+		\item Poor choice of parameters
+		\item Implementation problems
+		\item Mistakes by encoding information into the feature vector
+		\item Unsatisfactory test data
+	\end{itemize}
+
+	\note{
+		\begin{itemize}
+			\item Uninformierte Wahl von ML Parametern
+			\item Impl. Probs
+			\item Feature Vector
+			\item Nicht ausreichende Test Daten (nicht variant genug, zu wenig, ...)
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}[c]
+	\frametitle{Conclusion}
+	
+	\begin{itemize}
+		\item Proposed and showcased a modular and extensible monitor pipeline
+		\item Showed the feasibility of using in-band monitoring messages
+		\item Concept of an anomaly-based IDS in BAS was validated
+		\item Multiple approaches to anomaly detection were benchmarked in different test scenarios
+	\end{itemize}
+
+	\note{
+		\begin{itemize}
+			\item Vorstellung modularer und erweiterbarer Pipeline
+			\item Nutzbarkeit von in-band monitoring messages
+			\item IDS in BAS
+			\item Mehrer Anomaly Detect. Algos
+		\end{itemize}
+	}
+\end{frame}
+
+
+
+\begin{comment}
 \begin{frame}[c]
 	\frametitle{Motivation}
 	%\centering
@@ -25,12 +551,4 @@
 	
 	\hspace{60mm} --- \textcite{Gregory-Brown2017}
 \end{frame}
-
-\begin{frame}[c]
-	\frametitle{Motivation}
-	\begin{itemize}
-		\item Situation worse for Building Automation Systems
-		\item Leverage existing installations and infrastructure
-		\item Provide cheap reliable method to increase security in Building Automation Systems
-	\end{itemize}
-\end{frame}
+\end{comment}
