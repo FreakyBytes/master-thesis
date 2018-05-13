@@ -6,6 +6,8 @@ My thesis was supervised by Dr. Thomas Mundt from the Chair for Information and 
 
 I would like to thank Simeon Wiedenmann for the extensive proof-reading of my thesis and for contributing to the BAOS KNX parser library.
 
+The thesis was handed at 2018-03-21 and defended at 2018-04-16 in Rostock. It was graded with 1.0 for the thesis and a 1.1 for the defence presentation.
+
 Structure of this Repository
 ----------------------------
 
