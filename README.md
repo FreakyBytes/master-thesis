@@ -8,6 +8,9 @@ I would like to thank Simeon Wiedenmann for the extensive proof-reading of my th
 
 The thesis was handed at 2018-03-21 and defended at 2018-04-16 in Rostock. It was graded with 1.0 for the thesis and a 1.1 for the defence presentation.
 
+ * [Download thesis](https://github.com/FreakyBytes/master-thesis/releases/download/handing-in/master-thesis-peters.pdf)
+ * [Download defence presentation](https://github.com/FreakyBytes/master-thesis/releases/download/presentation/defence-presentation.pdf)
+
 Structure of this Repository
 ----------------------------
 
